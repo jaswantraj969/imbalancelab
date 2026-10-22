@@ -6,7 +6,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | Milestone | Description | Status | Evidence |
 |---|---|---|---|
 | M0 | Skeleton, tooling, plan | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T0) |
-| M1 | Data loading, schema validation, profiling | not started | — |
+| M1 | Data loading, schema validation, profiling | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M1) |
 | M2 | Splitting + leakage-safe pipeline builder | not started | — |
 | M3 | Metrics module incl. edge cases | not started | — |
 | M4 | Experiment runner, baselines, run records | not started | — |
@@ -31,6 +31,21 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   --python-version 3.11`), so one file serves both CI versions. numpy is resolved to 2.4.x on
   3.11 and 2.5.x on 3.12+ via environment markers.
 
+- **D4:** removed `python_version = "3.11"` from the mypy config. numpy 2.5 type stubs use PEP 695
+  `type` statements, which mypy rejects when targeting 3.11. mypy now targets the running
+  interpreter, so CI's 3.11 job checks against numpy 2.4 (from the lock) and its 3.13 job against
+  numpy 2.5.
+- **D5:** profiling runs on the full dataset, before the outer holdout. It is descriptive, is
+  never used for fitting or selection, and covers the data a reviewer must judge as a whole (for
+  example duplicates). This is not a leakage path, because no model, threshold, or feature choice
+  reads it automatically.
+- **D6:** "exact duplicate rows" compares every column except `id_column`, since a unique ID
+  would otherwise hide true duplicates. "Conflicting duplicates" compares feature columns only.
+- **D7:** a pure category is flagged only when support ≥ `pure_category_min_support` and the
+  probability of that purity under the base rate (p^n or (1-p)^n) is ≤
+  `pure_category_max_chance` (default 1e-4). Without this, every small all-negative category in
+  a 1%-positive dataset would be flagged.
+
 ## Last updated
 
-2026-10-22 — T0 (Implementation Engineer)
+2026-10-22 — M1 (Implementation Engineer)
