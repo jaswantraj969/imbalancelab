@@ -113,4 +113,4 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 
 ## Last updated
 
-2026-10-22 — M10 (Implementation Engineer)
+2026-10-22 — M10 + FINAL_REPORT.md (Implementation Engineer). All milestones done; awaiting supervisor verification. Nothing to resume.
