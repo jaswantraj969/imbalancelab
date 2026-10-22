@@ -1,11 +1,12 @@
-# ImbalanceLab: final report (revised after supervisor review T-R1)
+# ImbalanceLab: final report (revised after supervisor reviews T-R1 and T-R2)
 
 **Prepared by:** Implementation Engineer · **Date:** 2026-10-22 · **For:** supervisor review
 
-Milestones M0–M10 and the T-R1 review fixes are implemented and committed. **Nothing is marked
+Milestones M0–M10 and the T-R1 and T-R2 review fixes are implemented and committed (T-R2 M4,
+GitHub CI, is blocked; see section 2). **Nothing is marked
 `verified`**: M10 in particular is awaiting the supervisor. Per-task evidence is in
-[REVIEW_PACKET.md](REVIEW_PACKET.md) (the T-R1 entry holds the verbatim review evidence), and
-decisions D1–D29 and known issues are in [PROJECT_STATUS.md](PROJECT_STATUS.md).
+[REVIEW_PACKET.md](REVIEW_PACKET.md) (the T-R1 and T-R2 entries hold the verbatim review
+evidence), and decisions D1–D31 and known issues are in [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## 1. Milestones and commits
 
@@ -24,9 +25,12 @@ decisions D1–D29 and known issues are in [PROJECT_STATUS.md](PROJECT_STATUS.md
 | M9 | Persistence + inference | done | `b250b9a` |
 | M10 | Docs + case study | done (not verified; revised in T-R1) | `91c6f54` |
 | T-R1 | Supervisor review fixes | done | `e727ca4` |
+| T-R2 | CIs, coverage, cluster analysis, disclosures | done except GitHub CI (blocked) | `01a9d51` |
 
 ```text
 $ git log --oneline
+01a9d51 T-R2: bootstrap CIs, evaluation coverage, cluster analysis, protocol history, ODbL notices
+924b401 T-R1: review packet entry and revised final report
 e727ca4 T-R1: duplicate-aware splitting, honest two-run case study, RF determinism, UI evidence
 855c023 Final report for supervisor review
 91c6f54 M10: README, case study on mammography from real run records, smoke script
@@ -43,29 +47,32 @@ fdc15f3 M1: data loading, schema validation, profiling
 03ead06 T0: project skeleton, tooling, plan
 ```
 
-This report and the T-R1 REVIEW_PACKET entry are committed after the log above.
+This report and the T-R2 REVIEW_PACKET entry are committed in the commit after the log above.
 
-## 2. Gate output on commit `e727ca4` (verbatim)
+## 2. Gate output on commit `01a9d51` (verbatim)
 
 ### Python 3.13.5 (`.venv`)
 
 ```text
+$ python --version
+Python 3.13.5
+
 $ ruff check .
 All checks passed!
 [exit 0]
 
 $ ruff format --check .
-61 files already formatted
+67 files already formatted
 [exit 0]
 
 $ mypy
-Success: no issues found in 40 source files
+Success: no issues found in 43 source files
 [exit 0]
 
 $ pytest -q --cov=imbalancelab --cov-report=term-missing
-........................................................................ [ 48%]
-........................................................................ [ 96%]
-.....                                                                    [100%]
+........................................................................ [ 45%]
+........................................................................ [ 91%]
+..............                                                           [100%]
 ============================== warnings summary ===============================
 .venv\Lib\site-packages\fastapi\testclient.py:1
   <project-root>\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
@@ -75,45 +82,47 @@ $ pytest -q --cov=imbalancelab --cov-report=term-missing
 =============================== tests coverage ================================
 _______________ coverage: platform win32, python 3.13.5-final-0 _______________
 
-Name                                        Stmts   Miss  Cover   Missing
--------------------------------------------------------------------------
-src\imbalancelab\__init__.py                    2      0   100%
-src\imbalancelab\api\__init__.py                0      0   100%
-src\imbalancelab\api\app.py                   114      0   100%
-src\imbalancelab\api\schemas.py                45      0   100%
-src\imbalancelab\config.py                     15      1    93%   27
-src\imbalancelab\data\__init__.py               4      0   100%
-src\imbalancelab\data\errors.py                21      0   100%
-src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
-src\imbalancelab\data\schema.py                40      0   100%
-src\imbalancelab\evaluation\__init__.py         2      0   100%
-src\imbalancelab\evaluation\config.py          35      0   100%
-src\imbalancelab\evaluation\final.py          109      4    96%   74-75, 102, 160
-src\imbalancelab\evaluation\metrics.py        115      0   100%
-src\imbalancelab\evaluation\runner.py         117      0   100%
-src\imbalancelab\evaluation\thresholds.py     138      0   100%
-src\imbalancelab\models\__init__.py             2      0   100%
-src\imbalancelab\models\persistence.py        100      0   100%
-src\imbalancelab\models\registry.py            18      0   100%
-src\imbalancelab\pipelines\__init__.py          2      0   100%
-src\imbalancelab\pipelines\builder.py          66      0   100%
-src\imbalancelab\profiling\__init__.py          3      0   100%
-src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
-src\imbalancelab\profiling\warnings.py          9      0   100%
-src\imbalancelab\reporting\__init__.py          2      0   100%
-src\imbalancelab\reporting\figures.py          44      1    98%   28
-src\imbalancelab\reporting\render.py           82      0   100%
-src\imbalancelab\reporting\report.py          172     11    94%   59, 105, 107-109, 141, 188, 218, 267, 462, 464
-src\imbalancelab\splitting\__init__.py          3      0   100%
-src\imbalancelab\splitting\duplicates.py       24      0   100%
-src\imbalancelab\splitting\groups.py           76      1    99%   61
-src\imbalancelab\splitting\splits.py          251      2    99%   117, 123
-src\imbalancelab\tracking\__init__.py           2      0   100%
-src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
-src\imbalancelab\workflow.py                  144      6    96%   62-63, 90, 135, 234, 258
--------------------------------------------------------------------------
-TOTAL                                        2189     37    98%
-149 passed, 1 warning in 113.28s (0:01:53)
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 47      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           132      5    96%   79-80, 107, 165, 277
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py      79      1    99%   60
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           44      1    98%   28
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           206      8    96%   59, 123, 180, 183, 263, 293, 514, 556
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   145      6    96%   63-64, 91, 136, 236, 262
+--------------------------------------------------------------------------
+TOTAL                                         2398     38    98%
+158 passed, 1 warning in 110.36s (0:01:50)
 [exit 0]
 ```
 
@@ -128,17 +137,17 @@ All checks passed!
 [exit 0]
 
 $ ruff format --check .
-61 files already formatted
+67 files already formatted
 [exit 0]
 
 $ mypy
-Success: no issues found in 40 source files
+Success: no issues found in 43 source files
 [exit 0]
 
 $ pytest -q --cov=imbalancelab --cov-report=term-missing
-........................................................................ [ 48%]
-........................................................................ [ 96%]
-.....                                                                    [100%]
+........................................................................ [ 45%]
+........................................................................ [ 91%]
+..............                                                           [100%]
 ============================== warnings summary ===============================
 .venv311\Lib\site-packages\fastapi\testclient.py:1
   <project-root>\.venv311\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
@@ -148,51 +157,54 @@ $ pytest -q --cov=imbalancelab --cov-report=term-missing
 =============================== tests coverage ================================
 ______________ coverage: platform win32, python 3.11.15-final-0 _______________
 
-Name                                        Stmts   Miss  Cover   Missing
--------------------------------------------------------------------------
-src\imbalancelab\__init__.py                    2      0   100%
-src\imbalancelab\api\__init__.py                0      0   100%
-src\imbalancelab\api\app.py                   114      0   100%
-src\imbalancelab\api\schemas.py                45      0   100%
-src\imbalancelab\config.py                     15      1    93%   27
-src\imbalancelab\data\__init__.py               4      0   100%
-src\imbalancelab\data\errors.py                21      0   100%
-src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
-src\imbalancelab\data\schema.py                40      0   100%
-src\imbalancelab\evaluation\__init__.py         2      0   100%
-src\imbalancelab\evaluation\config.py          35      0   100%
-src\imbalancelab\evaluation\final.py          109      4    96%   74-75, 102, 160
-src\imbalancelab\evaluation\metrics.py        115      0   100%
-src\imbalancelab\evaluation\runner.py         117      0   100%
-src\imbalancelab\evaluation\thresholds.py     138      0   100%
-src\imbalancelab\models\__init__.py             2      0   100%
-src\imbalancelab\models\persistence.py        100      0   100%
-src\imbalancelab\models\registry.py            18      0   100%
-src\imbalancelab\pipelines\__init__.py          2      0   100%
-src\imbalancelab\pipelines\builder.py          66      0   100%
-src\imbalancelab\profiling\__init__.py          3      0   100%
-src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
-src\imbalancelab\profiling\warnings.py          9      0   100%
-src\imbalancelab\reporting\__init__.py          2      0   100%
-src\imbalancelab\reporting\figures.py          44      1    98%   28
-src\imbalancelab\reporting\render.py           82      0   100%
-src\imbalancelab\reporting\report.py          172     11    94%   59, 105, 107-109, 141, 188, 218, 267, 462, 464
-src\imbalancelab\splitting\__init__.py          3      0   100%
-src\imbalancelab\splitting\duplicates.py       24      0   100%
-src\imbalancelab\splitting\groups.py           76      1    99%   61
-src\imbalancelab\splitting\splits.py          251      2    99%   117, 123
-src\imbalancelab\tracking\__init__.py           2      0   100%
-src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
-src\imbalancelab\workflow.py                  144      6    96%   62-63, 90, 135, 234, 258
--------------------------------------------------------------------------
-TOTAL                                        2189     37    98%
-149 passed, 1 warning in 149.68s (0:02:29)
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 47      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           132      5    96%   79-80, 107, 165, 277
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py      79      1    99%   60
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           44      1    98%   28
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           206      8    96%   59, 123, 180, 183, 263, 293, 514, 556
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   145      6    96%   63-64, 91, 136, 236, 262
+--------------------------------------------------------------------------
+TOTAL                                         2398     38    98%
+158 passed, 1 warning in 102.85s (0:01:42)
 [exit 0]
 ```
 
-**CI status:** `.github/workflows/ci.yml` (Python 3.11 + 3.13) has **never run on GitHub
-Actions**, because no remote is configured. The two local gate runs above are the substitute
-evidence the review asked for. They are not a CI result.
+**CI status: environment-blocked.** `.github/workflows/ci.yml` (Python 3.11 + 3.13) has
+**never run on GitHub Actions**. T-R2 M4 gave the placeholder `<REPO_URL>` but no actual URL, and
+creating and publishing a repository on the user's account was not authorised, so no remote
+exists and nothing was pushed. The two local gate runs above are not a CI result.
 
 ## 3. Case-study headline (run b: duplicate-aware split)
 
@@ -201,22 +213,25 @@ evidence the review asked for. They are not a CI result.
   `eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed`.
 - **Split:** `duplicate_groups=True`: rows with identical features form one group, and no
   duplicate cluster crosses any boundary (cross-boundary duplicate check: 0 test rows, 0 folds).
-- **Not covered by any metric:** 3329 identical rows
-  (7 positive) form one oversized cluster, which is pinned to
-  training and never evaluated.
+- **Evaluation coverage (WARNING):** 3329
+  rows (29.8% of the dataset,
+  7 positives) form one oversized
+  cluster, which is forced to train and never evaluated; the results do not describe them. That
+  cluster is the all-minimum feature vector (see docs/case_study.md, data-quality finding).
 - **Selection rule:** highest mean OOF AP among the candidates `hgb`, `hgb+random_under`,
   `hgb+smote`, `random_forest`. Baselines: `dummy_prior`, `logreg_balanced`.
 
-**Selected `hgb+smote`: test AP 0.8228** (scored once) on 1964 test rows, 63 positives,
+**Selected `hgb+smote`: test AP 0.8228 [0.7383, 0.8977]** (scored once; 95% CI
+from a stratified bootstrap, 2000 resamples, seed 42) on 1964 test rows, 63 positives,
 prevalence 0.0321.
 
-| Model | Role | OOF AP: selection estimate (optimistic) | Test AP (scored once) |
+| Model | Role | OOF AP: selection estimate (optimistic) | Test AP [95% CI] (scored once) |
 |---|---|---|---|
-| `dummy_prior` | baseline | 0.0323 ± 0.0000 (n=15) | 0.0321 |
-| `logreg_balanced` | baseline | 0.5681 ± 0.0932 (n=15) | 0.5023 |
+| `dummy_prior` | baseline | 0.0323 ± 0.0000 (n=15) | 0.0321 [0.0321, 0.0321] |
+| `logreg_balanced` | baseline | 0.5681 ± 0.0932 (n=15) | 0.5023 [0.3926, 0.6442] |
 | `hgb` | candidate | 0.7295 ± 0.0589 (n=15) | not scored |
 | `hgb+random_under` | candidate | 0.5465 ± 0.0694 (n=15) | not scored |
-| `hgb+smote` | candidate, **selected** | 0.7515 ± 0.0611 (n=15) | 0.8228 |
+| `hgb+smote` | candidate, **selected** | 0.7515 ± 0.0611 (n=15) | 0.8228 [0.7383, 0.8977] |
 | `random_forest` | candidate | 0.7292 ± 0.0635 (n=15) | not scored |
 
 ### Threshold (run b, selected model)
@@ -230,7 +245,7 @@ prevalence 0.0321.
 
 | Precision | Recall | F-beta (beta=2) | MCC | TP | FP | FN | TN |
 |---|---|---|---|---|---|---|---|
-| 0.6049 | 0.7778 | 0.7357 | 0.6743 | 49 | 32 | 14 | 1869 |
+| 0.6049 [0.5238, 0.7000] | 0.7778 [0.6667, 0.8730] | 0.7357 [0.6476, 0.8187] | 0.6743 [0.5930, 0.7531] | 49 | 32 | 14 | 1869 |
 
 ### Duplicate-leakage comparison
 
@@ -240,7 +255,7 @@ The two runs have **different test sets**.
 |---|---|---|
 | Test rows duplicating outer-train rows | 632 | 0 |
 | Selected model | `hgb+smote` | `hgb+smote` |
-| Test AP, selected (rows / positives / prevalence) | 0.6670 (2237 / 52 / 0.0232) | 0.8228 (1964 / 63 / 0.0321) |
+| Test AP [95% CI], selected (rows / positives / prevalence) | 0.6670 [0.5404, 0.7908] (2237 / 52 / 0.0232) | 0.8228 [0.7383, 0.8977] (1964 / 63 / 0.0321) |
 | OOF-minus-test AP gap, selected | +0.0779 | -0.0713 |
 
 Full tables, the run (a) re-slice and the caveats are in [docs/case_study.md](docs/case_study.md).
@@ -265,7 +280,7 @@ b_duplicate_groups: run run-20261022T092013Z-2056207e
 ALL CHECKS PASSED
 ```
 
-## 4. End-to-end smoke test on `e727ca4` (real responses)
+## 4. End-to-end smoke test on `01a9d51` (real responses)
 
 `python scripts/smoke_api.py`: a real uvicorn subprocess with a **synthetic** dataset. Long
 bodies are truncated by the script, and those cuts are marked `... [truncated]`.
@@ -490,7 +505,7 @@ UI evidence: 6 Playwright screenshots in `docs/screenshots/`, with per-page erro
 `docs/screenshots/ui_check.json`. All pages passed; the only error element is the expected
 409 refusal.
 
-## 5. `git ls-files` (at `e727ca4`)
+## 5. `git ls-files` (at `01a9d51`)
 
 ```text
 .gitattributes
@@ -503,6 +518,7 @@ README.md
 REVIEW_PACKET.md
 data/raw/.gitkeep
 docs/case_study.md
+docs/case_study/a_stratified/NOTICE.md
 docs/case_study/a_stratified/OMITTED_FILES.json
 docs/case_study/a_stratified/PROVENANCE.json
 docs/case_study/a_stratified/config.json
@@ -524,6 +540,7 @@ docs/case_study/a_stratified/report/report.md
 docs/case_study/a_stratified/run.json
 docs/case_study/a_stratified/summary.json
 docs/case_study/a_stratified/thresholds.json
+docs/case_study/b_duplicate_groups/NOTICE.md
 docs/case_study/b_duplicate_groups/OMITTED_FILES.json
 docs/case_study/b_duplicate_groups/PROVENANCE.json
 docs/case_study/b_duplicate_groups/config.json
@@ -559,6 +576,7 @@ frontend/app.py
 pyproject.toml
 requirements-lock.txt
 runs/.gitkeep
+scripts/check_committed_files.py
 scripts/gate.sh
 scripts/run_case_study.py
 scripts/smoke_api.py
@@ -579,6 +597,7 @@ src/imbalancelab/evaluation/final.py
 src/imbalancelab/evaluation/metrics.py
 src/imbalancelab/evaluation/runner.py
 src/imbalancelab/evaluation/thresholds.py
+src/imbalancelab/evaluation/uncertainty.py
 src/imbalancelab/models/__init__.py
 src/imbalancelab/models/persistence.py
 src/imbalancelab/models/registry.py
@@ -592,6 +611,7 @@ src/imbalancelab/reporting/figures.py
 src/imbalancelab/reporting/render.py
 src/imbalancelab/reporting/report.py
 src/imbalancelab/splitting/__init__.py
+src/imbalancelab/splitting/coverage.py
 src/imbalancelab/splitting/duplicates.py
 src/imbalancelab/splitting/groups.py
 src/imbalancelab/splitting/splits.py
@@ -614,6 +634,7 @@ tests/test_runner.py
 tests/test_smoke.py
 tests/test_splitting.py
 tests/test_thresholds_final.py
+tests/test_uncertainty.py
 ```
 
 ## 6. Deviations, limitations, environment-blocked steps
@@ -646,5 +667,6 @@ tests/test_thresholds_final.py
 
 ## 7. Ready for review
 
-The T-R1 findings H1, H2, M1–M5, L1 and L2 have been addressed, and the gates passed on 3.13.5
+The T-R1 and T-R2 findings have been addressed (except T-R2 M4, GitHub CI, which is blocked),
+and the gates passed on 3.13.5
 and 3.11.15 on the commit above. The work is ready for supervisor review.

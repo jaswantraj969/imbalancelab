@@ -4159,3 +4159,424 @@ ui_check.json
   duplicate leakage. This is stated in the case study.
 - Run (b)'s metrics do not cover the 3329-row cluster (7 positives), which is pinned to
   training.
+
+---
+
+### Task T-R2 — Uncertainty, evaluation coverage, cluster analysis, CI
+
+**Date:** 2026-10-22 · **Code/records commit:** `01a9d51`. This entry and the regenerated
+FINAL_REPORT.md follow in the next commit.
+
+#### Summary
+- **H1 (bootstrap CIs):** `evaluation/uncertainty.py` implements a stratified bootstrap.
+  - Positives and negatives are resampled separately, so class counts are fixed. Percentile
+    95% interval; `n_resamples` defaults to 2000 and is seeded.
+  - Covers AP, ROC AUC, and precision/recall/F-beta/MCC at the stored threshold. Undefined
+    resamples are counted in `n_undefined`.
+  - The implementation is vectorised. A test checks it against scikit-learn on resamples with
+    heavy ties.
+  - `final_evaluate` stores per-model `ci` plus `bootstrap` (method, n_resamples, seed,
+    confidence). `amend_bootstrap_cis` adds them to an existing run from its stored test
+    predictions only.
+  - The report and case study show point [95% CI] for every test metric. OOF metrics are not
+    bootstrapped. API: `bootstrap_resamples` and `bootstrap_seed` fields.
+- **M1 (evaluation coverage):** `splitting/coverage.py`. A row counts as evaluated if it is in
+  the test set or any validation fold.
+  - `run.json["evaluation_coverage"]` holds: forced-to-train rows and positives, % of rows and
+    of positives, group count, sizes and positives, gap rows, other never-evaluated rows, and the
+    cut-off (holdout and CV `max_eval_group_fraction`, both config parameters, plus their row
+    limits).
+  - Report section 5 "Evaluation coverage" is always present. When forced-to-train rows exceed
+    10% it shows a **WARNING** and adds the `evaluation_coverage_gap` split warning.
+    `amend_evaluation_coverage` rebuilds folds from the stored holdout and refuses if the fold
+    SHA-256 differs.
+- **M2 (cluster analysis):** `cluster_analysis()` in the case-study script. Output is below and
+  in docs/case_study.md "Data-quality finding".
+- **M3 + L1 (disclosures):** a "Protocol history" subsection covers all 9 case-study executions,
+  the discarded split v1, the large-group rule added afterwards, the reported split v2, that run
+  (b) was added after run (a) results were seen, and test-set reuse counts. The median rule is
+  D15 / commit `7ce0891` (13:05:52 +05:00), which precedes the first case-study scoring (13:34:55
+  +05:00).
+- **L2:** `resolve_groups` logs `logger.warning(...)` with the number of declared groups merged
+  (D27), and the count is in the warning evidence. Tested with `caplog`.
+- **L3:** an ODbL attribution banner and section in docs/case_study.md, and `NOTICE.md` in
+  `docs/case_study/a_stratified/` and `b_duplicate_groups/`.
+- **M4 (GitHub CI): BLOCKED.** The task text has the placeholder `<REPO_URL>` and no actual
+  URL. `git remote -v` is empty. `gh` is authenticated (account `jaswantraj969`), but creating
+  and publishing a repository on the user's account is an outward-facing action that was not
+  authorised, so it was not done. Nothing was pushed, and **GitHub Actions has not run**. The
+  hygiene check (no file over 1 MB, no secrets or .env) was done and passes; output is below.
+- **D30:** the committed case-study runs were **amended** (`--amend-existing`), not re-run, so no
+  test set was scored again. The stored `final_predictions.parquet` files were verified
+  byte-identical before and after (`sha256sum -c`: OK).
+
+#### git diff --stat 924b401..01a9d51
+````text
+ PROJECT_STATUS.md                                  |  24 +-
+ README.md                                          |   8 +-
+ docs/case_study.md                                 | 158 ++++--
+ docs/case_study/a_stratified/NOTICE.md             |  13 +
+ docs/case_study/a_stratified/PROVENANCE.json       |   4 +-
+ .../a_stratified/duplicate_sensitivity.json        | 148 +++++-
+ docs/case_study/a_stratified/final_evaluation.json | 203 +++++++-
+ .../a_stratified/final_evaluation_log.jsonl        |   1 +
+ docs/case_study/a_stratified/report/report.html    |  25 +-
+ docs/case_study/a_stratified/report/report.md      |  43 +-
+ docs/case_study/a_stratified/run.json              |  37 +-
+ docs/case_study/b_duplicate_groups/NOTICE.md       |  13 +
+ docs/case_study/b_duplicate_groups/PROVENANCE.json |   4 +-
+ .../b_duplicate_groups/duplicate_sensitivity.json  | 148 +++++-
+ .../b_duplicate_groups/final_evaluation.json       | 203 +++++++-
+ .../b_duplicate_groups/final_evaluation_log.jsonl  |   1 +
+ .../b_duplicate_groups/report/report.html          |  28 +-
+ .../case_study/b_duplicate_groups/report/report.md |  47 +-
+ docs/case_study/b_duplicate_groups/run.json        |  53 +-
+ scripts/check_committed_files.py                   |  62 +++
+ scripts/run_case_study.py                          | 559 +++++++++++++++------
+ src/imbalancelab/api/app.py                        |   4 +
+ src/imbalancelab/api/schemas.py                    |   2 +
+ src/imbalancelab/evaluation/final.py               |  73 ++-
+ src/imbalancelab/evaluation/runner.py              |  63 +++
+ src/imbalancelab/evaluation/uncertainty.py         | 145 ++++++
+ src/imbalancelab/reporting/report.py               | 128 ++++-
+ src/imbalancelab/splitting/coverage.py             |  95 ++++
+ src/imbalancelab/splitting/groups.py               |  12 +
+ src/imbalancelab/workflow.py                       |   6 +-
+ tests/snapshots/report_structure.md                |  28 +-
+ tests/test_duplicate_groups.py                     |  85 +++-
+ tests/test_reporting.py                            |   9 +-
+ tests/test_thresholds_final.py                     |  29 ++
+ tests/test_uncertainty.py                          |  93 ++++
+ 35 files changed, 2258 insertions(+), 296 deletions(-)
+````
+
+#### Gate, Python 3.13.5 (verbatim)
+````text
+$ python --version
+Python 3.13.5
+
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+67 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 43 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 45%]
+........................................................................ [ 91%]
+..............                                                           [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  <project-root>\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 47      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           132      5    96%   79-80, 107, 165, 277
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py      79      1    99%   60
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           44      1    98%   28
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           206      8    96%   59, 123, 180, 183, 263, 293, 514, 556
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   145      6    96%   63-64, 91, 136, 236, 262
+--------------------------------------------------------------------------
+TOTAL                                         2398     38    98%
+158 passed, 1 warning in 110.36s (0:01:50)
+[exit 0]
+````
+
+#### Gate, Python 3.11.15, local `.venv311` (verbatim; NOT a CI run)
+````text
+$ python --version
+Python 3.11.15
+
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+67 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 43 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 45%]
+........................................................................ [ 91%]
+..............                                                           [100%]
+============================== warnings summary ===============================
+.venv311\Lib\site-packages\fastapi\testclient.py:1
+  <project-root>\.venv311\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.11.15-final-0 _______________
+
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 47      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           132      5    96%   79-80, 107, 165, 277
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py      79      1    99%   60
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           44      1    98%   28
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           206      8    96%   59, 123, 180, 183, 263, 293, 514, 556
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   145      6    96%   63-64, 91, 136, 236, 262
+--------------------------------------------------------------------------
+TOTAL                                         2398     38    98%
+158 passed, 1 warning in 102.85s (0:01:42)
+[exit 0]
+````
+
+#### Case-study amendment run (verbatim)
+````text
+$ sha256sum runs/case_study/runs/*/final_predictions.parquet > preds_before.txt
+$ python scripts/run_case_study.py --amend-existing
+downloaded <project-root>\data\raw\imblearn\zenodo\x25data.npz sha256=73480c315d42bc5b33c2c73b9078d0034113d26f0511facd9fc5bb07f2d6438a
+[a_stratified] amended run-20261022T091904Z-596af186: coverage forced_to_train=0 rows (0 positive); bootstrap CIs added from stored predictions
+[b_duplicate_groups] amended run-20261022T092013Z-2056207e: coverage forced_to_train=3329 rows (7 positive); bootstrap CIs added from stored predictions
+Largest duplicate cluster (run run-20261022T092013Z-2056207e, duplicate_groups=True)
+rows: 3329 of 11183 (29.77% of the dataset)   positives: 7   negatives: 3322
+rows in the cluster that are in the test set: 0
+identical feature vector of all 3329 rows (all rows equal: True):
+  feature_0 = -0.78441482   column min -0.78441482, median -0.10857689, max 31.50844300   is column min: yes   is column max: no   rows with exactly this value: 3360 (30.05%)   rows below it: 0
+  feature_1 = -0.47019533   column min -0.47019533, median -0.39499410, max 5.08584910   is column min: yes   is column max: no   rows with exactly this value: 3329 (29.77%)   rows below it: 0
+  feature_2 = -0.59163147   column min -0.59163147, median -0.23097900, max 29.47776900   is column min: yes   is column max: no   rows with exactly this value: 3410 (30.49%)   rows below it: 0
+  feature_3 = -0.85955255   column min -0.85955255, median -0.85955255, max 9.59116400   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
+  feature_4 = -0.37786573   column min -0.37786573, median -0.37786573, max 23.61712200   is column min: yes   is column max: no   rows with exactly this value: 8521 (76.20%)   rows below it: 0
+  feature_5 = -0.94572324   column min -0.94572324, median -0.94572324, max 1.94902730   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
+features equal to their column minimum: 6 of 6
+features equal to 0: 0 of 6
+distinct values within the vector: 6
+selected model: hgb+smote (persisted model model-20261022T092115Z-819a6e87, refit on outer-train rows only, artifact SHA-256 verified on load)
+predicted probability for the cluster's feature vector: 0.08894896   distinct predicted values over the 3329 rows: 1
+stored threshold: 0.60359672   predicted label: 0   (training prevalence of the cluster: 0.002103)
+wrote docs/case_study.md, docs/case_study/a_stratified, docs/case_study/b_duplicate_groups
+$ sha256sum -c preds_before.txt
+runs/case_study/runs/run-20261022T091904Z-596af186/final_predictions.parquet: OK
+runs/case_study/runs/run-20261022T092013Z-2056207e/final_predictions.parquet: OK
+````
+
+#### Hash-regeneration check after amendment (verbatim)
+````text
+$ python scripts/verify_case_study_hashes.py
+a_stratified: run run-20261022T091904Z-596af186
+  [OK] dataset sha256: eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed
+  [OK] test-index sha256: ee4a3c8a3d3efbbfac7e1c20ba4c7fae2c3d9cec55bdd2101aed8a75a2a271c7
+  [OK] fold-index canonical sha256: 273eb075663b91f47cad5b3600106b2b8617408cc133e221ca2f251fcb6da372
+  [OK] fold_indices.json file sha256: 08f33088e508526127d5e886bfc98cb7aed2cf777a17ec3aeee67b734583733b
+  [OK] oof_predictions.parquet file sha256: b30cbcdfec258860e48b80e66a0a46d42191aba937e7206763d458fa75e6b361
+  [OK] summary.json content: f29ba9ba182453ffdd29e2963b050c60d361d829658ad4844acab68969a33ed7
+b_duplicate_groups: run run-20261022T092013Z-2056207e
+  [OK] dataset sha256: eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed
+  [OK] test-index sha256: 7ee8afda21eac8e55d32cec3c391e8d48d7034924747d626e357f536c5ebdd89
+  [OK] fold-index canonical sha256: f59d5586847fafdfbb5f7ea5f808783f63a2ac15f918acdf1c14aa3716e8ffd0
+  [OK] fold_indices.json file sha256: 106649ffae70a01601dbb1c4c8f47d284b700e7d3cf9726f321d03c21b66dd17
+  [OK] summary.json content: 8c952d75f52a384b561116037725b85bde83029327d534a1eb6cff2ca7e5be9a
+ALL CHECKS PASSED
+````
+
+#### Large-file / secrets check (verbatim)
+````text
+$ git add -A && python scripts/check_committed_files.py
+tracked files checked: 127
+total tracked bytes: 4046277
+largest tracked files:
+     986610  docs/case_study/b_duplicate_groups/oof_predictions.parquet
+     246755  docs/case_study/b_duplicate_groups/report/report.html
+     244536  docs/case_study/a_stratified/report/report.html
+     181007  REVIEW_PACKET.md
+     172401  docs/case_study/a_stratified/fold_metrics.json
+files over 1000000 bytes: 0
+sensitive file names (.env, keys): 0
+OK: no problems found
+$ git check-ignore -v .env runs/x .venv311/x
+.gitignore:11:.env	.env
+.gitignore:15:runs/*	runs/x
+.gitignore:2:.venv311/	.venv311/x
+````
+
+#### Evaluation coverage section, as generated by the run (b) report (verbatim)
+````markdown
+## 5. Evaluation coverage
+
+**WARNING:** 3329 rows (29.8% of the dataset, 7 positives) were never in any test or validation set. **The reported results do not describe these rows.**
+
+| Field | Value |
+|---|---|
+| Rows / positives in dataset | 11183 / 260 |
+| Rows evaluated (test or any validation fold) | 7854 |
+| Forced to train, never evaluated: rows / positives | 3329 / 7 |
+| Forced to train: % of rows / % of positives | 29.77% / 2.69% |
+| Large-group cut-off | groups larger than 25% of the target test size (559 rows) or 25% of the target validation-fold size (461 rows) are forced to train |
+| Forced-to-train groups | 1: 3329 rows (7 positive) |
+| Temporal gap rows | 0 |
+| Other never-evaluated rows | 0 (not in any test or validation fold) |
+| Warning threshold | 10% of rows |
+````
+
+#### Headline (docs/case_study.md, verbatim)
+````markdown
+## Headline (run b: duplicate-aware split)
+
+The selected model **`hgb+smote`** scored **test AP 0.8228 [0.7383, 0.8977]** on a single evaluation of 1964 test rows with 63 positives (prevalence 0.0321). On the same test rows:
+
+| Model | Test AP [95% CI] | Test ROC AUC [95% CI] | Test rows | Positives | Prevalence |
+|---|---|---|---|---|---|
+| `hgb+smote` | 0.8228 [0.7383, 0.8977] | 0.9589 [0.9180, 0.9889] | 1964 | 63 | 0.0321 |
+| `dummy_prior` | 0.0321 [0.0321, 0.0321] | 0.5000 [0.5000, 0.5000] | 1964 | 63 | 0.0321 |
+| `logreg_balanced` | 0.5023 [0.3926, 0.6442] | 0.9225 [0.8764, 0.9611] | 1964 | 63 | 0.0321 |
+
+Brackets are 95% CIs from a stratified bootstrap of the test rows (2000 resamples, seed 42; positives and negatives resampled separately). They reflect test-sample variation only.
+
+**Evaluation coverage (run b): 3329 rows (29.8% of the dataset, 7 positives) are never in any test or validation set.** They form one oversized duplicate cluster that is forced to training, so the results above do not describe those rows. See [Evaluation coverage](#evaluation-coverage-run-b) and the [data-quality finding](#data-quality-finding-the-3329-row-cluster).
+
+Run (b) is the headline because in run (a) exact-duplicate rows cross the train/test and CV boundaries. In run (b) the cross-boundary duplicate check reports 0 test rows and 0 affected folds.
+````
+
+#### Protocol history (docs/case_study.md, verbatim)
+````markdown
+### Protocol history
+
+Every execution of this case study, from the command logs in `REVIEW_PACKET.md`:
+
+| # | When | Run (a) stratified | Run (b) duplicate groups | Test set scored? | Outcome |
+|---|---|---|---|---|---|
+| 1 | M10 | (none: failed before CV) | — | no | `FileNotFoundError` on the extracted file name |
+| 2 | M10 | (stopped by me) | — | unknown | stopped to fix `source_name`; its log was overwritten, so whether it reached final evaluation is unknown |
+| 3 | M10 | `run-20261022T083455Z-ef809093` | — | yes | superseded (report wording) |
+| 4 | M10 | `run-20261022T083728Z-db0f0d23` | — | yes | superseded (report wording) |
+| 5 | M10 | `run-20261022T083838Z-b12a4417` | — | yes | committed in M10, superseded in T-R1 |
+| 6 | T-R1 | `run-20261022T090059Z-c27d4eb9` | `run-20261022T090141Z-9165d0cb` (**split v1**, no large-group rule) | yes | run (b) found **degenerate** and discarded (see below) |
+| 7 | T-R1 | `run-20261022T090930Z-8ca49f38` | `run-20261022T091037Z-8d492e51` (**split v2**) | yes | superseded: the hash check exposed random-forest non-determinism (D29) |
+| 8 | T-R1 | `run-20261022T091904Z-596af186` | `run-20261022T092013Z-2056207e` (split v2) | yes | **reported runs** |
+| 9 | T-R2 | same as #8 | same as #8 | **no** | bootstrap CIs and evaluation coverage added from stored predictions and indices |
+
+- **Run (b) was added after run (a) results had been seen.** The supervisor requested it in review T-R1, after the M10 case study (run a protocol) was reported.
+- **The first run (b) split (split v1, execution 6) was produced, scored, found degenerate, and discarded.** Its test set was one 3329-row duplicate cluster plus 45 other rows that were all positive. `StratifiedGroupKFold` had rebalanced the class ratio around the unsplittable cluster, and two different models scored the same test AP. The degeneracy was found by inspecting that run's test predictions.
+- **The large-group rule was then added.** Groups above 25% of the target test or validation size are forced to train, and holdout size, prevalence and dominant-group warnings were added (PROJECT_STATUS D28). Only this one cut-off value was tried. The reported run (b) uses **the second split (split v2)**.
+- **Test-set reuse:** the run (a) test set (test-index SHA-256 `ee4a3c8a3d3efbbf…`) was scored in executions 3–8, six times with the same protocol, plus possibly execution 2. The split v2 test set (SHA-256 `7ee8afda21eac8e5…`) was scored in executions 7 and 8. The change between 7 and 8 (random-forest threads, D29) came from the out-of-fold hash check, not from test results, and did not change any reported metric. Execution 9 scored nothing.
+- **Fixed before any case-study test scoring:** the candidate list, seeds, CV settings and selection rule were written into this script before execution 1. Git cannot prove that ordering, because the script was first committed in M10 (`91c6f54`) after those executions.
+- **Threshold aggregation rule (median across repeats):** decided in M5 as PROJECT_STATUS decision **D15** and implemented in commit **`7ce0891`** (2026-10-22 13:05:52 +05:00). This **precedes** the first case-study execution (execution 3, run `run-20261022T083455Z-ef809093` = 08:34:55Z = 13:34:55 +05:00) and so all test scoring.
+````
+
+#### Data-quality finding (docs/case_study.md, verbatim)
+````markdown
+## Data-quality finding: the 3329-row cluster
+
+Output of `cluster_analysis()` in `scripts/run_case_study.py`. The data and the persisted run (b) model (refit on outer-train rows, as in the final evaluation) are used. This describes values only and makes no claim about their cause.
+
+```text
+Largest duplicate cluster (run run-20261022T092013Z-2056207e, duplicate_groups=True)
+rows: 3329 of 11183 (29.77% of the dataset)   positives: 7   negatives: 3322
+rows in the cluster that are in the test set: 0
+identical feature vector of all 3329 rows (all rows equal: True):
+  feature_0 = -0.78441482   column min -0.78441482, median -0.10857689, max 31.50844300   is column min: yes   is column max: no   rows with exactly this value: 3360 (30.05%)   rows below it: 0
+  feature_1 = -0.47019533   column min -0.47019533, median -0.39499410, max 5.08584910   is column min: yes   is column max: no   rows with exactly this value: 3329 (29.77%)   rows below it: 0
+  feature_2 = -0.59163147   column min -0.59163147, median -0.23097900, max 29.47776900   is column min: yes   is column max: no   rows with exactly this value: 3410 (30.49%)   rows below it: 0
+  feature_3 = -0.85955255   column min -0.85955255, median -0.85955255, max 9.59116400   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
+  feature_4 = -0.37786573   column min -0.37786573, median -0.37786573, max 23.61712200   is column min: yes   is column max: no   rows with exactly this value: 8521 (76.20%)   rows below it: 0
+  feature_5 = -0.94572324   column min -0.94572324, median -0.94572324, max 1.94902730   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
+features equal to their column minimum: 6 of 6
+features equal to 0: 0 of 6
+distinct values within the vector: 6
+selected model: hgb+smote (persisted model model-20261022T092115Z-819a6e87, refit on outer-train rows only, artifact SHA-256 verified on load)
+predicted probability for the cluster's feature vector: 0.08894896   distinct predicted values over the 3329 rows: 1
+stored threshold: 0.60359672   predicted label: 0   (training prevalence of the cluster: 0.002103)
+```
+````
+
+#### Threshold, run (b) (docs/case_study.md, verbatim)
+````markdown
+## Threshold, run (b)
+
+- **Model:** `hgb+smote`. **Strategy:** `max_fbeta` with beta=2.0, selected on OOF predictions for each of 3 CV repeats. **Rule:** median of per-repeat thresholds selected on out-of-fold predictions (decided in M5, D15 / `7ce0891`).
+- **Chosen threshold:** 0.6036. Per-repeat thresholds: mean 0.6001 ± 0.0814 (sample std), range [0.5170, 0.6796]. Individual values: repeat 0: 0.6036, repeat 1: 0.5170, repeat 2: 0.6796.
+- **Test metrics at the chosen threshold** (scored once; [95% CI]):
+
+| Precision | Recall | F-beta (beta=2) | MCC | TP | FP | FN | TN |
+|---|---|---|---|---|---|---|---|
+| 0.6049 [0.5238, 0.7000] | 0.7778 [0.6667, 0.8730] | 0.7357 [0.6476, 0.8187] | 0.6743 [0.5930, 0.7531] | 49 | 32 | 14 | 1869 |
+
+Brackets are 95% CIs from a stratified bootstrap of the test rows (2000 resamples, seed 42; positives and negatives resampled separately). They reflect test-sample variation only.
+````
+
+#### Deviations
+- **D30:** records were amended instead of re-running the case study, to avoid scoring the test
+  sets again. Fresh runs compute CIs and coverage natively.
+- **M4:** blocked, because no repository URL was given and publishing was not authorised.
+- **FINAL_REPORT.md** was regenerated, so that its test metrics also carry CIs.
+
+#### Known limitations
+- Bootstrap CIs cover test-sample variation only, not re-splitting or re-training.
+- Run (b) results do not describe the 3329 forced-to-train rows (29.8% of the dataset).
