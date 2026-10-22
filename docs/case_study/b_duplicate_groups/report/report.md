@@ -191,12 +191,25 @@ Test Brier score (hgb+smote): 0.0181 [0.0135, 0.0231] (lower is better). Reliabi
 
 ![Test curve test_roc](figures/test_roc.png)
 
-Final-evaluation log: 4 entries.
+### Test-scoring history
 
-- 2026-10-22T09:21:15.405438Z: final_evaluation
-- 2026-10-22T09:21:15.533441Z: model_persisted
-- 2026-10-22T10:04:30.637958Z: bootstrap_cis_added
-- 2026-10-22T14:41:27.728707Z: bootstrap_cis_added
+Test set scored **1 time** for this run (count of `final_evaluation` events in `final_evaluation_log.jsonl`).
+
+| # | Time | Model | Forced |
+|---|---|---|---|
+| 1 | 2026-10-22T09:21:15.405438Z | hgb+smote | no |
+
+Forced re-evaluations: none.
+
+Amendments (**no test scoring**):
+
+| Time | What |
+|---|---|
+| 2026-10-22T09:21:15.533441Z | model persisted (model-20261022T092115Z-819a6e87) |
+| 2026-10-22T10:04:28.879800Z | added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored [run.json] |
+| 2026-10-22T10:04:30.637958Z | added bootstrap CIs computed from stored final_predictions.parquet (no refit, no re-scoring) [final_evaluation.json] |
+| 2026-10-22T14:41:12.545544Z | added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored [run.json] |
+| 2026-10-22T14:41:27.728707Z | added bootstrap CIs (incl. Brier), reliability curves and paired bootstrap differences computed from stored final_predictions.parquet (no refit, no re-scoring) [final_evaluation.json] |
 
 ## 10. Limitations
 
@@ -205,6 +218,7 @@ Final-evaluation log: 4 entries.
 - Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.
 - Test results are a single evaluation per model; bootstrap CIs reflect test-sample variation only, not model-training variation.
 - Scores are not calibrated (no calibration stage); see the calibration disclosure in section 9.
+- Thresholds are selected on out-of-fold scores of the fold models and then applied to the model refit on all outer-train rows, whose score distribution may differ (notably with SMOTE). Test CIs at the threshold hold the threshold fixed and do not include threshold-selection uncertainty.
 - Split warnings were raised (section 4); affected scores may be optimistic.
 - 3329 rows in oversized groups were never evaluated (section 5).
 

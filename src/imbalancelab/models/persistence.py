@@ -1,8 +1,10 @@
-"""Persist refit pipelines with metadata, load them safely, and predict.
+"""Persist refit pipelines with metadata, load them, and predict.
 
-Security note: joblib artifacts are pickles. Only load artifacts this workspace produced. The
-artifact's SHA-256 (stored in its metadata) is verified *before* unpickling, so an artifact
-replaced on disk is rejected rather than executed.
+Security note: joblib artifacts are pickles, and unpickling can execute arbitrary code. **Only
+load artifacts from a workspace you trust.** The artifact's SHA-256 is stored in
+``metadata.json`` next to the artifact and is checked before unpickling. This detects
+**accidental corruption** (a truncated or partially overwritten file) only. It is **not tamper
+protection**: anyone who can replace the artifact can also replace the metadata beside it.
 """
 
 import hashlib

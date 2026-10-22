@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from imbalancelab.evaluation.calibration import calibration_disclosure
+from imbalancelab.evaluation.final import scoring_history
 from imbalancelab.reporting.figures import first_repeat, plot_curves, plot_reliability
 from imbalancelab.reporting.render import (
     BulletList,
@@ -115,6 +116,60 @@ def final_test_verdict(c: dict[str, Any], results: dict[str, Any] | None = None)
         f"{cand} {word} {base} on the test set ({c['metric']}: {values}, point difference "
         f"{fmt_signed(c['diff'])}; single evaluation)."
     )
+
+
+def scoring_history_blocks(record: RunRecord) -> list[Any]:
+    """'Test-scoring history' subsection: scorings, forced re-evaluations, amendments."""
+    h = scoring_history(record)
+    n = h["n_test_scorings"]
+    blocks: list[Any] = [Heading(3, "Test-scoring history")]
+    if h["repeated_test_use"]:
+        blocks.append(
+            Paragraph(
+                f"**WARNING:** the test set of this run was scored **{n} times**. The reported "
+                "test metrics may be optimistically biased by repeated test-set use."
+            )
+        )
+    blocks.append(
+        Paragraph(
+            f"Test set scored **{n} time{'' if n == 1 else 's'}** for this run (count of "
+            "`final_evaluation` events in `final_evaluation_log.jsonl`)."
+        )
+    )
+    if h["scorings"]:
+        blocks.append(
+            Table(
+                ["#", "Time", "Model", "Forced"],
+                [
+                    [str(i + 1), e["at"], e["model"] or "—", "yes" if e["forced"] else "no"]
+                    for i, e in enumerate(h["scorings"])
+                ],
+            )
+        )
+    if h["forced_reevaluations"]:
+        blocks.append(Paragraph("Forced re-evaluations:"))
+        blocks.append(
+            Table(
+                ["Time", "Model", "Reason"],
+                [
+                    [e["at"], e["model"] or "—", e["reason"] or "(none given)"]
+                    for e in h["forced_reevaluations"]
+                ],
+            )
+        )
+    else:
+        blocks.append(Paragraph("Forced re-evaluations: none."))
+    if h["amendments_no_test_scoring"]:
+        blocks.append(Paragraph("Amendments (**no test scoring**):"))
+        blocks.append(
+            Table(
+                ["Time", "What"],
+                [[a["at"], a["what"]] for a in h["amendments_no_test_scoring"]],
+            )
+        )
+    else:
+        blocks.append(Paragraph("Amendments: none."))
+    return blocks
 
 
 def coverage_blocks(run: dict[str, Any]) -> list[Any]:
@@ -596,23 +651,11 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
             figs = plot_curves(test_preds, "test set", figure_dir, "test")
             figures += figs
             doc.add(*[Image(p, rel + p.name, f"Test curve {p.stem}") for p in figs])
-        log = record.final_log()
-        doc.add(
-            Paragraph(f"Final-evaluation log: {len(log)} entr{'y' if len(log) == 1 else 'ies'}.")
-        )
-        doc.add(
-            BulletList(
-                [
-                    f"{e['at']}: {e['event']}"
-                    + (f" (reason: {e['reason']})" if e.get("reason") else "")
-                    for e in log
-                ]
-            )
-        )
+        doc.add(*scoring_history_blocks(record))
     else:
         doc.add(Paragraph("Not yet performed. No test-set numbers exist for this run."))
 
-    # --- 9. limitations
+    # --- 10. limitations
     doc.add(Heading(2, "10. Limitations"))
     lim = [
         "CV folds share training data, so fold scores are correlated; spreads understate "
@@ -630,6 +673,18 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
             "Scores are not calibrated (no calibration stage); see the calibration disclosure "
             "in section 9."
         )
+        lim.append(
+            "Thresholds are selected on out-of-fold scores of the fold models and then applied to "
+            "the model refit on all outer-train rows, whose score distribution may differ "
+            "(notably with SMOTE). Test CIs at the threshold hold the threshold fixed and do not "
+            "include threshold-selection uncertainty."
+        )
+        hist = scoring_history(record)
+        if hist["repeated_test_use"]:
+            lim.append(
+                f"The test set of this run was scored {hist['n_test_scorings']} times; test "
+                "metrics may be optimistically biased (section 9, test-scoring history)."
+            )
         if final["n_test_positive"] < FEW_TEST_POSITIVES:
             lim.append(
                 f"Only {final['n_test_positive']} positive test rows: test metrics have "

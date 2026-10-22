@@ -73,8 +73,15 @@ print(generate_report(run.run_dir).markdown)  # runs/<run_id>/report/report.md
 ## Quickstart: API
 
 ```bash
-uvicorn imbalancelab.api.app:app
+uvicorn imbalancelab.api.app:app --host 127.0.0.1 --port 8000
 ```
+
+### Running the API
+
+- **No authentication.** Any client that can reach the port can upload data, run experiments,
+  read reports and use models.
+- **Local use only.** Bind to `127.0.0.1` (as above) and **do not expose the API to a
+  network**: do not use `--host 0.0.0.0`, and do not port-forward or reverse-proxy it.
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -92,8 +99,8 @@ when the work is done.
 
 ```bash
 curl -F file=@my_data.csv -F 'schema={"target":"label","positive_label":"yes"}' \
-     http://localhost:8000/datasets
-curl -X POST http://localhost:8000/runs -H 'content-type: application/json' \
+     http://127.0.0.1:8000/datasets
+curl -X POST http://127.0.0.1:8000/runs -H 'content-type: application/json' \
      -d '{"dataset_id":"<id>","config":{"candidates":[{"model":"hgb"}]}}'
 ```
 
@@ -103,12 +110,23 @@ Settings come from environment variables prefixed `IMBALANCELAB_` (`DATASETS_DIR
 ## Quickstart: UI
 
 ```bash
-uvicorn imbalancelab.api.app:app                      # terminal 1
-IMBALANCELAB_API_URL=http://localhost:8000 streamlit run frontend/app.py   # terminal 2
+uvicorn imbalancelab.api.app:app --host 127.0.0.1 --port 8000   # terminal 1
+IMBALANCELAB_API_URL=http://127.0.0.1:8000 streamlit run frontend/app.py   # terminal 2
 ```
 
 The Streamlit app talks to the API only. It never imports the library, and a test enforces
 this.
+
+## Model persistence
+
+Final evaluation saves the refit pipeline as `models/<model_id>/model.joblib`, with
+`metadata.json` next to it (run, threshold, feature schema, library versions, artifact SHA-256).
+
+- **joblib is pickle.** Loading an artifact can execute arbitrary code. Only load artifacts
+  from a workspace you trust.
+- **The stored SHA-256 detects accidental corruption only.** The metadata sits beside the
+  artifact, so anyone who can replace one can replace both. It is **not tamper protection**.
+- On load, a version mismatch against the recorded library versions produces a warning.
 
 ## Architecture
 
@@ -200,5 +218,6 @@ CI (`.github/workflows/ci.yml`) runs the same checks on Python 3.11 and 3.13.
   `max_eval_group_fraction` (default 25%) of the target test/validation size to the training
   side. Test and validation metrics then do not cover those rows. This is recorded in the run
   record and stated in the report. `duplicate_groups` is not supported with temporal splits.
-- joblib artifacts are pickles. Only load models from a workspace you trust (the SHA-256 is
-  checked before loading).
+- joblib artifacts are pickles. Only load models from a workspace you trust. The stored
+  SHA-256 detects accidental corruption, not tampering (see Model persistence).
+- The API has no authentication and is for local use only (see Running the API).

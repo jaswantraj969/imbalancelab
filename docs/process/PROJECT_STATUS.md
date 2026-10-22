@@ -19,6 +19,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | T-R1 | Supervisor review fixes (H1, H2, M1–M5, L1, L2) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R1) |
 | T-R2 | Bootstrap CIs, evaluation coverage, cluster analysis, disclosures, CI | done (M4 completed in T-R3) | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R2) |
 | T-R3 | GitHub CI, calibration disclosure, paired bootstrap, repo tidy | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R3) |
+| T-R5 | Release fixes: test-scoring history, documentation accuracy | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R5) |
 
 ## Known issues
 
@@ -60,9 +61,14 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 - **D8:** the temporal `gap` is counted in *distinct time values*, not rows, so tied timestamps
   never straddle a boundary. Temporal CV forces `n_repeats=1` (it is deterministic) and records
   an info warning instead of failing.
-- **D9:** the group holdout takes the first fold of `StratifiedGroupKFold` with
-  `n_splits = round(1/test_size)`, so the test set is roughly stratified and group-disjoint. The
-  test fraction is therefore approximate.
+- **D9:** the group-aware holdout (declared groups and/or `duplicate_groups`) takes the first
+  fold of `StratifiedGroupKFold` over the **eligible** rows, i.e. after oversized groups have
+  been pinned to training (D28). The number of folds is
+  `n_folds = max(2, round(n_eligible_rows / (test_size × n_rows)))`, so the test set targets
+  `test_size` of *all* rows. It is roughly stratified and group-disjoint, so the test fraction
+  is approximate, and the holdout warns on size, prevalence and dominant-group deviations.
+  *History:* until T-R1 (D28) the fold count was `n_splits = round(1/test_size)` over all rows,
+  with no pinning.
 - **D10:** the sampler runs after preprocessing, because SMOTE needs complete numeric input.
   One-hot uses `max_categories=50` to keep dense output bounded, with `handle_unknown="ignore"`
   as specified.
@@ -168,7 +174,18 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 - **D35 (T-R3 L2):** IMPLEMENTATION_PLAN, PROJECT_STATUS, REVIEW_PACKET and FINAL_REPORT moved to
   `docs/process/`. `scripts/check_links.py` verifies every relative Markdown link. Historical
   entries in REVIEW_PACKET still mention the old root-level paths; they are verbatim logs.
+- **D36 (T-R5 M1):** a "test scoring" is exactly one `final_evaluation` event in
+  `final_evaluation_log.jsonl`. Forced re-evaluations are listed with time, model and reason.
+  Model persistence and the bootstrap/coverage amendments are listed separately as "no test
+  scoring" and never counted. The report shows the history in section 9 and adds a WARNING (and
+  a limitations line) when the count is > 1. `GET /runs/{id}` returns `test_scoring_history`, and
+  the Streamlit final-evaluation page shows the count. The count is per run; test-set reuse
+  *across* runs of the case study is documented in its Protocol history.
+- **D37 (T-R5):** `scripts/run_case_study.py --reports-only` regenerates reports and docs from the
+  committed runs' stored records without amending or scoring anything. It was used in T-R5, and
+  the hashes of the predictions, `summary.json`, `final_evaluation.json` and `run.json` were
+  verified unchanged.
 
 ## Last updated
 
-2026-10-23 — T-R3 (Implementation Engineer). Awaiting supervisor verification. Nothing to resume.
+2026-10-23 — T-R5 (Implementation Engineer). Core code verified by supervisor at 0e9574e; T-R5 release fixes awaiting review.

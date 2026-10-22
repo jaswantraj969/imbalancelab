@@ -171,6 +171,9 @@ def test_full_run_lifecycle(client, dataset_id, run_id) -> None:
         json={"model": "hgb", "force": True, "reason": "api test"},
     )
     assert forced.status_code == 200 and forced.json()["forced"] is True
+    history = client.get(f"/runs/{run_id}").json()["test_scoring_history"]
+    assert history["n_test_scorings"] == 2 and history["repeated_test_use"] is True
+    assert history["forced_reevaluations"][0]["reason"] == "api test"
 
     html = client.get(f"/runs/{run_id}/report")
     assert html.status_code == 200 and html.headers["content-type"].startswith("text/html")

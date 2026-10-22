@@ -223,6 +223,7 @@ This is a post-hoc re-slice of run (a)'s *stored* test predictions: no refit, no
 - One dataset. Each run has one outer split, so the test numbers are single draws; the bootstrap CIs cover test-sample variation, not variation from re-splitting or re-training. Runs (a) and (b) use different test rows.
 - Test sets are small in positives (52 in (a), 63 in (b)), so the CIs are wide.
 - Run (b) results do not describe the 3329 forced-to-train rows.
+- Thresholds are selected on out-of-fold scores of the fold models and applied to the model refit on all outer-train rows, whose score distribution may differ (notably with SMOTE). Test CIs at the threshold hold the threshold fixed and exclude threshold-selection uncertainty.
 - Fixed small model configs with no hyperparameter search (MVP scope). Probabilities are not calibrated.
 - The features are anonymised numeric measurements, so the cluster could not be reviewed against domain knowledge.
 

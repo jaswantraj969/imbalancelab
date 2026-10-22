@@ -322,3 +322,45 @@ def amend_bootstrap_cis(run_dir: Path, config: BootstrapConfig | None = None) ->
     rec.write_json(run_dir / rec.FINAL_FILE, final)
     _append_log(run_dir, {"event": "bootstrap_cis_added", "at": final["bootstrap"]["computed_at"]})
     return final
+
+
+SCORING_EVENT = "final_evaluation"  # the only log event that scores the test set
+
+
+def scoring_history(record: rec.RunRecord) -> dict[str, Any]:
+    """How often this run's test set was scored, and what else touched the final evaluation.
+
+    Only ``final_evaluation`` log events score the test set. Forced re-evaluations are listed with
+    their reason. Amendments (bootstrap CIs, evaluation coverage, model persistence) are listed
+    separately and are **not** test scorings.
+    """
+    log = record.final_log()
+    scorings = [e for e in log if e.get("event") == SCORING_EVENT]
+    reasons = [e.get("reason") for e in log if e.get("event") == "forced_reevaluation"]
+    forced = [
+        {"at": e["at"], "model": e.get("model"), "reason": e.get("reason")}
+        for e in scorings
+        if e.get("forced")
+    ]
+    for item, reason in zip(forced, reasons, strict=False):
+        item["reason"] = item["reason"] or reason
+    amendments: list[dict[str, Any]] = []
+    for e in log:
+        if e.get("event") == "model_persisted":
+            amendments.append({"at": e["at"], "what": f"model persisted ({e.get('model_id')})"})
+    for source, items in (
+        ("final_evaluation.json", (record.final_evaluation or {}).get("amendments", [])),
+        ("run.json", record.run.get("amendments", [])),
+    ):
+        amendments += [{"at": a["at"], "what": f"{a['what']} [{source}]"} for a in items]
+    amendments.sort(key=lambda a: a["at"])
+    return {
+        "n_test_scorings": len(scorings),
+        "scorings": [
+            {"at": e["at"], "model": e.get("model"), "forced": bool(e.get("forced"))}
+            for e in scorings
+        ],
+        "forced_reevaluations": forced,
+        "amendments_no_test_scoring": amendments,
+        "repeated_test_use": len(scorings) > 1,
+    }

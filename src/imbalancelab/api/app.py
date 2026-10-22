@@ -1,5 +1,8 @@
 """FastAPI application. Handlers validate input and call :mod:`imbalancelab.workflow` only.
 
+No authentication: local use only. Run ``uvicorn imbalancelab.api.app:app --host 127.0.0.1``
+and do not expose the API to a network.
+
 Execution is synchronous for the MVP: ``POST /runs`` and ``POST /runs/{id}/final-evaluation``
 block until the work finishes. FastAPI runs these ``def`` handlers in a worker thread, so
 other requests are still served meanwhile.

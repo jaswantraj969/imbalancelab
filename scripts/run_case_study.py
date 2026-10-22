@@ -395,6 +395,14 @@ def amend_protocol(ws: workflow.Workspace, label: str) -> RunRecord:
     return record
 
 
+def load_protocol(ws: workflow.Workspace, label: str) -> RunRecord:
+    """The workspace run behind the committed export ``label``, unchanged (reports only)."""
+    committed = json.loads((DOCS / "case_study" / label / "run.json").read_text())
+    record = RunRecord(ws.run_dir(committed["run_id"]))
+    print(f"[{label}] loaded {committed['run_id']} (no amendment, no scoring)")
+    return record
+
+
 def finish(
     ws: workflow.Workspace, label: str, record: RunRecord
 ) -> tuple[dict, dict, LoadedDataset]:
@@ -873,6 +881,10 @@ def build_case_study(
             f"- Test sets are small in positives ({t_a['n_positive']} in (a), "
             f"{t_b['n_positive']} in (b)), so the CIs are wide.",
             f"- Run (b) results do not describe the {cov_b['n_rows']} forced-to-train rows.",
+            "- Thresholds are selected on out-of-fold scores of the fold models and applied to "
+            "the model refit on all outer-train rows, whose score distribution may differ "
+            "(notably with SMOTE). Test CIs at the threshold hold the threshold fixed and "
+            "exclude threshold-selection uncertainty.",
             "- Fixed small model configs with no hyperparameter search (MVP scope). Probabilities "
             "are not calibrated.",
             "- The features are anonymised numeric measurements, so the cluster could not be "
@@ -921,6 +933,11 @@ def main() -> int:
         action="store_true",
         help="amend the committed runs (coverage + bootstrap CIs) without scoring test sets",
     )
+    parser.add_argument(
+        "--reports-only",
+        action="store_true",
+        help="regenerate reports and docs from the committed runs' stored records only",
+    )
     args = parser.parse_args()
 
     try:
@@ -935,7 +952,9 @@ def main() -> int:
     ws = workflow.Workspace.at(args.workspace)
     records: dict[str, RunRecord] = {}
     for label, schema in RUNS.items():
-        if args.amend_existing:
+        if args.reports_only:
+            records[label] = load_protocol(ws, label)
+        elif args.amend_existing:
             records[label] = amend_protocol(ws, label)
         else:
             records[label] = run_protocol(ws, csv, label, schema)

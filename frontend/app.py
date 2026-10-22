@@ -209,6 +209,14 @@ def page_final(client: ApiClient) -> None:
     if not run:
         return
     detail = client.get_run(run["run_id"])
+    history = detail.get("test_scoring_history") or {}
+    n_scored = history.get("n_test_scorings", 0)
+    st.metric("Times this run's test set was scored", n_scored)
+    if n_scored > 1:
+        st.warning(
+            f"The test set was scored {n_scored} times; reported test metrics may be "
+            "optimistically biased by repeated test-set use."
+        )
     if detail["final_evaluation"]:
         st.warning(
             "This run already has a final evaluation. Re-evaluating requires force + "

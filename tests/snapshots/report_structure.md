@@ -159,9 +159,17 @@ Test Brier score (hgb): <n> [<n>, <n>] (lower is better). Reliability bins for t
 
 ![Test curve test_roc](figures/test_roc.png)
 
-Final-evaluation log: <n> entry.
+### Test-scoring history
 
-- <time>: final_evaluation
+Test set scored **<n> time** for this run (count of `final_evaluation` events in `final_evaluation_log.jsonl`).
+
+| # | Time | Model | Forced |
+|---|---|---|---|
+| <n> | <time> | hgb | no |
+
+Forced re-evaluations: none.
+
+Amendments: none.
 
 ## <n>. Limitations
 
@@ -170,6 +178,7 @@ Final-evaluation log: <n> entry.
 - Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.
 - Test results are a single evaluation per model; bootstrap CIs reflect test-sample variation only, not model-training variation.
 - Scores are not calibrated (no calibration stage); see the calibration disclosure in section <n>.
+- Thresholds are selected on out-of-fold scores of the fold models and then applied to the model refit on all outer-train rows, whose score distribution may differ (notably with SMOTE). Test CIs at the threshold hold the threshold fixed and do not include threshold-selection uncertainty.
 - Only <n> positive test rows: test metrics have high variance.
 
 ## <n>. Reproducibility

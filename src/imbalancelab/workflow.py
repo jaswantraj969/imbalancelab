@@ -16,7 +16,11 @@ from imbalancelab.config import Settings
 from imbalancelab.data.loader import LoadedDataset, load_dataset
 from imbalancelab.data.schema import DatasetSchema
 from imbalancelab.evaluation.config import ExperimentConfig
-from imbalancelab.evaluation.final import final_evaluate, record_persisted_model
+from imbalancelab.evaluation.final import (
+    final_evaluate,
+    record_persisted_model,
+    scoring_history,
+)
 from imbalancelab.evaluation.runner import run_experiment
 from imbalancelab.evaluation.thresholds import ThresholdStrategy, run_threshold_analysis
 from imbalancelab.evaluation.uncertainty import BootstrapConfig
@@ -207,6 +211,7 @@ def get_run(ws: Workspace, run_id: str) -> dict[str, Any]:
         "summary": record.summary if completed else None,
         "thresholds": record.thresholds,
         "final_evaluation": record.final_evaluation,
+        "test_scoring_history": scoring_history(record),
     }
 
 
