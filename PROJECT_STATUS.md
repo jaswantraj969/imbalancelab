@@ -13,7 +13,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M5 | Threshold analysis (OOF/validation only) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M5) |
 | M6 | Evidence-based audit report | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M6) |
 | M7 | FastAPI endpoints | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M7) |
-| M8 | Streamlit frontend (via API only) | not started | — |
+| M8 | Streamlit frontend (via API only) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M8) |
 | M9 | Model persistence + inference endpoint | not started | — |
 | M10 | Docs + case study from real results | not started | — |
 
@@ -88,7 +88,10 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   logic in routes" requirement is checked by an AST test on `api/app.py` imports.
 - **D21:** the holdout is created at dataset registration (`POST /datasets`, optional
   `holdout` JSON) and stored with the dataset. All runs on that dataset share it.
+- **D22:** frontend tests run a real uvicorn server in a background thread and drive the
+  Streamlit app with `streamlit.testing.v1.AppTest`. This tests the frontend against the real
+  API rather than against mocks.
 
 ## Last updated
 
-2026-10-22 — M7 (Implementation Engineer)
+2026-10-22 — M8 (Implementation Engineer)

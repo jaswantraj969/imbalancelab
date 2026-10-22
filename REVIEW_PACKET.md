@@ -1006,3 +1006,134 @@ TOTAL                                        1910     32    98%
   an upstream warning, and the dev dependency stays `httpx` as specified.
 - `ValueError` from library code maps to 422 (`invalid_request`). A genuine bug raising
   `ValueError` would surface as a 422 instead of a 500.
+
+---
+
+### Task M8 — Streamlit frontend
+
+**Date:** 2026-10-22 · **Milestone:** M8
+
+#### Summary of changes
+- `frontend/api_client.py`: an `ApiClient` built on `requests.Session` with one method per
+  endpoint. `ApiError(status, error, detail)` is raised on HTTP errors. The base URL comes from
+  `IMBALANCELAB_API_URL` (default `http://localhost:8000`).
+- `frontend/app.py`: Streamlit pages, chosen from a sidebar radio, with an API health check in
+  the sidebar:
+  1. **Upload & profile**: schema form, holdout config, upload, then profile metrics, warnings
+     (captioned as heuristic suspicions) and the columns table.
+  2. **Run experiment**: candidate multiselect, folds, repeats and seed, then a synchronous run.
+  3. **Results & thresholds**: CV summary, paired AP comparisons, and a threshold form (all 4
+     strategies).
+  4. **Final evaluation**: limited to models that have a threshold analysis. Warns when a final
+     evaluation already exists, and offers force + reason.
+  5. **Report**: embedded HTML report and download.
+- No `imbalancelab` imports anywhere in `frontend/`.
+- `pyproject.toml`: mypy now also checks `frontend/` (`mypy_path = "frontend"`).
+- `.gitignore`: anchored the M7 patterns to `/data/registered/` and `/models/`. The unanchored
+  `models/` would have ignored `src/imbalancelab/models/`; I found this before any file was
+  lost and verified it with `git check-ignore`.
+
+#### Files changed
+- added: `frontend/app.py`, `frontend/api_client.py`, `tests/test_frontend.py`
+- modified: `frontend/README.md`, `pyproject.toml` (mypy), `.gitignore`, `PROJECT_STATUS.md`,
+  `REVIEW_PACKET.md`
+
+#### Exact commands run
+    git check-ignore -v src/imbalancelab/models/_probe.py   # exit 1 = not ignored (after fix)
+    pytest -q tests/test_frontend.py        # 9 passed, then 10 after adding the UI flow test
+    ruff format . ; ruff check . --fix ; mypy
+    bash scripts/gate.sh                    # output below (173 s wall time, see note)
+    pytest -q --cov=imbalancelab --durations=8   # re-timing: 127 passed in 62.47s
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+48 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 34 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 56%]
+.......................................................                  [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  <project-root>\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                        Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------
+src\imbalancelab\__init__.py                    2      0   100%
+src\imbalancelab\api\__init__.py                0      0   100%
+src\imbalancelab\api\app.py                   110      0   100%
+src\imbalancelab\api\schemas.py                45      0   100%
+src\imbalancelab\config.py                     15      1    93%   27
+src\imbalancelab\data\__init__.py               4      0   100%
+src\imbalancelab\data\errors.py                21      0   100%
+src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                37      0   100%
+src\imbalancelab\evaluation\__init__.py         2      0   100%
+src\imbalancelab\evaluation\config.py          35      0   100%
+src\imbalancelab\evaluation\final.py          102      4    96%   74-75, 102, 160
+src\imbalancelab\evaluation\metrics.py        115      0   100%
+src\imbalancelab\evaluation\runner.py         117      0   100%
+src\imbalancelab\evaluation\thresholds.py     138      0   100%
+src\imbalancelab\models\__init__.py             2      0   100%
+src\imbalancelab\models\registry.py            18      0   100%
+src\imbalancelab\pipelines\__init__.py          2      0   100%
+src\imbalancelab\pipelines\builder.py          66      0   100%
+src\imbalancelab\profiling\__init__.py          3      0   100%
+src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py          9      0   100%
+src\imbalancelab\reporting\__init__.py          2      0   100%
+src\imbalancelab\reporting\figures.py          44      1    98%   28
+src\imbalancelab\reporting\render.py           82      0   100%
+src\imbalancelab\reporting\report.py          163      7    96%   59, 125, 172, 202, 245, 440, 442
+src\imbalancelab\splitting\__init__.py          3      0   100%
+src\imbalancelab\splitting\duplicates.py       24      0   100%
+src\imbalancelab\splitting\splits.py          195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py           2      0   100%
+src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                  120      5    96%   59-60, 87, 132, 220
+-------------------------------------------------------------------------
+TOTAL                                        1910     32    98%
+127 passed, 1 warning in 173.07s (0:02:53)
+[exit 0]
+```
+
+#### Tests (tests/test_frontend.py)
+- `test_frontend_never_imports_imbalancelab`: AST scan of every `frontend/*.py` for `import`,
+  `from … import` and `__import__` of `imbalancelab`.
+- A live uvicorn server on a free port, with a temporary workspace, started in a thread.
+- `test_api_client_round_trip`: every client method against the live API, including mapping a
+  404 to `ApiError`.
+- `test_every_page_renders_against_live_api[5 pages]`: Streamlit `AppTest`. Each page renders
+  with no exception and no error element.
+- `test_threshold_then_final_evaluation_through_ui`: submits the threshold form
+  (`target_recall`), then clicks final evaluation. The test verifies through the API that the
+  final evaluation used that strategy, and that a second click shows the 409 refusal.
+- `test_app_reports_unreachable_api`: a graceful sidebar error, with no exception.
+
+#### Invariant re-check
+- The UI cannot bypass the library's guards. It can only call the API, so threshold provenance
+  and the one-shot test scoring are enforced server-side (the 409 is shown in the UI test).
+
+#### Deviations from instructions
+- None.
+
+#### Known limitations
+- `st.file_uploader` is not exercised by `AppTest`. The upload path is covered by
+  `test_api_client_round_trip` (same client method).
+- The gate run above took 173 s of wall time. A re-run of the identical suite took 62 s (the
+  durations show no single slow test), which points to transient machine load. Recorded for
+  transparency.

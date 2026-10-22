@@ -14,5 +14,5 @@ data/raw/*
 runs/*
 !runs/.gitkeep
 *.joblib
-data/registered/
-models/
+/data/registered/
+/models/
