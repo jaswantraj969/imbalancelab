@@ -148,21 +148,55 @@ Model **hgb+smote** refit on 9219 outer-train rows and scored once on 1964 test 
 
 | Model | Threshold | AP | ROC AUC | Brier ↓ | Precision | Recall | F-beta | MCC | TP/FP/FN/TN |
 |---|---|---|---|---|---|---|---|---|---|
-| hgb+smote | 0.6036 | 0.8228 [0.7383, 0.8977] | 0.9589 [0.9180, 0.9889] | 0.0181 | 0.6049 [0.5238, 0.7000] | 0.7778 [0.6667, 0.8730] | 0.7357 [0.6476, 0.8187] | 0.6743 [0.5930, 0.7531] | 49/32/14/1869 |
-| dummy_prior | 0.0198 | 0.0321 [0.0321, 0.0321] | 0.5000 [0.5000, 0.5000] | 0.0312 | 0.0321 [0.0321, 0.0321] | 1.0000 [1.0000, 1.0000] | 0.1421 [0.1421, 0.1421] | undefined [CI undefined] | 63/1901/0/0 |
-| logreg_balanced | 0.8605 | 0.5023 [0.3926, 0.6442] | 0.9225 [0.8764, 0.9611] | 0.1182 | 0.4419 [0.3608, 0.5334] | 0.6032 [0.4762, 0.7147] | 0.5621 [0.4559, 0.6595] | 0.4977 [0.4047, 0.5920] | 38/48/25/1853 |
+| hgb+smote | 0.6036 | 0.8228 [0.7383, 0.8977] | 0.9589 [0.9180, 0.9889] | 0.0181 [0.0135, 0.0231] | 0.6049 [0.5238, 0.7000] | 0.7778 [0.6667, 0.8730] | 0.7357 [0.6476, 0.8187] | 0.6743 [0.5930, 0.7531] | 49/32/14/1869 |
+| dummy_prior | 0.0198 | 0.0321 [0.0321, 0.0321] | 0.5000 [0.5000, 0.5000] | 0.0312 [0.0312, 0.0312] | 0.0321 [0.0321, 0.0321] | 1.0000 [1.0000, 1.0000] | 0.1421 [0.1421, 0.1421] | undefined [CI undefined] | 63/1901/0/0 |
+| logreg_balanced | 0.8605 | 0.5023 [0.3926, 0.6442] | 0.9225 [0.8764, 0.9611] | 0.1182 [0.1101, 0.1267] | 0.4419 [0.3608, 0.5334] | 0.6032 [0.4762, 0.7147] | 0.5621 [0.4559, 0.6595] | 0.4977 [0.4047, 0.5920] | 38/48/25/1853 |
 
 Brackets: 95% CI from a stratified bootstrap (positives and negatives resampled separately), percentile interval, 2000 resamples, seed 42, computed from the stored test predictions. Undefined resamples are counted in the bracket; Brier has no CI.
+
+### Paired bootstrap of test differences (selected model − baseline)
+
+| Candidate | Baseline | Metric | Difference [95% CI] | Win fraction | Undefined resamples |
+|---|---|---|---|---|---|
+| hgb+smote | dummy_prior | average_precision | +0.7907 [+0.7062, +0.8657] | 1.000 | 0 |
+| hgb+smote | dummy_prior | roc_auc | +0.4589 [+0.4180, +0.4889] | 1.000 | 0 |
+| hgb+smote | logreg_balanced | average_precision | +0.3205 [+0.2078, +0.4115] | 1.000 | 0 |
+| hgb+smote | logreg_balanced | roc_auc | +0.0364 [-0.0025, +0.0791] | 0.962 | 0 |
+
+Both models are scored on the same resampled test rows, so the interval is for the difference itself. Win fraction is the share of resamples where the selected model is strictly better. This is descriptive and is not a significance test.
+
+### Calibration (disclosure only; no calibration stage)
+
+- **Scores from models trained with a resampler (`hgb+random_under`, `hgb+smote`) are ranking scores, NOT calibrated probabilities. Resampling changes the class balance seen during training, so these scores do not estimate the probability of the positive class. Do not interpret them as risk.**
+- **Class-weighted models (`logreg_balanced`, `random_forest`) also shift scores away from the training prevalence.**
+
+Test Brier score (hgb+smote): 0.0181 [0.0135, 0.0231] (lower is better). Reliability bins for the selected model (quantile bins of its test scores; n per bin shown):
+
+| Bin | Score range | n | Positives | Mean score | Observed rate |
+|---|---|---|---|---|---|
+| 1 | [0.0000, 0.0000] | 197 | 1 | 0.0000 | 0.0051 |
+| 2 | [0.0000, 0.0001] | 196 | 0 | 0.0000 | 0.0000 |
+| 3 | [0.0001, 0.0001] | 196 | 0 | 0.0001 | 0.0000 |
+| 4 | [0.0001, 0.0002] | 197 | 1 | 0.0002 | 0.0051 |
+| 5 | [0.0002, 0.0003] | 196 | 0 | 0.0003 | 0.0000 |
+| 6 | [0.0003, 0.0006] | 196 | 0 | 0.0004 | 0.0000 |
+| 7 | [0.0006, 0.0011] | 197 | 1 | 0.0008 | 0.0051 |
+| 8 | [0.0011, 0.0034] | 196 | 1 | 0.0020 | 0.0051 |
+| 9 | [0.0034, 0.0229] | 196 | 1 | 0.0082 | 0.0051 |
+| 10 | [0.0229, 1.0000] | 197 | 58 | 0.4565 | 0.2944 |
+
+![Test reliability curve](figures/test_reliability.png)
 
 ![Test curve test_pr](figures/test_pr.png)
 
 ![Test curve test_roc](figures/test_roc.png)
 
-Final-evaluation log: 3 entries.
+Final-evaluation log: 4 entries.
 
 - 2026-10-22T09:21:15.405438Z: final_evaluation
 - 2026-10-22T09:21:15.533441Z: model_persisted
 - 2026-10-22T10:04:30.637958Z: bootstrap_cis_added
+- 2026-10-22T14:41:27.728707Z: bootstrap_cis_added
 
 ## 10. Limitations
 
@@ -170,6 +204,7 @@ Final-evaluation log: 3 entries.
 - Profile warnings are heuristics; a flagged column is not proven leakage, and an unflagged column is not proven safe.
 - Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.
 - Test results are a single evaluation per model; bootstrap CIs reflect test-sample variation only, not model-training variation.
+- Scores are not calibrated (no calibration stage); see the calibration disclosure in section 9.
 - Split warnings were raised (section 4); affected scores may be optimistic.
 - 3329 rows in oversized groups were never evaluated (section 5).
 

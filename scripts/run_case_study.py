@@ -38,6 +38,7 @@ import pandas as pd
 import imbalancelab.workflow as workflow
 from imbalancelab.data.loader import LoadedDataset, load_dataset
 from imbalancelab.data.schema import DatasetSchema
+from imbalancelab.evaluation.calibration import calibration_disclosure
 from imbalancelab.evaluation.config import ExperimentConfig
 from imbalancelab.evaluation.final import amend_bootstrap_cis
 from imbalancelab.evaluation.metrics import average_precision, roc_auc
@@ -120,7 +121,8 @@ RUNS = {
 }
 EXPORT_SKIP_LARGER_THAN = 1_000_000  # bytes; larger files are listed with their SHA-256 only
 
-# Execution history of this case study, from the command logs in REVIEW_PACKET.md (M10, T-R1).
+# Execution history of this case study, from the command logs in
+# docs/process/REVIEW_PACKET.md (M10, T-R1).
 # Facts only; used verbatim in docs/case_study.md "Protocol history".
 PROTOCOL_HISTORY_ROWS = [
     (
@@ -292,7 +294,9 @@ def duplicate_sensitivity(record: RunRecord, dataset: LoadedDataset) -> dict[str
     }
 
 
-def cluster_analysis(record: RunRecord, dataset: LoadedDataset, models_dir: Path) -> str:
+def cluster_analysis(
+    record: RunRecord, dataset: LoadedDataset, models_dir: Path
+) -> tuple[str, dict[str, Any]]:
     """Facts about the largest duplicate cluster and the selected model's prediction for it."""
     feats = dataset.feature_columns
     hashes = feature_row_hashes(dataset.frame, feats)
@@ -326,10 +330,17 @@ def cluster_analysis(record: RunRecord, dataset: LoadedDataset, models_dir: Path
             f"{int(np.sum(column < v))}"
         )
     lines += [
-        f"features equal to their column minimum: {n_min} of {len(feats)}",
+        f"features equal to their column minimum: {n_min} of {len(feats)}"
+        + (" (consistent with a floor or zero-measurement value)" if n_min == len(feats) else ""),
         f"features equal to 0: {n_zero} of {len(feats)}",
         f"distinct values within the vector: {len(set(np.round(vector.to_numpy(dtype=float), 8)))}",
     ]
+    facts: dict[str, Any] = {
+        "n_rows": int(rows.size),
+        "n_positive": n_pos,
+        "prevalence": n_pos / rows.size,
+        "in_test": len(set(rows.tolist()) & set(record.holdout["test_idx"])),
+    }
     final = record.final_evaluation or {}
     model_id = final.get("persisted_model_id")
     if model_id:
@@ -345,7 +356,13 @@ def cluster_analysis(record: RunRecord, dataset: LoadedDataset, models_dir: Path
             f"{int(preds['label'].iloc[0])}   "
             f"(training prevalence of the cluster: {n_pos / rows.size:.6f})",
         ]
-    return "\n".join(lines)
+        facts.update(
+            model=loaded.metadata.model_name,
+            probability=float(p[0]),
+            threshold=float(loaded.metadata.threshold),
+            label=int(preds["label"].iloc[0]),
+        )
+    return "\n".join(lines), facts
 
 
 def run_protocol(ws: workflow.Workspace, csv: Path, label: str, schema: DatasetSchema) -> RunRecord:
@@ -444,6 +461,7 @@ def build_case_study(
     omitted_b: dict[str, Any],
     provenance: dict[str, Any],
     cluster_text: str,
+    cluster: dict[str, Any],
 ) -> str:
     run_a, run_b = rec_a.run, rec_b.run
     sum_a, sum_b = rec_a.summary, rec_b.summary
@@ -490,9 +508,9 @@ def build_case_study(
             f"{t_b['n_rows']} test rows with {t_b['n_positive']} positives (prevalence "
             f"{fmt(t_b['prevalence'])}). On the same test rows:",
             "",
-            "| Model | Test AP [95% CI] | Test ROC AUC [95% CI] | Test rows | Positives | "
-            "Prevalence |",
-            "|---|---|---|---|---|---|",
+            "| Model | Test AP [95% CI] | Test ROC AUC [95% CI] | Test Brier [95% CI] (lower "
+            "is better) | Test rows | Positives | Prevalence |",
+            "|---|---|---|---|---|---|---|",
         ]
     )
     for name in final_b["results"]:
@@ -501,10 +519,45 @@ def build_case_study(
         add(
             [
                 f"| `{name}` | {fmt_ci(t['result'], 'average_precision')} | "
-                f"{fmt_ci(t['result'], 'roc_auc')} | {t['n_rows']} | {t['n_positive']} | "
-                f"{fmt(t['prevalence'])} |"
+                f"{fmt_ci(t['result'], 'roc_auc')} | {fmt_ci(t['result'], 'brier')} | "
+                f"{t['n_rows']} | {t['n_positive']} | {fmt(t['prevalence'])} |"
             ]
         )
+    add(
+        [
+            "",
+            f"Paired bootstrap of the test difference (`{best_b}` − baseline; same resampled rows "
+            "for both models):",
+            "",
+            "| Baseline | Metric | Difference [95% CI] | Win fraction |",
+            "|---|---|---|---|",
+        ]
+    )
+    for d in final_b.get("paired_bootstrap", []):
+        add(
+            [
+                f"| `{d['baseline']}` | {d['metric']} | {d['point']:+.4f} "
+                f"[{d['lower']:+.4f}, {d['upper']:+.4f}] | {d['win_fraction']:.3f} |"
+            ]
+        )
+    oof_sel = sum_b["models"][best_b]["average_precision"]["mean"]
+    ap_ci = t_b["result"]["ci"]["average_precision"]
+    inside = ap_ci["lower"] <= oof_sel <= ap_ci["upper"]
+    add(
+        [
+            "",
+            f"The OOF selection estimate for `{best_b}` (mean AP {fmt(oof_sel)}, optimistic "
+            "because it was used for selection) "
+            + (
+                f"**lies inside** the test AP 95% CI [{ap_ci['lower']:.4f}, "
+                f"{ap_ci['upper']:.4f}]. The two are consistent. This does **not** show that test "
+                "performance exceeds CV performance."
+                if inside
+                else f"**lies outside** the test AP 95% CI [{ap_ci['lower']:.4f}, "
+                f"{ap_ci['upper']:.4f}]."
+            ),
+        ]
+    )
     add(
         [
             "",
@@ -577,7 +630,8 @@ def build_case_study(
             "",
             "### Protocol history",
             "",
-            "Every execution of this case study, from the command logs in `REVIEW_PACKET.md`:",
+            "Every execution of this case study, from the command logs in "
+            "[`docs/process/REVIEW_PACKET.md`](process/REVIEW_PACKET.md):",
             "",
             PROTOCOL_HISTORY.rstrip(),
             "",
@@ -676,7 +730,26 @@ def build_case_study(
             f"| {fmt_ci(r, 'precision')} | {fmt_ci(r, 'recall')} | {fmt_ci(r, 'fbeta')} | "
             f"{fmt_ci(r, 'mcc')} | {c['tp']} | {c['fp']} | {c['fn']} | {c['tn']} |",
             "",
+            f"**Recall scope:** the {cluster['n_rows']} forced-to-train rows all have the same "
+            f"score, {cluster.get('probability', float('nan')):.4f}, which is below the stored "
+            f"threshold {cluster.get('threshold', float('nan')):.4f}, so all of them are "
+            f"classified **negative** (label {cluster.get('label')}). Their "
+            f"{cluster['n_positive']} positives would therefore be missed. The test recall above "
+            "describes only the evaluated rows.",
+            "",
             ci_note,
+            "",
+            "## Calibration (disclosure only; no calibration stage)",
+            "",
+            *[f"- **{n}**" for n in calibration_disclosure(run_b.get("model_specs") or [])],
+            f"- Test Brier score of `{best_b}`: {fmt_ci(r, 'brier')}. The reliability curve "
+            "(quantile bins, n per bin) is in the run (b) audit report, section 9.",
+            f"- **Evidence from the cluster:** for the {cluster['n_rows']}-row cluster, "
+            f"`{cluster.get('model')}` outputs {cluster.get('probability', float('nan')):.4f}, "
+            f"while the cluster's observed positive rate is {cluster['prevalence']:.4f} "
+            f"({cluster['n_positive']}/{cluster['n_rows']}, in training rows). That is "
+            f"{cluster.get('probability', float('nan')) / cluster['prevalence']:.0f}× higher, so "
+            "this score does not estimate the probability of the positive class.",
             "",
             "## Evaluation coverage (run b)",
             "",
@@ -876,7 +949,9 @@ def main() -> int:
             + "\n"
         )
     rec_b = records["b_duplicate_groups"]
-    cluster_text = cluster_analysis(rec_b, finished["b_duplicate_groups"][2], ws.models_dir)
+    cluster_text, cluster = cluster_analysis(
+        rec_b, finished["b_duplicate_groups"][2], ws.models_dir
+    )
     print(cluster_text)
     doc = build_case_study(
         records["a_stratified"],
@@ -886,6 +961,7 @@ def main() -> int:
         finished["b_duplicate_groups"][0],
         provenance,
         cluster_text,
+        cluster,
     )
     (DOCS / "case_study.md").write_text(doc, encoding="utf-8", newline="\n")
     print(

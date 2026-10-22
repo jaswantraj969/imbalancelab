@@ -9,6 +9,7 @@ annotated-types==0.8.0
 anyio==4.15.1
     # via
     #   httpx
+    #   httpx2
     #   starlette
     #   streamlit
 attrs==26.1.0
@@ -45,15 +46,23 @@ fonttools==4.67.0
 h11==0.16.0
     # via
     #   httpcore
+    #   httpcore2
     #   uvicorn
 httpcore==1.0.9
     # via httpx
+httpcore2==2.16.0 ; sys_platform != 'emscripten'
+    # via httpx2
 httpx==0.28.1
     # via imbalancelab (pyproject.toml)
+httpx2==2.16.0
+    # via imbalancelab (pyproject.toml)
+httpx2-jsfetch==1.0 ; python_full_version >= '3.12' and sys_platform == 'emscripten'
+    # via httpx2
 idna==3.20
     # via
     #   anyio
     #   httpx
+    #   httpx2
     #   requests
 imbalanced-learn==0.14.2
     # via imbalancelab (pyproject.toml)
@@ -214,11 +223,16 @@ threadpoolctl==3.7.0
     #   scikit-learn
 tomli==2.5.0 ; python_full_version <= '3.11'
     # via coverage
+truststore==0.10.5 ; sys_platform != 'emscripten'
+    # via
+    #   httpcore2
+    #   httpx2
 typing-extensions==4.16.0
     # via
     #   altair
     #   anyio
     #   fastapi
+    #   httpx2
     #   mypy
     #   opentelemetry-api
     #   pydantic

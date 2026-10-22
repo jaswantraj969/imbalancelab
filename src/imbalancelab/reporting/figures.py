@@ -73,3 +73,37 @@ def first_repeat(oof: pd.DataFrame) -> pd.DataFrame:
     """OOF predictions of the first CV repeat (one prediction per outer-train row)."""
     first = int(np.min(oof["repeat"]))
     return oof[oof["repeat"] == first]
+
+
+def plot_reliability(calibration: dict[str, dict], out_dir: Path, stem: str) -> Path | None:
+    """Reliability (calibration) curve per model from stored quantile bins; marker size ~ n."""
+    curves = {
+        m: c["reliability"]["bins"] for m, c in calibration.items() if c["reliability"]["bins"]
+    }
+    if not curves:
+        return None
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig, ax = plt.subplots(figsize=(6, 4.5), dpi=110)
+    top = 0.0
+    for model, bins in curves.items():
+        x = [b["mean_score"] for b in bins]
+        y = [b["observed_rate"] for b in bins]
+        top = max(top, *x, *y)
+        ax.plot(x, y, marker="o", linewidth=1.2, label=str(model))
+    top = min(1.0, top * 1.05 + 1e-3)
+    ax.plot(
+        [0, top], [0, top], color="grey", linestyle=":", linewidth=1, label="perfect calibration"
+    )
+    ax.set(
+        xlabel="Mean score in bin",
+        ylabel="Observed positive rate in bin",
+        title="Reliability (test set, quantile bins)",
+        xlim=(0, top),
+        ylim=(0, top),
+    )
+    ax.legend(fontsize=8, loc="upper left")
+    fig.tight_layout()
+    path = out_dir / f"{stem}_reliability.png"
+    fig.savefig(path)
+    plt.close(fig)
+    return path

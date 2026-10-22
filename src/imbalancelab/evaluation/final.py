@@ -15,11 +15,17 @@ import numpy as np
 import pandas as pd
 
 from imbalancelab.data.loader import LoadedDataset
+from imbalancelab.evaluation.calibration import reliability_curve
 from imbalancelab.evaluation.config import CandidateSpec, ExperimentConfig
 from imbalancelab.evaluation.metrics import PRIMARY_METRIC, compute_metrics
 from imbalancelab.evaluation.runner import make_candidate_pipeline, positive_scores
 from imbalancelab.evaluation.thresholds import ThresholdStrategy, run_threshold_analysis
-from imbalancelab.evaluation.uncertainty import BootstrapConfig, bootstrap_cis
+from imbalancelab.evaluation.uncertainty import (
+    PAIRED_METRICS,
+    BootstrapConfig,
+    bootstrap_cis,
+    paired_bootstrap_difference,
+)
 from imbalancelab.pipelines.builder import FeatureSpec
 from imbalancelab.splitting.splits import Holdout, HoldoutMismatchError, check_holdout
 from imbalancelab.tracking import records as rec
@@ -250,6 +256,35 @@ def add_bootstrap_cis(
             config=config,
         )
         result["ci"] = {k: v.model_dump(mode="json") for k, v in cis.items()}
+        result["calibration"] = {
+            "brier": result["metrics"]["brier"]["value"],
+            "brier_ci": result["ci"]["brier"],
+            "reliability": reliability_curve(
+                g["y_true"].to_numpy(dtype=int), g["y_score"].to_numpy(dtype=float), n_bins=10
+            ),
+        }
+    selected = record["model"]
+    sel = predictions[predictions["model"] == selected]
+    paired = []
+    for base in record["results"]:
+        if base == selected:
+            continue
+        other = predictions[predictions["model"] == base]
+        if not (other["row_index"].to_numpy() == sel["row_index"].to_numpy()).all():
+            raise FinalEvaluationError("test predictions of models are not aligned by row")
+        for metric in PAIRED_METRICS:
+            paired.append(
+                paired_bootstrap_difference(
+                    sel["y_true"].to_numpy(dtype=int),
+                    sel["y_score"].to_numpy(dtype=float),
+                    other["y_score"].to_numpy(dtype=float),
+                    metric,
+                    candidate=selected,
+                    baseline=base,
+                    config=config,
+                ).model_dump(mode="json")
+            )
+    record["paired_bootstrap"] = paired
     record["bootstrap"] = {
         "method": "stratified bootstrap (positives and negatives resampled separately), "
         "percentile interval",
@@ -280,8 +315,8 @@ def amend_bootstrap_cis(run_dir: Path, config: BootstrapConfig | None = None) ->
     final.setdefault("amendments", []).append(
         {
             "at": final["bootstrap"]["computed_at"],
-            "what": "added bootstrap CIs computed from stored final_predictions.parquet "
-            "(no refit, no re-scoring)",
+            "what": "added bootstrap CIs (incl. Brier), reliability curves and paired bootstrap "
+            "differences computed from stored final_predictions.parquet (no refit, no re-scoring)",
         }
     )
     rec.write_json(run_dir / rec.FINAL_FILE, final)

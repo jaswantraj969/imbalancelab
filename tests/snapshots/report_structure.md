@@ -116,11 +116,44 @@ Model **hgb** refit on <n> outer-train rows and scored once on <n> test rows (<n
 
 | Model | Threshold | AP | ROC AUC | Brier ↓ | Precision | Recall | F-beta | MCC | TP/FP/FN/TN |
 |---|---|---|---|---|---|---|---|---|---|
-| hgb | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n>/<n>/<n>/<n> |
-| dummy_prior | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | undefined [CI undefined] | <n>/<n>/<n>/<n> |
-| logreg_balanced | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n>/<n>/<n>/<n> |
+| hgb | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n>/<n>/<n>/<n> |
+| dummy_prior | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | undefined [CI undefined] | <n>/<n>/<n>/<n> |
+| logreg_balanced | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n>/<n>/<n>/<n> |
 
 Brackets: <n>% CI from a stratified bootstrap (positives and negatives resampled separately), percentile interval, <n> resamples, seed <n>, computed from the stored test predictions. Undefined resamples are counted in the bracket; Brier has no CI.
+
+### Paired bootstrap of test differences (selected model − baseline)
+
+| Candidate | Baseline | Metric | Difference [<n>% CI] | Win fraction | Undefined resamples |
+|---|---|---|---|---|---|
+| hgb | dummy_prior | average_precision | <n> [<n>, <n>] | <n> | <n> |
+| hgb | dummy_prior | roc_auc | <n> [<n>, <n>] | <n> | <n> |
+| hgb | logreg_balanced | average_precision | <n> [<n>, <n>] | <n> | <n> |
+| hgb | logreg_balanced | roc_auc | <n> [<n>, <n>] | <n> | <n> |
+
+Both models are scored on the same resampled test rows, so the interval is for the difference itself. Win fraction is the share of resamples where the selected model is strictly better. This is descriptive and is not a significance test.
+
+### Calibration (disclosure only; no calibration stage)
+
+- **No resampler was used in this run. Calibration was not assessed beyond the Brier score and the reliability curve; no calibration stage was applied.**
+- **Class-weighted models (`logreg_balanced`) also shift scores away from the training prevalence.**
+
+Test Brier score (hgb): <n> [<n>, <n>] (lower is better). Reliability bins for the selected model (quantile bins of its test scores; n per bin shown):
+
+| Bin | Score range | n | Positives | Mean score | Observed rate |
+|---|---|---|---|---|---|
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+| <n> | [<n>, <n>] | <n> | <n> | <n> | <n> |
+
+![Test reliability curve](figures/test_reliability.png)
 
 ![Test curve test_pr](figures/test_pr.png)
 
@@ -136,6 +169,7 @@ Final-evaluation log: <n> entry.
 - Profile warnings are heuristics; a flagged column is not proven leakage, and an unflagged column is not proven safe.
 - Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.
 - Test results are a single evaluation per model; bootstrap CIs reflect test-sample variation only, not model-training variation.
+- Scores are not calibrated (no calibration stage); see the calibration disclosure in section <n>.
 - Only <n> positive test rows: test metrics have high variance.
 
 ## <n>. Reproducibility

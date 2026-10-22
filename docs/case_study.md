@@ -8,11 +8,22 @@
 
 The selected model **`hgb+smote`** scored **test AP 0.8228 [0.7383, 0.8977]** on a single evaluation of 1964 test rows with 63 positives (prevalence 0.0321). On the same test rows:
 
-| Model | Test AP [95% CI] | Test ROC AUC [95% CI] | Test rows | Positives | Prevalence |
-|---|---|---|---|---|---|
-| `hgb+smote` | 0.8228 [0.7383, 0.8977] | 0.9589 [0.9180, 0.9889] | 1964 | 63 | 0.0321 |
-| `dummy_prior` | 0.0321 [0.0321, 0.0321] | 0.5000 [0.5000, 0.5000] | 1964 | 63 | 0.0321 |
-| `logreg_balanced` | 0.5023 [0.3926, 0.6442] | 0.9225 [0.8764, 0.9611] | 1964 | 63 | 0.0321 |
+| Model | Test AP [95% CI] | Test ROC AUC [95% CI] | Test Brier [95% CI] (lower is better) | Test rows | Positives | Prevalence |
+|---|---|---|---|---|---|---|
+| `hgb+smote` | 0.8228 [0.7383, 0.8977] | 0.9589 [0.9180, 0.9889] | 0.0181 [0.0135, 0.0231] | 1964 | 63 | 0.0321 |
+| `dummy_prior` | 0.0321 [0.0321, 0.0321] | 0.5000 [0.5000, 0.5000] | 0.0312 [0.0312, 0.0312] | 1964 | 63 | 0.0321 |
+| `logreg_balanced` | 0.5023 [0.3926, 0.6442] | 0.9225 [0.8764, 0.9611] | 0.1182 [0.1101, 0.1267] | 1964 | 63 | 0.0321 |
+
+Paired bootstrap of the test difference (`hgb+smote` − baseline; same resampled rows for both models):
+
+| Baseline | Metric | Difference [95% CI] | Win fraction |
+|---|---|---|---|
+| `dummy_prior` | average_precision | +0.7907 [+0.7062, +0.8657] | 1.000 |
+| `dummy_prior` | roc_auc | +0.4589 [+0.4180, +0.4889] | 1.000 |
+| `logreg_balanced` | average_precision | +0.3205 [+0.2078, +0.4115] | 1.000 |
+| `logreg_balanced` | roc_auc | +0.0364 [-0.0025, +0.0791] | 0.962 |
+
+The OOF selection estimate for `hgb+smote` (mean AP 0.7515, optimistic because it was used for selection) **lies inside** the test AP 95% CI [0.7383, 0.8977]. The two are consistent. This does **not** show that test performance exceeds CV performance.
 
 Brackets are 95% CIs from a stratified bootstrap of the test rows (2000 resamples, seed 42; positives and negatives resampled separately). They reflect test-sample variation only.
 
@@ -52,7 +63,7 @@ Both runs use the same protocol. The only difference is the split.
 
 ### Protocol history
 
-Every execution of this case study, from the command logs in `REVIEW_PACKET.md`:
+Every execution of this case study, from the command logs in [`docs/process/REVIEW_PACKET.md`](process/REVIEW_PACKET.md):
 
 | # | When | Run (a) stratified | Run (b) duplicate groups | Test set scored? | Outcome |
 |---|---|---|---|---|---|
@@ -110,7 +121,16 @@ Paired comparisons on identical folds (run b, OOF AP, descriptive):
 |---|---|---|---|---|---|---|---|
 | 0.6049 [0.5238, 0.7000] | 0.7778 [0.6667, 0.8730] | 0.7357 [0.6476, 0.8187] | 0.6743 [0.5930, 0.7531] | 49 | 32 | 14 | 1869 |
 
+**Recall scope:** the 3329 forced-to-train rows all have the same score, 0.0889, which is below the stored threshold 0.6036, so all of them are classified **negative** (label 0). Their 7 positives would therefore be missed. The test recall above describes only the evaluated rows.
+
 Brackets are 95% CIs from a stratified bootstrap of the test rows (2000 resamples, seed 42; positives and negatives resampled separately). They reflect test-sample variation only.
+
+## Calibration (disclosure only; no calibration stage)
+
+- **Scores from models trained with a resampler (`hgb+random_under`, `hgb+smote`) are ranking scores, NOT calibrated probabilities. Resampling changes the class balance seen during training, so these scores do not estimate the probability of the positive class. Do not interpret them as risk.**
+- **Class-weighted models (`logreg_balanced`, `random_forest`) also shift scores away from the training prevalence.**
+- Test Brier score of `hgb+smote`: 0.0181 [0.0135, 0.0231]. The reliability curve (quantile bins, n per bin) is in the run (b) audit report, section 9.
+- **Evidence from the cluster:** for the 3329-row cluster, `hgb+smote` outputs 0.0889, while the cluster's observed positive rate is 0.0021 (7/3329, in training rows). That is 42× higher, so this score does not estimate the probability of the positive class.
 
 ## Evaluation coverage (run b)
 
@@ -145,7 +165,7 @@ identical feature vector of all 3329 rows (all rows equal: True):
   feature_3 = -0.85955255   column min -0.85955255, median -0.85955255, max 9.59116400   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
   feature_4 = -0.37786573   column min -0.37786573, median -0.37786573, max 23.61712200   is column min: yes   is column max: no   rows with exactly this value: 8521 (76.20%)   rows below it: 0
   feature_5 = -0.94572324   column min -0.94572324, median -0.94572324, max 1.94902730   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
-features equal to their column minimum: 6 of 6
+features equal to their column minimum: 6 of 6 (consistent with a floor or zero-measurement value)
 features equal to 0: 0 of 6
 distinct values within the vector: 6
 selected model: hgb+smote (persisted model model-20261022T092115Z-819a6e87, refit on outer-train rows only, artifact SHA-256 verified on load)

@@ -82,9 +82,10 @@ def test_report_numbers_trace_to_run_records(write_csv, tmp_path) -> None:
         "oof_roc.png",
         "test_pr.png",
         "test_roc.png",
+        "test_reliability.png",
     }
     html = paths.html.read_text(encoding="utf-8")
-    assert html.count("data:image/png;base64,") == 4
+    assert html.count("data:image/png;base64,") == 5
     assert "<table>" in html and "<script" not in html
 
 

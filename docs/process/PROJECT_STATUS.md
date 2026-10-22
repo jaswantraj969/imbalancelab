@@ -17,18 +17,17 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M9 | Model persistence + inference endpoint | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M9) |
 | M10 | Docs + case study from real results | done (not verified by supervisor; T-R1 fixes applied) | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M10, T-R1) |
 | T-R1 | Supervisor review fixes (H1, H2, M1–M5, L1, L2) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R1) |
-| T-R2 | Bootstrap CIs, evaluation coverage, cluster analysis, disclosures, CI | done except M4 (GitHub CI: blocked, see Known issues) | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R2) |
+| T-R2 | Bootstrap CIs, evaluation coverage, cluster analysis, disclosures, CI | done (M4 completed in T-R3) | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R2) |
+| T-R3 | GitHub CI, calibration disclosure, paired bootstrap, repo tidy | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T-R3) |
 
 ## Known issues
 
 - Plan step "tree -L 3" substituted with `find` (no `tree` binary in Git Bash on this machine); see REVIEW_PACKET.md T0 deviations.
-- **GitHub CI (T-R2 M4) is blocked:** no repository URL was provided (the task text contains the
-  placeholder `<REPO_URL>`), and creating and publishing a repository on the user's account was
-  not authorised. No remote is configured and nothing has been pushed, so GitHub Actions has
-  never run. Local substitute: the full gate passes on Python 3.11.15 (`.venv311`) and 3.13.5.
-  This is not a CI result.
-- Starlette emits a deprecation warning for `httpx` in its TestClient (prefers `httpx2`); the dev
-  dependency is `httpx` as specified.
+- **GitHub CI (resolved in T-R3):** the private repository `jaswantraj969/imbalancelab` was
+  created as authorised, and GitHub Actions runs the gate on Python 3.11 and 3.13. Run URLs and
+  results are in REVIEW_PACKET T-R3 and FINAL_REPORT.
+- (Resolved in T-R3, D34) Starlette's TestClient warned that plain `httpx` is deprecated; `httpx2`
+  is now a dev dependency, and the suite runs with zero warnings.
 - Case-study data (`mammography`) has one cluster of 3329 identical feature rows (7 positive).
   In run (b) it is pinned to training, so the case-study test metrics do not cover it (stated in
   `docs/case_study.md`).
@@ -151,7 +150,25 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   10% of the dataset. Bootstrap: stratified (class counts fixed), percentile interval, 2000
   resamples, seed 42, the same resample indices for all models of a run. It is applied to test
   metrics only.
+- **D32 (T-R3 H1):** calibration is **disclosed, not fixed**, since there is no calibration stage
+  (MVP scope). The final evaluation stores, per model, the test Brier score with a bootstrap CI
+  and a reliability curve with 10 quantile bins (ties can merge bins; n per bin is recorded). The
+  report, README and the API `Prediction.probability` description state that resampler-trained
+  scores are ranking scores, NOT calibrated probabilities, and must not be read as risk. Runs
+  without a resampler state that calibration was not assessed beyond Brier and the curve.
+  Class-weighted models are noted as shifting scores too.
+- **D33 (T-R3 M2):** paired stratified bootstrap of AP and ROC AUC differences (selected model −
+  each baseline). It uses the same resample indices as the per-model CIs (seed 42, 2000
+  resamples) and reports the point, 95% CI, win fraction (strictly better) and tie fraction. It
+  is descriptive, not a significance test.
+- **D34 (T-R3 L1):** the only pytest warning was `StarletteDeprecationWarning: Using httpx with
+  starlette.testclient is deprecated; install httpx2 instead`. Starlette 1.9's TestClient imports
+  `httpx2` first, so `httpx2>=2.16,<3` was added to the dev extras and lock. `httpx` stays as T0
+  specified. Result: 0 warnings.
+- **D35 (T-R3 L2):** IMPLEMENTATION_PLAN, PROJECT_STATUS, REVIEW_PACKET and FINAL_REPORT moved to
+  `docs/process/`. `scripts/check_links.py` verifies every relative Markdown link. Historical
+  entries in REVIEW_PACKET still mention the old root-level paths; they are verbatim logs.
 
 ## Last updated
 
-2026-10-22 — T-R2 (Implementation Engineer). Awaiting supervisor verification. Resume point: T-R2 M4 (push + GitHub Actions) once a repository URL is provided.
+2026-10-23 — T-R3 (Implementation Engineer). Awaiting supervisor verification. Nothing to resume.

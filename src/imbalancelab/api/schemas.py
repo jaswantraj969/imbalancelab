@@ -61,13 +61,25 @@ class PredictRequest(BaseModel):
     records: list[dict[str, Any]] = Field(min_length=1, max_length=10_000)
 
 
+SCORE_DESCRIPTION = (
+    "Model score for the positive class (predict_proba). NOT a calibrated probability: when the "
+    "model was trained with a resampler (e.g. SMOTE, random under/over-sampling) it is a "
+    "ranking score only and must not be interpreted as risk. Without a resampler, calibration "
+    "was not assessed beyond the test Brier score and reliability curve in the audit report."
+)
+
+
 class Prediction(BaseModel):
-    probability: float
-    label: int
+    probability: float = Field(description=SCORE_DESCRIPTION)
+    label: int = Field(description="1 if probability >= the stored threshold, else 0")
 
 
 class PredictResponse(BaseModel):
+    """Predictions at the stored threshold. ``probability`` values are scores, not calibrated
+    risks; see ``score_note``."""
+
     model_id: str
     threshold: float
     predictions: list[Prediction]
+    score_note: str = Field(description="How to read the scores of this particular model")
     warnings: list[str] = Field(default_factory=list)

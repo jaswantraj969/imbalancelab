@@ -223,6 +223,10 @@
     {
       "at": "2026-10-22T10:04:28.879800Z",
       "what": "added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored"
+    },
+    {
+      "at": "2026-10-22T14:41:12.545544Z",
+      "what": "added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored"
     }
   ]
 }

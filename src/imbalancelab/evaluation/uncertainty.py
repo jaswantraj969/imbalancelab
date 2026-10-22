@@ -19,7 +19,8 @@ from scipy.stats import rankdata
 
 from imbalancelab.evaluation.metrics import compute_metrics, validate_inputs
 
-CI_METRICS = ("average_precision", "roc_auc", "precision", "recall", "fbeta", "mcc")
+CI_METRICS = ("average_precision", "roc_auc", "brier", "precision", "recall", "fbeta", "mcc")
+PAIRED_METRICS = ("average_precision", "roc_auc")
 
 
 class BootstrapConfig(BaseModel):
@@ -104,9 +105,13 @@ def resample_metric_values(
 ) -> dict[str, np.ndarray]:
     """Metric value per resample (NaN where undefined) for each metric in ``CI_METRICS``."""
     y, s = y_true[idx], y_score[idx]
+    brier = (
+        np.mean((s - y) ** 2, axis=1) if s.min() >= 0 and s.max() <= 1 else np.full(len(s), np.nan)
+    )
     return {
         "average_precision": _average_precision_rows(y, s),
         "roc_auc": _roc_auc_rows(y, s),
+        "brier": brier,
         **_threshold_rows(y, s, threshold, beta),
     }
 
@@ -143,3 +148,68 @@ def bootstrap_cis(
             n_undefined=int(config.n_resamples - defined.size),
         )
     return out
+
+
+class PairedDifference(BaseModel):
+    """Bootstrap of ``metric(candidate) - metric(baseline)`` on identical resamples."""
+
+    metric: str
+    candidate: str
+    baseline: str
+    point: float | None
+    lower: float | None
+    upper: float | None
+    win_fraction: float | None  # resamples where the candidate is strictly better
+    tie_fraction: float | None
+    confidence: float
+    n_resamples: int
+    n_defined: int
+    n_undefined: int
+    seed: int
+
+
+def paired_bootstrap_difference(
+    y_true: object,
+    score_candidate: object,
+    score_baseline: object,
+    metric: str,
+    candidate: str = "candidate",
+    baseline: str = "baseline",
+    config: BootstrapConfig | None = None,
+) -> PairedDifference:
+    """Paired stratified bootstrap of a ranking-metric difference (candidate - baseline).
+
+    Both models are evaluated on the **same** resample indices, so the interval reflects the
+    variability of the difference itself (correlated errors cancel), not of each metric
+    separately. ``win_fraction`` is the share of defined resamples where the candidate is strictly
+    better (higher, for the supported metrics AP and ROC AUC).
+    """
+    if metric not in PAIRED_METRICS:
+        raise ValueError(f"paired difference supports {PAIRED_METRICS}, got {metric!r}")
+    config = config or BootstrapConfig()
+    yt, sa = validate_inputs(y_true, score_candidate)
+    _, sb = validate_inputs(y_true, score_baseline)
+    idx = stratified_resample_indices(yt, config.n_resamples, config.seed)
+    a = resample_metric_values(yt, sa, idx, threshold=0.5, beta=1.0)[metric]
+    b = resample_metric_values(yt, sb, idx, threshold=0.5, beta=1.0)[metric]
+    diff = a - b
+    defined = diff[~np.isnan(diff)]
+    pa = compute_metrics(yt, sa).value(metric)
+    pb = compute_metrics(yt, sb).value(metric)
+    alpha = (1.0 - config.confidence) / 2.0
+    n = int(defined.size)
+    return PairedDifference(
+        metric=metric,
+        candidate=candidate,
+        baseline=baseline,
+        point=None if pa is None or pb is None else pa - pb,
+        lower=float(np.quantile(defined, alpha)) if n else None,
+        upper=float(np.quantile(defined, 1.0 - alpha)) if n else None,
+        win_fraction=float(np.mean(defined > 0)) if n else None,
+        tie_fraction=float(np.mean(defined == 0)) if n else None,
+        confidence=config.confidence,
+        n_resamples=config.n_resamples,
+        n_defined=n,
+        n_undefined=config.n_resamples - n,
+        seed=config.seed,
+    )

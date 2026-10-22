@@ -25,9 +25,8 @@ record.
   than 10% of rows were never evaluated.
 - **Serving:** persisted models with an integrity check and an inference endpoint.
 
-Status per milestone: [PROJECT_STATUS.md](PROJECT_STATUS.md). Plan:
-[IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md). Worked example on real data:
-[docs/case_study.md](docs/case_study.md).
+Worked example on real data: [docs/case_study.md](docs/case_study.md). Plan, status and review
+evidence: see [Development process](#development-process).
 
 ## Install
 
@@ -163,6 +162,19 @@ A run directory (`runs/<run_id>/`) contains `run.json`, `config.json`, `environm
 Undefined metrics are never returned as 0 or as a bare NaN. The prior Dummy baseline's AP
 equals the prevalence, which is the chance level every model must beat.
 
+## Development process
+
+The project was built milestone by milestone under supervisor review. The process records live
+in [`docs/process/`](docs/process/):
+
+- [IMPLEMENTATION_PLAN.md](docs/process/IMPLEMENTATION_PLAN.md): milestones M0–M10,
+  acceptance criteria and methodology invariants
+- [PROJECT_STATUS.md](docs/process/PROJECT_STATUS.md): status per milestone and review task,
+  known issues, and numbered decisions (D1, D2, …)
+- [REVIEW_PACKET.md](docs/process/REVIEW_PACKET.md): per-task evidence (commands, verbatim gate
+  output, deviations)
+- [FINAL_REPORT.md](docs/process/FINAL_REPORT.md): summary for review
+
 ## Run checks
 
 ```bash
@@ -177,7 +189,11 @@ CI (`.github/workflows/ci.yml`) runs the same checks on Python 3.11 and 3.13.
 - Synchronous API with no job queue, auth, or database (all storage is files). Intended for
   local or single-user use.
 - Datetime features are dropped, not encoded. SMOTE interpolates one-hot columns.
-- Probabilities are not calibrated. Test results are single evaluations. Their bootstrap CIs
+- **Scores are not calibrated probabilities.** There is no calibration stage. When a resampler
+  (SMOTE, random under- or over-sampling) is used, scores are ranking scores only and must not
+  be interpreted as risk. Class weighting also shifts scores. Without a resampler, calibration
+  is not assessed beyond the test Brier score [95% CI] and the reliability curve in the report.
+- Test results are single evaluations. Their bootstrap CIs
   reflect test-sample variation only, not re-splitting or re-training.
 - Profile heuristics can miss leakage and can flag innocent columns. They need domain review.
 - Group-aware splits (declared groups or `duplicate_groups=True`) pin any group larger than

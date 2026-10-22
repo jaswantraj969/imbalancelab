@@ -279,8 +279,22 @@ def predict_records(ws: Workspace, model_id: str, records: list[dict[str, Any]])
         "model_id": model_id,
         "threshold": loaded.metadata.threshold,
         "predictions": preds.to_dict(orient="records"),
+        "score_note": score_note(loaded.metadata.model_name),
         "warnings": [*loaded.warnings, *notes],
     }
+
+
+def score_note(model_name: str) -> str:
+    """Calibration caveat for a persisted model (``name`` is ``model`` or ``model+sampler``)."""
+    if "+" in model_name:
+        return (
+            f"Model {model_name!r} was trained with a resampler: scores are ranking scores, NOT "
+            "calibrated probabilities. Do not interpret them as risk."
+        )
+    return (
+        f"Model {model_name!r} used no resampler. Calibration was not assessed beyond the test "
+        "Brier score and reliability curve; scores are not calibrated probabilities."
+    )
 
 
 def report_path(ws: Workspace, run_id: str, fmt: str = "html") -> Path:

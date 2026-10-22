@@ -5,7 +5,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from imbalancelab.reporting.figures import first_repeat, plot_curves
+from imbalancelab.evaluation.calibration import calibration_disclosure
+from imbalancelab.reporting.figures import first_repeat, plot_curves, plot_reliability
 from imbalancelab.reporting.render import (
     BulletList,
     Code,
@@ -512,6 +513,84 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
             )
         else:
             doc.add(Paragraph("No bootstrap CIs recorded for this final evaluation."))
+        paired = final.get("paired_bootstrap")
+        if paired:
+            doc.add(Heading(3, "Paired bootstrap of test differences (selected model − baseline)"))
+            doc.add(
+                Table(
+                    [
+                        "Candidate",
+                        "Baseline",
+                        "Metric",
+                        "Difference [95% CI]",
+                        "Win fraction",
+                        "Undefined resamples",
+                    ],
+                    [
+                        [
+                            d["candidate"],
+                            d["baseline"],
+                            d["metric"],
+                            fmt_signed(d["point"])
+                            + (
+                                f" [{d['lower']:+.4f}, {d['upper']:+.4f}]"
+                                if d["lower"] is not None
+                                else " [CI undefined]"
+                            ),
+                            fmt(d["win_fraction"], 3),
+                            fmt(d["n_undefined"]),
+                        ]
+                        for d in paired
+                    ],
+                )
+            )
+            doc.add(
+                Paragraph(
+                    "Both models are scored on the same resampled test rows, so the interval is "
+                    "for the difference itself. Win fraction is the share of resamples where the "
+                    "selected model is strictly better. This is descriptive and is not a "
+                    "significance test."
+                )
+            )
+        doc.add(Heading(3, "Calibration (disclosure only; no calibration stage)"))
+        specs = run.get("model_specs") or []
+        doc.add(BulletList([f"**{n}**" for n in calibration_disclosure(specs)]))
+        sel = final["results"][final["model"]]
+        cal = sel.get("calibration")
+        if cal:
+            doc.add(
+                Paragraph(
+                    f"Test Brier score ({final['model']}): {fmt_ci(sel, 'brier')} (lower is "
+                    "better). Reliability bins for the selected model (quantile bins of its test "
+                    "scores; n per bin shown):"
+                )
+            )
+            doc.add(
+                Table(
+                    ["Bin", "Score range", "n", "Positives", "Mean score", "Observed rate"],
+                    [
+                        [
+                            str(i + 1),
+                            f"[{b['lower']:.4f}, {b['upper']:.4f}]",
+                            fmt(b["n"]),
+                            fmt(b["n_positive"]),
+                            fmt(b["mean_score"]),
+                            fmt(b["observed_rate"]),
+                        ]
+                        for i, b in enumerate(cal["reliability"]["bins"])
+                    ],
+                )
+            )
+            rel_fig = plot_reliability(
+                {m: r["calibration"] for m, r in final["results"].items() if r.get("calibration")},
+                figure_dir,
+                "test",
+            )
+            if rel_fig is not None:
+                figures.append(rel_fig)
+                doc.add(Image(rel_fig, rel + rel_fig.name, "Test reliability curve"))
+        else:
+            doc.add(Paragraph("No calibration curve recorded for this final evaluation."))
         test_preds = record.final_predictions()
         if test_preds is not None:
             figs = plot_curves(test_preds, "test set", figure_dir, "test")
@@ -546,6 +625,10 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
         lim.append(
             "Test results are a single evaluation per model; bootstrap CIs reflect test-sample "
             "variation only, not model-training variation."
+        )
+        lim.append(
+            "Scores are not calibrated (no calibration stage); see the calibration disclosure "
+            "in section 9."
         )
         if final["n_test_positive"] < FEW_TEST_POSITIVES:
             lim.append(
