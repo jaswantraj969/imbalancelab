@@ -1,0 +1,298 @@
+{
+  "run_id": "run-20261022T083838Z-b12a4417",
+  "model": "hgb+smote",
+  "evaluated_at": "2026-10-22T08:39:13.659511Z",
+  "forced": false,
+  "dataset_sha256": "eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed",
+  "test_sha256": "ee4a3c8a3d3efbbfac7e1c20ba4c7fae2c3d9cec55bdd2101aed8a75a2a271c7",
+  "n_outer_train": 8946,
+  "n_test": 2237,
+  "n_test_positive": 52,
+  "refit_on": "outer-train rows only",
+  "threshold": 0.42924758658507717,
+  "threshold_provenance": {
+    "source": "out-of-fold predictions",
+    "strategy": {
+      "kind": "max_fbeta",
+      "beta": 2.0,
+      "target": null,
+      "cost_fp": 1.0,
+      "cost_fn": 1.0
+    },
+    "selection_rule": "median of per-repeat thresholds selected on out-of-fold predictions",
+    "analysis_created_at": "2026-10-22T08:39:12.869969Z",
+    "per_repeat_spread": {
+      "mean": 0.46644023903573606,
+      "std": 0.07896196066885074,
+      "min": 0.41294272928715925,
+      "max": 0.5571304012349718,
+      "n": 3
+    }
+  },
+  "results": {
+    "hgb+smote": {
+      "threshold": 0.42924758658507717,
+      "threshold_created_at": "2026-10-22T08:39:12.869969Z",
+      "metrics": {
+        "average_precision": {
+          "name": "average_precision",
+          "value": 0.6670128180462115,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "roc_auc": {
+          "name": "roc_auc",
+          "value": 0.8916916035909171,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "brier": {
+          "name": "brier",
+          "value": 0.01722484230258039,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "precision": {
+          "name": "precision",
+          "value": 0.5671641791044776,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "recall": {
+          "name": "recall",
+          "value": 0.7307692307692307,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "f1": {
+          "name": "f1",
+          "value": 0.6386554621848739,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "fbeta": {
+          "name": "fbeta",
+          "value": 0.6909090909090909,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "balanced_accuracy": {
+          "name": "balanced_accuracy",
+          "value": 0.858748459778208,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "mcc": {
+          "name": "mcc",
+          "value": 0.6342787549697462,
+          "defined": true,
+          "reason": null,
+          "note": null
+        }
+      },
+      "confusion": {
+        "threshold": 0.42924758658507717,
+        "tn": 2156,
+        "fp": 29,
+        "fn": 14,
+        "tp": 38
+      }
+    },
+    "dummy_prior": {
+      "threshold": 0.02319407573005449,
+      "threshold_created_at": "2026-10-22T08:39:12.958215Z",
+      "metrics": {
+        "average_precision": {
+          "name": "average_precision",
+          "value": 0.0232454179704962,
+          "defined": true,
+          "reason": null,
+          "note": "constant scores: value equals the chance level (all ties)"
+        },
+        "roc_auc": {
+          "name": "roc_auc",
+          "value": 0.5,
+          "defined": true,
+          "reason": null,
+          "note": "constant scores: value equals the chance level (all ties)"
+        },
+        "brier": {
+          "name": "brier",
+          "value": 0.022705068540880172,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "precision": {
+          "name": "precision",
+          "value": 0.0232454179704962,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "recall": {
+          "name": "recall",
+          "value": 1.0,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "f1": {
+          "name": "f1",
+          "value": 0.045434687636522496,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "fbeta": {
+          "name": "fbeta",
+          "value": 0.10633946830265849,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "balanced_accuracy": {
+          "name": "balanced_accuracy",
+          "value": 0.5,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "mcc": {
+          "name": "mcc",
+          "value": null,
+          "defined": false,
+          "reason": "predictions are constant at this threshold",
+          "note": null
+        }
+      },
+      "confusion": {
+        "threshold": 0.02319407573005449,
+        "tn": 0,
+        "fp": 2185,
+        "fn": 0,
+        "tp": 52
+      }
+    },
+    "logreg_balanced": {
+      "threshold": 0.8172562269832655,
+      "threshold_created_at": "2026-10-22T08:39:12.987437Z",
+      "metrics": {
+        "average_precision": {
+          "name": "average_precision",
+          "value": 0.4669153204726046,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "roc_auc": {
+          "name": "roc_auc",
+          "value": 0.9166960042246083,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "brier": {
+          "name": "brier",
+          "value": 0.08596483165929218,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "precision": {
+          "name": "precision",
+          "value": 0.3829787234042553,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "recall": {
+          "name": "recall",
+          "value": 0.6923076923076923,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "f1": {
+          "name": "f1",
+          "value": 0.4931506849315068,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "fbeta": {
+          "name": "fbeta",
+          "value": 0.5960264900662252,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "balanced_accuracy": {
+          "name": "balanced_accuracy",
+          "value": 0.8328815349410315,
+          "defined": true,
+          "reason": null,
+          "note": null
+        },
+        "mcc": {
+          "name": "mcc",
+          "value": 0.5000023910455967,
+          "defined": true,
+          "reason": null,
+          "note": null
+        }
+      },
+      "confusion": {
+        "threshold": 0.8172562269832655,
+        "tn": 2127,
+        "fp": 58,
+        "fn": 16,
+        "tp": 36
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "candidate": "hgb+smote",
+      "baseline": "dummy_prior",
+      "metric": "average_precision",
+      "candidate_value": 0.6670128180462115,
+      "baseline_value": 0.0232454179704962,
+      "diff": 0.6437674000757153
+    },
+    {
+      "candidate": "hgb+smote",
+      "baseline": "dummy_prior",
+      "metric": "roc_auc",
+      "candidate_value": 0.8916916035909171,
+      "baseline_value": 0.5,
+      "diff": 0.39169160359091715
+    },
+    {
+      "candidate": "hgb+smote",
+      "baseline": "logreg_balanced",
+      "metric": "average_precision",
+      "candidate_value": 0.6670128180462115,
+      "baseline_value": 0.4669153204726046,
+      "diff": 0.2000974975736069
+    },
+    {
+      "candidate": "hgb+smote",
+      "baseline": "logreg_balanced",
+      "metric": "roc_auc",
+      "candidate_value": 0.8916916035909171,
+      "baseline_value": 0.9166960042246083,
+      "diff": -0.025004400633691137
+    }
+  ],
+  "note": "single test-set evaluation; one number per model, no fold spread",
+  "persisted_model_id": "model-20261022T083913Z-86d46690"
+}

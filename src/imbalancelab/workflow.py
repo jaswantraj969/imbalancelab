@@ -181,7 +181,13 @@ def start_run(ws: Workspace, dataset_id: str, config: ExperimentConfig) -> dict[
     """Run an experiment synchronously and return its brief."""
     dataset, holdout, profile = load_registered(ws, dataset_id)
     result = run_experiment(
-        dataset, holdout, config, ws.runs_dir, profile=profile, dataset_id=dataset_id
+        dataset,
+        holdout,
+        config,
+        ws.runs_dir,
+        profile=profile,
+        dataset_id=dataset_id,
+        source_name=get_registration(ws, dataset_id).source_name,
     )
     return run_brief(rec.RunRecord(result.run_dir))
 

@@ -1,0 +1,13 @@
+{
+  "collection": "imbalanced-learn benchmark collection (imblearn.datasets.fetch_datasets)",
+  "zenodo_record": "https://zenodo.org/records/61452",
+  "doi": "10.5281/zenodo.61452",
+  "creators": "Lemaitre, Nogueira, Aridas, Oliveira (2016)",
+  "license": "ODC-ODbL (Open Database License), as listed on the Zenodo record",
+  "original_repository": "UCI (per the imbalanced-learn dataset table; benchmark proposed by Ding, Z., 'Diversified Ensemble Classifiers for Highly Imbalanced Data Learning and their Application in Bioinformatics', 2011)",
+  "dataset": "mammography",
+  "npz_file": "x25data.npz",
+  "npz_sha256": "73480c315d42bc5b33c2c73b9078d0034113d26f0511facd9fc5bb07f2d6438a",
+  "csv_sha256": "eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed",
+  "dataset_id": "ds-20261022T083837Z-2d9c08c1"
+}

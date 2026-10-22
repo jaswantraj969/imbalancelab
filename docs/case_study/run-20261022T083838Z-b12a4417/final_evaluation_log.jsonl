@@ -1,0 +1,2 @@
+{"event": "final_evaluation", "at": "2026-10-22T08:39:13.659511Z", "model": "hgb+smote", "forced": false, "reason": null}
+{"event": "model_persisted", "at": "2026-10-22T08:39:13.751547Z", "model_id": "model-20261022T083913Z-86d46690"}

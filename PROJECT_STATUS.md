@@ -15,11 +15,17 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M7 | FastAPI endpoints | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M7) |
 | M8 | Streamlit frontend (via API only) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M8) |
 | M9 | Model persistence + inference endpoint | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M9) |
-| M10 | Docs + case study from real results | not started | — |
+| M10 | Docs + case study from real results | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M10) |
 
 ## Known issues
 
 - Plan step "tree -L 3" substituted with `find` (no `tree` binary in Git Bash on this machine); see REVIEW_PACKET.md T0 deviations.
+- CI workflow (`.github/workflows/ci.yml`) is defined but has never run: the repository has no
+  remote (environment limitation).
+- Starlette emits a deprecation warning for `httpx` in its TestClient (prefers `httpx2`); the dev
+  dependency is `httpx` as specified.
+- Case-study data (`mammography`) contains 3334 exact-duplicate rows that cross split boundaries;
+  documented with a post-hoc sensitivity check; a duplicate-grouped re-run was not done.
 
 ## Decisions
 
@@ -94,7 +100,17 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 - **D23:** a model is persisted at final evaluation (default `persist_model=True`). The artifact
   is the pipeline refit on outer-train rows that produced the reported test numbers, so served
   predictions match the audited model exactly.
+- **D24:** the case-study protocol is fixed in code (`scripts/run_case_study.py`) before the run:
+  stratified 80/20 holdout (seed 42), 5×3 CV, candidates hgb, hgb+random_under, hgb+smote and
+  random_forest, selection by mean OOF AP, `max_fbeta` with beta=2 (recall-weighted, which suits
+  screening). It was not tuned after seeing results. The three successful executions used the
+  same protocol and produced identical metrics.
+- **D25:** the duplicate sensitivity analysis is explicitly *post hoc* and re-slices stored test
+  predictions only. It cannot influence the model or threshold, and the text states its
+  prevalence caveat and that it does not cover CV.
+- **D26:** run-record files over 1 MB are not committed to `docs/`. Their SHA-256s are listed in
+  `OMITTED_FILES.json`, and `scripts/run_case_study.py` regenerates them.
 
 ## Last updated
 
-2026-10-22 — M9 (Implementation Engineer)
+2026-10-22 — M10 (Implementation Engineer)

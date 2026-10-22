@@ -51,7 +51,7 @@ def _upload(
 
 @pytest.fixture
 def dataset_id(client: TestClient) -> str:
-    resp = _upload(client, holdout={"test_size": 0.25, "seed": 3})
+    resp = _upload(client, name="upload.csv", holdout={"test_size": 0.25, "seed": 3})
     assert resp.status_code == 201, resp.text
     return resp.json()["dataset_id"]
 
@@ -72,7 +72,7 @@ def test_dataset_upload_profile_and_list(client, dataset_id, settings) -> None:
     reg = client.get("/datasets").json()
     assert [d["dataset_id"] for d in reg] == [dataset_id]
     d = reg[0]
-    assert d["n_rows"] == 260 and d["source_name"] == "data.csv" and len(d["sha256"]) == 64
+    assert d["n_rows"] == 260 and d["source_name"] == "upload.csv" and len(d["sha256"]) == 64
     assert d["holdout_config"]["test_size"] == 0.25 and d["n_test"] + d["n_outer_train"] == 260
     profile = client.get(f"/datasets/{dataset_id}/profile")
     assert profile.status_code == 200
@@ -139,6 +139,7 @@ def test_full_run_lifecycle(client, dataset_id, run_id) -> None:
     detail = client.get(f"/runs/{run_id}").json()
     assert detail["run"]["holdout"]["test_sha256"]
     assert detail["summary"]["primary_metric"] == "average_precision"
+    assert detail["run"]["dataset"]["source_name"] == "upload.csv"  # registered upload name
     assert detail["final_evaluation"] is None
 
     early = client.post(f"/runs/{run_id}/final-evaluation", json={"model": "hgb"})

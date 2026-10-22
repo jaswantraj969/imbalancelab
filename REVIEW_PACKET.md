@@ -1271,3 +1271,156 @@ TOTAL                                        2045     33    98%
   malicious metadata+artifact pair written together. Only load artifacts from a trusted
   workspace (documented in the module docstring).
 - Probabilities are not calibrated (calibration is out of MVP scope).
+
+---
+
+### Task M10 — Documentation and case study
+
+**Date:** 2026-10-22 · **Milestone:** M10
+
+#### Summary of changes
+- **README.md**:
+  - purpose and features, and install (ranges or lock)
+  - library quickstart, **executed verbatim by `tests/test_readme.py`**
+  - API quickstart: `uvicorn imbalancelab.api.app:app`, an endpoint table, and curl examples
+  - UI quickstart: `streamlit run frontend/app.py`
+  - architecture, run-directory layout, the 7 invariants, checks, and limitations
+- **scripts/run_case_study.py**: a fixed, pre-specified protocol on `mammography`
+  (imbalanced-learn benchmark, Zenodo DOI 10.5281/zenodo.61452, licence ODC-ODbL as listed
+  on the Zenodo record, which I fetched from the Zenodo API on 2026-10-22).
+  - Steps: download, CSV, register (profile + holdout), 5×3 CV over 2 baselines and 4
+    candidates, F2 threshold on OOF for the best candidate by OOF AP, one-shot final
+    evaluation plus persistence, report, export of the run record to `docs/case_study/<run_id>/`
+    (files > 1 MB listed with SHA-256 in `OMITTED_FILES.json`), `PROVENANCE.json`, a
+    duplicate-sensitivity record, and **`docs/case_study.md` generated from those records**.
+  - On a download failure it exits with code 2 and does not substitute synthetic data.
+- **scripts/smoke_api.py**: an end-to-end smoke test against a real uvicorn subprocess (used for
+  FINAL_REPORT.md).
+- **Runner/workflow fix found during the smoke test:** `run.json` recorded the workspace file
+  name (`data.csv`) as `source_name`. Runs now record the registered upload name
+  (`run_experiment(..., source_name=...)`), and `tests/test_api.py` asserts it.
+- **pyproject.toml**: mypy also checks `scripts/`.
+
+#### Case-study findings (from the run record `run-20261022T083838Z-b12a4417`)
+- The selected candidate is `hgb+smote` (by OOF AP). It beats both baselines on OOF AP in 15
+  of 15 paired folds, and on the single test evaluation. See `docs/case_study.md` for the
+  numbers.
+- **The tool's duplicate checks fired on real data:** 3334 exact-duplicate rows, and 632 of 2237
+  test rows duplicate outer-train feature rows (only 2 of them positive). I added a post-hoc
+  sensitivity check that re-slices the *stored* test predictions only (no refit, no re-scoring,
+  no selection). It is reported with its prevalence caveat and the statement that it does not
+  cover CV.
+- **Reproducibility check:** the case study ran 3 times during this milestone (twice before the
+  caveat-wording change, once after). Test AP for `hgb+smote` was 0.6670 in every run, and 0.7060
+  on the non-duplicate subset in both runs that computed it. Dataset SHA-256, test-index
+  SHA-256 and fold-index SHA-256 were identical across runs.
+
+#### Files changed
+- added: `docs/case_study.md`, `docs/case_study/run-20261022T083838Z-b12a4417/**`, `scripts/run_case_study.py`,
+  `scripts/smoke_api.py`, `tests/test_readme.py`
+- modified: `README.md`, `pyproject.toml`, `src/imbalancelab/evaluation/runner.py`,
+  `src/imbalancelab/workflow.py`, `tests/test_api.py`, `PROJECT_STATUS.md`, `REVIEW_PACKET.md`
+
+#### Exact commands run
+    curl -sS https://zenodo.org/api/records/61452     # licence/DOI/creators metadata
+    python scripts/run_case_study.py                  # run 1: FileNotFoundError (wrong .npz name
+                                                      #   guessed; download itself succeeded)
+    python scripts/run_case_study.py                  # run 2: stopped by me to fix source_name
+    python scripts/smoke_api.py                       # exit 0 (found the source_name issue)
+    python scripts/run_case_study.py                  # runs 3-5: exit 0 (5 = final, committed)
+    bash scripts/gate.sh
+
+Final case-study script output:
+
+    downloaded <project-root>\data\raw\imblearn\zenodo\x25data.npz sha256=73480c315d42bc5b33c2c73b9078d0034113d26f0511facd9fc5bb07f2d6438a
+    registered ds-20261022T083837Z-2d9c08c1: 11183 rows, sha256=eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed
+    run run-20261022T083838Z-b12a4417 completed; best candidate by OOF AP: hgb+smote
+    final evaluation done; persisted model model-20261022T083913Z-86d46690
+    wrote docs/case_study.md and docs\case_study\run-20261022T083838Z-b12a4417
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+55 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 37 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 53%]
+..............................................................           [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  <project-root>\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                        Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------
+src\imbalancelab\__init__.py                    2      0   100%
+src\imbalancelab\api\__init__.py                0      0   100%
+src\imbalancelab\api\app.py                   114      0   100%
+src\imbalancelab\api\schemas.py                45      0   100%
+src\imbalancelab\config.py                     15      1    93%   27
+src\imbalancelab\data\__init__.py               4      0   100%
+src\imbalancelab\data\errors.py                21      0   100%
+src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                37      0   100%
+src\imbalancelab\evaluation\__init__.py         2      0   100%
+src\imbalancelab\evaluation\config.py          35      0   100%
+src\imbalancelab\evaluation\final.py          109      4    96%   74-75, 102, 160
+src\imbalancelab\evaluation\metrics.py        115      0   100%
+src\imbalancelab\evaluation\runner.py         117      0   100%
+src\imbalancelab\evaluation\thresholds.py     138      0   100%
+src\imbalancelab\models\__init__.py             2      0   100%
+src\imbalancelab\models\persistence.py        100      0   100%
+src\imbalancelab\models\registry.py            18      0   100%
+src\imbalancelab\pipelines\__init__.py          2      0   100%
+src\imbalancelab\pipelines\builder.py          66      0   100%
+src\imbalancelab\profiling\__init__.py          3      0   100%
+src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py          9      0   100%
+src\imbalancelab\reporting\__init__.py          2      0   100%
+src\imbalancelab\reporting\figures.py          44      1    98%   28
+src\imbalancelab\reporting\render.py           82      0   100%
+src\imbalancelab\reporting\report.py          163      7    96%   59, 125, 172, 202, 245, 440, 442
+src\imbalancelab\splitting\__init__.py          3      0   100%
+src\imbalancelab\splitting\duplicates.py       24      0   100%
+src\imbalancelab\splitting\splits.py          195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py           2      0   100%
+src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                  144      6    96%   62-63, 90, 135, 234, 258
+-------------------------------------------------------------------------
+TOTAL                                        2045     33    98%
+134 passed, 1 warning in 82.87s (0:01:22)
+[exit 0]
+```
+
+#### Invariant re-check
+- 6: `docs/case_study.md` is generated by code from the exported run record. Every number in
+  it is read from `summary.json`, `final_evaluation.json`, `thresholds.json`, `profile.json`,
+  `run.json` or `duplicate_sensitivity.json` in `docs/case_study/run-20261022T083838Z-b12a4417/`.
+- 3 and 7: the case study selected model and threshold on OOF data only, and scored the test set
+  once. The post-hoc duplicate check re-slices stored test predictions and selects nothing.
+
+#### Deviations from instructions
+- **Run record export:** the run record is exported in full except two files over 1 MB
+  (`fold_indices.json` 2.0 MB, `oof_predictions.parquet` 1.2 MB), which are listed with
+  SHA-256. The spec allows a summarised copy.
+- **Extra analysis:** the post-hoc duplicate sensitivity check was added beyond the spec,
+  because the profile and split checks fired on real data.
+
+#### Known limitations
+- The case study's pre-specified protocol used stratified (not duplicate-grouped) splitting.
+  A duplicate-aware split (e.g. `group_column` = a feature-row hash) was not run.
+- `.github/workflows/ci.yml` has **never been executed**: the repo has no remote. CI is
+  defined but unverified (environment limitation).

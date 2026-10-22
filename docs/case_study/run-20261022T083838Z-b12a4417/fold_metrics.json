@@ -1,0 +1,7472 @@
+[
+  {
+    "model": "dummy_prior",
+    "repeat": 0,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0341,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.02346368715083799,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.0229132134892165,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 0,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0073,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.022917831190609278,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.02239277723341122,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 41,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 0,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0075,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.022917831190609278,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022392777233411217,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 41,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 0,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0075,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.023476802683063163,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022925722353373642,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1747,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 0,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0117,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.023476802683063163,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022925722353373642,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1747,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 1,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0142,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.02346368715083799,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.0229132134892165,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 1,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0073,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.022917831190609278,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022392777233411217,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 41,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 1,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0072,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.022917831190609278,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.02239277723341122,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 41,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 1,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0074,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.023476802683063163,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022925722353373645,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1747,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 1,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0076,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.023476802683063163,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022925722353373642,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1747,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 2,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0071,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.02346368715083799,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022913213489216495,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 2,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.009,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.022917831190609278,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.02239277723341122,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 41,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 2,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0071,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.022917831190609278,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.02239277723341122,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1748,
+      "fp": 0,
+      "fn": 41,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 2,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0065,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.023476802683063163,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022925722353373642,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1747,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "dummy_prior",
+    "repeat": 2,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0115,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.023476802683063163,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": "constant scores: value equals the chance level (all ties)"
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.022925722353373642,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": null,
+        "defined": false,
+        "reason": "no positive predictions at this threshold",
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.0,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": null,
+        "defined": false,
+        "reason": "predictions are constant at this threshold",
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1747,
+      "fp": 0,
+      "fn": 42,
+      "tp": 0
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 0,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0165,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.43556179031724734,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8962623951182302,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08061447848472084,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.17,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8095238095238095,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2809917355371901,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2809917355371901,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8572790672333006,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.34333601879995373,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1582,
+      "fp": 166,
+      "fn": 8,
+      "tp": 34
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 0,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0208,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.47848923365349066,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9196782385443992,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08516074339591759,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1588785046728972,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8292682926829268,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.26666666666666666,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.26666666666666666,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8631467321538204,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.33490961259781393,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1568,
+      "fp": 180,
+      "fn": 7,
+      "tp": 34
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 0,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0206,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6157332087060284,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9539682982642183,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08565421185847627,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1598173515981735,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8536585365853658,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2692307692307692,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2692307692307692,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8741976893453145,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3416818075976073,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1564,
+      "fp": 184,
+      "fn": 6,
+      "tp": 35
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 0,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0235,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5317712390628468,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9149562515332407,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08309122525722484,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.15859030837004406,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8571428571428571,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.26765799256505574,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.26765799256505574,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8739062883310165,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3401812864271146,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1556,
+      "fp": 191,
+      "fn": 6,
+      "tp": 36
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 0,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0232,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6932320574104825,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9562924196581896,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08163301126528458,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.17289719626168223,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8809523809523809,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2890625,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2890625,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8898179191539237,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.36376065776994987,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1570,
+      "fp": 177,
+      "fn": 5,
+      "tp": 37
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 1,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0176,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.556815377188916,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9092227852239294,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07716960398270185,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.15841584158415842,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7619047619047619,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.26229508196721313,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.26229508196721313,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8323253786640514,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.31797130517093397,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1578,
+      "fp": 170,
+      "fn": 10,
+      "tp": 32
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 1,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0169,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.43176624611436953,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9681308254730144,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.09031470882185776,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.16517857142857142,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9024390243902439,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2792452830188679,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2792452830188679,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8977298096779596,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.35966617845799614,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1561,
+      "fp": 187,
+      "fn": 4,
+      "tp": 37
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 1,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0151,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6185166939265643,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9474033041245744,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08615828056678487,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.16371681415929204,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9024390243902439,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.27715355805243447,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.27715355805243447,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8971577272980968,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3577848495887917,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1559,
+      "fp": 189,
+      "fn": 4,
+      "tp": 37
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 1,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0276,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6268306828618262,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9109902690326274,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08522705344315909,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1583710407239819,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8333333333333334,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2661596958174905,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2661596958174905,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8634325510398779,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.33446890616451447,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1561,
+      "fp": 186,
+      "fn": 7,
+      "tp": 35
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 1,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0335,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.453183914128587,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8988674462343609,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07485619693343284,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1891891891891892,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8333333333333334,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.30837004405286345,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.30837004405286345,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.873735928257966,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.37168744959905,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1597,
+      "fp": 150,
+      "fn": 7,
+      "tp": 35
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 2,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0273,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5900988596552481,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9582516072790672,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07949573504725814,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.17535545023696683,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8809523809523809,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2924901185770751,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2924901185770751,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8907050234281355,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3668107521832135,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1574,
+      "fp": 174,
+      "fn": 5,
+      "tp": 37
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 2,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0205,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5239814092244758,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9220991237372327,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08693078106841368,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1583710407239819,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8536585365853658,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.26717557251908397,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.26717557251908397,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8736256069654518,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3398287403786682,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1562,
+      "fp": 186,
+      "fn": 6,
+      "tp": 35
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 2,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.0225,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5794545979801613,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8990483897973991,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.0860675340505267,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.14782608695652175,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8292682926829268,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.25092250922509224,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.25092250922509224,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8585700731149188,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.32061194762516926,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1552,
+      "fp": 196,
+      "fn": 7,
+      "tp": 34
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 2,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0225,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.47455787060617977,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9294096001308364,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07907333646484527,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.17346938775510204,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8095238095238095,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2857142857142857,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2857142857142857,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8583967072805081,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.34747949427445224,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1585,
+      "fp": 162,
+      "fn": 8,
+      "tp": 34
+    }
+  },
+  {
+    "model": "logreg_balanced",
+    "repeat": 2,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.0184,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5312550878741974,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9175729822552947,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08278740662970054,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.16666666666666666,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8333333333333334,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2777777777777778,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2777777777777778,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8665808051898493,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.34488166124819575,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1572,
+      "fp": 175,
+      "fn": 7,
+      "tp": 35
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 0,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.4651,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.644402810593943,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.894573389996731,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.015014957686322923,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.6363636363636364,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.56,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.56,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7465675057208239,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.5549046270646663,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1736,
+      "fp": 12,
+      "fn": 21,
+      "tp": 21
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 0,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.4363,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7254106659358627,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.928789696935871,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.012076717137815243,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7666666666666667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5609756097560976,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.647887323943662,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.647887323943662,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7784855165485294,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6490851965240763,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1741,
+      "fp": 7,
+      "fn": 18,
+      "tp": 23
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 0,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.4764,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7852974123759875,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9288245800078139,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.0072485310553078485,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.9354838709677419,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7073170731707317,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.8055555555555556,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.8055555555555556,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8530864542055031,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.8098105167523445,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1746,
+      "fp": 2,
+      "fn": 12,
+      "tp": 29
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 0,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.4821,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7170128703613762,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9161555864475155,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.010230740806677727,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8666666666666667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6190476190476191,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7222222222222222,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7222222222222222,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8083789898329108,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7272643976631469,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1743,
+      "fp": 4,
+      "fn": 16,
+      "tp": 26
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 0,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.4734,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.721777132264368,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9024450077684193,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.010721844398794972,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7941176470588235,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6428571428571429,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7105263157894737,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7105263157894737,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8194251369694987,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7084222029353019,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1740,
+      "fp": 7,
+      "fn": 15,
+      "tp": 27
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 1,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.522,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6679925624616408,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.90480957829356,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.012219823769167977,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8148148148148148,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5238095238095238,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6376811594202898,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6376811594202898,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7604745559551052,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6469677359843831,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1743,
+      "fp": 5,
+      "fn": 20,
+      "tp": 22
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 1,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.5109,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7496828726821942,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9308547747948875,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.011613652070540426,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8461538461538461,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5365853658536586,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6567164179104478,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6567164179104478,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7671485181671038,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6680863177509975,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1744,
+      "fp": 4,
+      "fn": 19,
+      "tp": 22
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 1,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.4489,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7638505262232127,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9257478930624546,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.009277866327550092,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8235294117647058,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6829268292682927,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7466666666666667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7466666666666667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8397471674945582,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7446813268914075,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1742,
+      "fp": 6,
+      "fn": 13,
+      "tp": 28
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 1,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5093,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6877190328579789,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9201760841715049,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.011427839436115994,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8064516129032258,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5952380952380952,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.684931506849315,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.684931506849315,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7959018180826996,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6866863975768094,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1741,
+      "fp": 6,
+      "fn": 17,
+      "tp": 25
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 1,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5195,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6647089204387308,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8757529915228828,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.011330570903553243,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8214285714285714,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5476190476190477,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6571428571428571,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6571428571428571,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7723784991959004,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6645309647209093,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1742,
+      "fp": 5,
+      "fn": 19,
+      "tp": 23
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 2,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5179,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.8114997412534143,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9457883840034871,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.008314867059649006,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.9310344827586207,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6428571428571429,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7605633802816901,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7605633802816901,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8208564890487087,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7694094304378548,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1746,
+      "fp": 2,
+      "fn": 15,
+      "tp": 27
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 2,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.4744,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7091001214692583,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8953786906290115,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.012117797571495677,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.75,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5853658536585366,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6575342465753424,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6575342465753424,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7903945973098174,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6557228238253858,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1740,
+      "fp": 8,
+      "fn": 17,
+      "tp": 24
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 2,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.4673,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6150266188799941,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8817463861137468,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.013963088834802446,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7307692307692307,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.4634146341463415,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.5671641791044776,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.5671641791044776,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7297050287436513,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.5744474566998744,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1741,
+      "fp": 7,
+      "fn": 22,
+      "tp": 19
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 2,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.4681,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7594565845332483,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9388679913865946,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01081857940379892,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8846153846153846,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5476190476190477,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6764705882352942,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6764705882352942,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7729509090413498,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6906735239858834,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1744,
+      "fp": 3,
+      "fn": 19,
+      "tp": 23
+    }
+  },
+  {
+    "model": "hgb",
+    "repeat": 2,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.4889,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7395290831208359,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9263363044130072,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.010073826597359227,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8888888888888888,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5714285714285714,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6956521739130435,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6956521739130435,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7848556709461116,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.707523923288725,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1744,
+      "fp": 3,
+      "fn": 18,
+      "tp": 24
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 0,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.2192,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5310342656085578,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9242263266862809,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08450744195499194,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.17560975609756097,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8571428571428571,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.291497975708502,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.291497975708502,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8802304674730304,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3614770294702265,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1579,
+      "fp": 169,
+      "fn": 6,
+      "tp": 36
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 0,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.2034,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.49840105334261875,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9702517162471396,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07945557021542206,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.18048780487804877,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9024390243902439,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.3008130081300813,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.3008130081300813,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9031645922866551,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.37880918642928296,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1580,
+      "fp": 168,
+      "fn": 4,
+      "tp": 37
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 0,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.2463,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7697662948687506,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9645308924485125,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07827023244177522,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.18407960199004975,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9024390243902439,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.30578512396694213,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.30578512396694213,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9043087570463806,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.38316206782722695,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1584,
+      "fp": 164,
+      "fn": 4,
+      "tp": 37
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 0,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.2292,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6470136723832188,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9466091531060049,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.06738922123112183,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.21264367816091953,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8809523809523809,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.3425925925925926,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.3425925925925926,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9012661160629105,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.4100838765036066,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1610,
+      "fp": 137,
+      "fn": 5,
+      "tp": 37
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 0,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.1899,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7219998431112044,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9742279281489357,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.09007788471085319,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1659919028340081,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9761904761904762,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2837370242214533,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2837370242214533,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9291370240139558,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3767093633416621,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1541,
+      "fp": 206,
+      "fn": 1,
+      "tp": 41
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 1,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.2104,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.638095509585071,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9460608041843739,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07427210377498498,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1935483870967742,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8571428571428571,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.3157894736842105,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.3157894736842105,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.885665250081726,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3826284072570073,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1598,
+      "fp": 150,
+      "fn": 6,
+      "tp": 36
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 1,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.1867,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.48241575509650203,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9350616732711949,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.09246671977801667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1689497716894977,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9024390243902439,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2846153846153846,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2846153846153846,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8991600156276163,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.36447503430325723,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1566,
+      "fp": 182,
+      "fn": 4,
+      "tp": 37
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 1,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.1764,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.663276724540418,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9475149299547915,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.07136483538004643,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.18592964824120603,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9024390243902439,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.30833333333333335,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.30833333333333335,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9048808394262433,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.38538496053848714,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1586,
+      "fp": 162,
+      "fn": 4,
+      "tp": 37
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 1,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.2167,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5742961590773773,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9405511489083327,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.0869860306149845,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.17511520737327188,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9047619047619048,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.29343629343629346,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.29343629343629346,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9011502712132363,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3720934676334808,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1568,
+      "fp": 179,
+      "fn": 4,
+      "tp": 38
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 1,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.2029,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6596224620625447,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9474473246654129,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.052509757228916744,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.24305555555555555,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8333333333333334,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.3763440860215054,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.3763440860215054,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8854703300896776,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.4290697051835578,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1638,
+      "fp": 109,
+      "fn": 7,
+      "tp": 35
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 2,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.1732,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6078426165409364,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9605535578075624,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.09160059448754863,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.15879828326180256,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8809523809523809,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2690909090909091,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2690909090909091,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8844121172496459,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.34585985657629337,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1552,
+      "fp": 196,
+      "fn": 5,
+      "tp": 37
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 2,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.184,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5071854019608243,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9464614611821175,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.08751030441666566,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.18095238095238095,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.926829268292683,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.30278884462151395,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.30278884462151395,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9142155494781492,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3851397320306966,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1576,
+      "fp": 172,
+      "fn": 3,
+      "tp": 38
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 2,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.2064,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.45818531281262553,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9153736674666517,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.076203296079781,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.18041237113402062,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8536585365853658,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2978723404255319,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2978723404255319,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8813487190935982,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.36705717811945554,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1589,
+      "fp": 159,
+      "fn": 6,
+      "tp": 35
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 2,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.1951,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5996683794843509,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9266565813503421,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.0804047926204199,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.1712962962962963,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8809523809523809,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.2868217054263566,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.2868217054263566,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8892455093084743,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3617707642332806,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1568,
+      "fp": 179,
+      "fn": 5,
+      "tp": 37
+    }
+  },
+  {
+    "model": "hgb+random_under",
+    "repeat": 2,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.1914,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7539906984638467,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9422411208329926,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.0777870688563478,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.18009478672985782,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.9047619047619048,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.30039525691699603,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.30039525691699603,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.9028675007495843,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.3782409978653417,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1574,
+      "fp": 173,
+      "fn": 4,
+      "tp": 38
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 0,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5262,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7383064311392928,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.92403563255966,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.013882482754637451,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.6444444444444445,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6904761904761905,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6666666666666666,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6666666666666666,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8406614361991936,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6587859912000485,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1732,
+      "fp": 16,
+      "fn": 13,
+      "tp": 29
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 0,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.5437,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.671362304418715,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9114528101802758,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01650193612859467,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.58,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7073170731707317,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6373626373626373,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6373626373626373,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8476516715968074,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6312511276328876,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1727,
+      "fp": 21,
+      "fn": 12,
+      "tp": 29
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 0,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.5646,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.772094559230662,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9285036557459395,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01496682253411249,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.5740740740740741,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7560975609756098,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6526315789473685,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6526315789473685,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8714698331193838,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6497848320672499,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1725,
+      "fp": 23,
+      "fn": 10,
+      "tp": 31
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 0,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5367,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7342691718937552,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9351405129882521,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.015097306612714266,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.5517241379310345,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7619047619047619,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.64,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.64,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8735110529615395,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6386192724070431,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1721,
+      "fp": 26,
+      "fn": 10,
+      "tp": 32
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 0,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5123,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7496764140197746,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9019134843405021,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.016025052695061468,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.66,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7857142857142857,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.717391304347826,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.717391304347826,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8879916591708235,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7128344655191368,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1730,
+      "fp": 17,
+      "fn": 9,
+      "tp": 33
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 1,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5481,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7546361817611954,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9293478260869565,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.015125587536836918,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.6037735849056604,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7619047619047619,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6736842105263158,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6736842105263158,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8749455159638226,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6696620301902879,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1727,
+      "fp": 21,
+      "fn": 10,
+      "tp": 32
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 1,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.5434,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.757289157154633,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8995088463470448,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.014812321690699164,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.6037735849056604,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7804878048780488,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6808510638297872,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6808510638297872,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.884237037450466,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6782332360833824,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1727,
+      "fp": 21,
+      "fn": 9,
+      "tp": 32
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 1,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.5481,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7937392978749368,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9511985823519562,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.014510802952200896,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.6,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8048780487804879,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6875,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6875,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8961461182117543,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6868187638310568,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1726,
+      "fp": 22,
+      "fn": 8,
+      "tp": 33
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 1,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5341,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7750524183209543,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9725515850301196,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.016363107261497718,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.559322033898305,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7857142857142857,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6534653465346535,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6534653465346535,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8854158148663014,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6535541356237531,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1721,
+      "fp": 26,
+      "fn": 9,
+      "tp": 33
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 1,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5338,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7479014585740086,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8999373074931174,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.012526806592581676,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7142857142857143,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7142857142857143,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7142857142857143,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7142857142857143,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8537083980701611,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7074167961403222,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1735,
+      "fp": 12,
+      "fn": 12,
+      "tp": 30
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 2,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5755,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7861938083976412,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9342786313610112,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.015059823373299707,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.6181818181818182,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8095238095238095,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7010309278350515,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7010309278350515,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8987550397733464,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6995205151293351,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1727,
+      "fp": 21,
+      "fn": 8,
+      "tp": 34
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 2,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.5799,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7630362930399812,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9353267846179605,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.016566002603967147,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.55,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8048780487804879,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6534653465346535,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6534653465346535,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8947159122620975,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6561515376287812,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1721,
+      "fp": 27,
+      "fn": 8,
+      "tp": 33
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 2,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.536,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.667465757597999,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8815440642964782,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.017708196510980278,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.5283018867924528,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6829268292682927,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.5957446808510638,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.5957446808510638,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8343123848858627,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.5901090955947271,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1723,
+      "fp": 25,
+      "fn": 13,
+      "tp": 28
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 2,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5275,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7388201432730461,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9071128737700003,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01285945155986672,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.6888888888888889,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7380952380952381,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7126436781609196,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7126436781609196,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8650407501294737,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7059321225611962,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1733,
+      "fp": 14,
+      "fn": 11,
+      "tp": 31
+    }
+  },
+  {
+    "model": "hgb+smote",
+    "repeat": 2,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.5618,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7237236378569093,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9338594052389129,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.016593327520303507,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.5483870967741935,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.8095238095238095,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6538461538461539,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6538461538461539,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.896748166925614,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6568618039815649,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1719,
+      "fp": 28,
+      "fn": 8,
+      "tp": 34
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 0,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 1.0182,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6292484255348111,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9171706440013077,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.014318727894713165,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.5833333333333334,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.5833333333333334,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7474256292906178,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.5835164143041991,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1739,
+      "fp": 9,
+      "fn": 21,
+      "tp": 21
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 0,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 1.0314,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6592087801505168,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9583217056426857,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01394131586314154,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.64,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.3902439024390244,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.48484848484848486,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.48484848484848486,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.69254758051013,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.4909207728266365,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1739,
+      "fp": 9,
+      "fn": 25,
+      "tp": 16
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 0,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 1.0128,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.8022334311997705,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9405452921806106,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.00991477175322428,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8648648648648649,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.7804878048780488,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.8205128205128205,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.8205128205128205,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8888136964893676,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.8176478146968102,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1743,
+      "fp": 5,
+      "fn": 9,
+      "tp": 32
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 0,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 1.0014,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6935676184282029,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9256889361354161,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.012360544888573384,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7741935483870968,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5714285714285714,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6575342465753424,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6575342465753424,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.783710851255213,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6583953544599148,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1740,
+      "fp": 7,
+      "fn": 18,
+      "tp": 24
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 0,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.9671,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7348730596310052,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9280671627551994,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.012645225672515073,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.78125,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5952380952380952,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6756756756756757,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6756756756756757,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.795615613159975,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6754101631859648,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1740,
+      "fp": 7,
+      "fn": 17,
+      "tp": 25
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 1,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.9972,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.657421957551157,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9269028549634957,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.013861821013281345,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.696969696969697,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5476190476190477,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6133333333333333,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6133333333333333,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7709491119102103,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6097758723660557,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1738,
+      "fp": 10,
+      "fn": 19,
+      "tp": 23
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 1,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 1.0216,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7642526171293691,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9413755092928503,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.011913832092243512,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8214285714285714,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5609756097560976,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6666666666666666,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6666666666666666,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7790575989283921,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6728647818577115,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1743,
+      "fp": 5,
+      "fn": 18,
+      "tp": 23
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 1,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 1.0541,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.752237740660531,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.938529050622314,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.011065970302049788,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8235294117647058,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6829268292682927,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7466666666666667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7466666666666667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8397471674945582,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7446813268914075,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1742,
+      "fp": 6,
+      "fn": 13,
+      "tp": 28
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 1,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.9983,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7313747727428235,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9496688200179901,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01207980862966454,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7272727272727273,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5714285714285714,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.64,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.64,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7831384414097637,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6372072444892757,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1738,
+      "fp": 9,
+      "fn": 18,
+      "tp": 24
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 1,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.9948,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6855476472431877,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9068198544443535,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.012738099028131833,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8260869565217391,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.4523809523809524,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.5846153846153846,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.5846153846153846,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7250456564995775,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6049402214433623,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1743,
+      "fp": 4,
+      "fn": 23,
+      "tp": 19
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 2,
+    "fold": 0,
+    "n_train": 7156,
+    "n_val": 1790,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.9803,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.812411611679706,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9308052740547019,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.011068660503045407,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8787878787878788,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.6904761904761905,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.7733333333333333,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.7733333333333333,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.8440939304783699,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.7743896082702242,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1744,
+      "fp": 4,
+      "fn": 13,
+      "tp": 29
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 2,
+    "fold": 1,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.9792,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.6743958136602832,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9225246972149355,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.014005237798380789,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.7666666666666667,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5609756097560976,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.647887323943662,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.647887323943662,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7784855165485294,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6490851965240763,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1741,
+      "fp": 7,
+      "fn": 18,
+      "tp": 23
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 2,
+    "fold": 2,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 41,
+    "fit_predict_seconds": 0.9964,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.5437541717189296,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.8998437238376961,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01623888625528412,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.5294117647058824,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.43902439024390244,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.48,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.48,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7149355360830496,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.4711105655031107,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1732,
+      "fp": 16,
+      "fn": 23,
+      "tp": 18
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 2,
+    "fold": 3,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 1.0073,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7400490503275217,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9427862730667539,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.01201494407623726,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8695652173913043,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.47619047619047616,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6153846153846154,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6153846153846154,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7372366233270641,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.637710488094753,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1744,
+      "fp": 3,
+      "fn": 22,
+      "tp": 20
+    }
+  },
+  {
+    "model": "random_forest",
+    "repeat": 2,
+    "fold": 4,
+    "n_train": 7157,
+    "n_val": 1789,
+    "n_val_positive": 42,
+    "fit_predict_seconds": 0.9837,
+    "threshold": 0.5,
+    "beta": 1.0,
+    "metrics": {
+      "average_precision": {
+        "name": "average_precision",
+        "value": 0.7607793364912379,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "roc_auc": {
+        "name": "roc_auc",
+        "value": 0.9361831166353205,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "brier": {
+        "name": "brier",
+        "value": 0.011017113093823087,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "precision": {
+        "name": "precision",
+        "value": 0.8214285714285714,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "recall": {
+        "name": "recall",
+        "value": 0.5476190476190477,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "f1": {
+        "name": "f1",
+        "value": 0.6571428571428571,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "fbeta": {
+        "name": "fbeta",
+        "value": 0.6571428571428571,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "balanced_accuracy": {
+        "name": "balanced_accuracy",
+        "value": 0.7723784991959004,
+        "defined": true,
+        "reason": null,
+        "note": null
+      },
+      "mcc": {
+        "name": "mcc",
+        "value": 0.6645309647209093,
+        "defined": true,
+        "reason": null,
+        "note": null
+      }
+    },
+    "confusion": {
+      "threshold": 0.5,
+      "tn": 1742,
+      "fp": 5,
+      "fn": 19,
+      "tp": 23
+    }
+  }
+]

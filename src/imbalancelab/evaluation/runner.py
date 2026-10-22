@@ -125,6 +125,7 @@ def run_experiment(
     profile: DatasetProfile | None = None,
     run_id: str | None = None,
     dataset_id: str | None = None,
+    source_name: str | None = None,
 ) -> RunResult:
     """Run repeated CV for baselines + candidates on outer-train rows and record everything."""
     created_at = rec.utc_now()
@@ -145,7 +146,7 @@ def run_experiment(
         "dataset_id": dataset_id,
         "dataset": {
             "sha256": dataset.sha256,
-            "source_name": dataset.source_path.name,
+            "source_name": source_name or dataset.source_path.name,
             "n_rows": dataset.n_rows,
             "schema": dataset.schema.model_dump(mode="json"),
             "positive_label_coerced": dataset.positive_label_coerced,

@@ -57,7 +57,7 @@ testpaths = ["tests"]
 addopts = "-ra"
 
 [tool.mypy]
-files = ["src", "frontend"]
+files = ["src", "frontend", "scripts"]
 mypy_path = "frontend"
 ignore_missing_imports = true
 warn_unused_configs = true
