@@ -21,7 +21,8 @@
     "n_splits": 5,
     "n_repeats": 3,
     "gap": 0,
-    "seed": 42
+    "seed": 42,
+    "max_eval_group_fraction": 0.25
   },
   "seed": 42,
   "threshold": 0.5,

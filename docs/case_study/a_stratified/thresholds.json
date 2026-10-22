@@ -123,7 +123,7 @@
           }
         }
       },
-      "created_at": "2026-10-22T08:39:12.869969Z"
+      "created_at": "2026-10-22T09:20:01.104199Z"
     },
     "dummy_prior": {
       "model": "dummy_prior",
@@ -248,7 +248,7 @@
           }
         }
       },
-      "created_at": "2026-10-22T08:39:12.958215Z"
+      "created_at": "2026-10-22T09:20:01.240210Z"
     },
     "logreg_balanced": {
       "model": "logreg_balanced",
@@ -373,13 +373,13 @@
           }
         }
       },
-      "created_at": "2026-10-22T08:39:12.987437Z"
+      "created_at": "2026-10-22T09:20:01.312920Z"
     }
   },
   "history": [
     {
       "model": "hgb+smote",
-      "created_at": "2026-10-22T08:39:12.869969Z",
+      "created_at": "2026-10-22T09:20:01.104199Z",
       "chosen_threshold": 0.42924758658507717,
       "strategy": {
         "kind": "max_fbeta",
@@ -391,7 +391,7 @@
     },
     {
       "model": "dummy_prior",
-      "created_at": "2026-10-22T08:39:12.958215Z",
+      "created_at": "2026-10-22T09:20:01.240210Z",
       "chosen_threshold": 0.02319407573005449,
       "strategy": {
         "kind": "max_fbeta",
@@ -403,7 +403,7 @@
     },
     {
       "model": "logreg_balanced",
-      "created_at": "2026-10-22T08:39:12.987437Z",
+      "created_at": "2026-10-22T09:20:01.312920Z",
       "chosen_threshold": 0.8172562269832655,
       "strategy": {
         "kind": "max_fbeta",

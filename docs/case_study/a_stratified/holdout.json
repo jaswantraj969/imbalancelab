@@ -3,7 +3,8 @@
   "config": {
     "test_size": 0.2,
     "gap": 0,
-    "seed": 42
+    "seed": 42,
+    "max_eval_group_fraction": 0.25
   },
   "dataset_sha256": "eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed",
   "n_rows": 11183,
@@ -11195,5 +11196,10 @@
     11182
   ],
   "gap_idx": [],
-  "test_sha256": "ee4a3c8a3d3efbbfac7e1c20ba4c7fae2c3d9cec55bdd2101aed8a75a2a271c7"
+  "test_sha256": "ee4a3c8a3d3efbbfac7e1c20ba4c7fae2c3d9cec55bdd2101aed8a75a2a271c7",
+  "duplicate_groups": false,
+  "group_info": null,
+  "n_pinned_groups": 0,
+  "n_pinned_rows": 0,
+  "warnings": []
 }

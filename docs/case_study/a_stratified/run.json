@@ -1,9 +1,9 @@
 {
-  "run_id": "run-20261022T083838Z-b12a4417",
+  "run_id": "run-20261022T091904Z-596af186",
   "status": "completed",
-  "created_at": "2026-10-22T08:38:38.017263Z",
-  "finished_at": "2026-10-22T08:39:12.763012Z",
-  "dataset_id": "ds-20261022T083837Z-2d9c08c1",
+  "created_at": "2026-10-22T09:19:03.947744Z",
+  "finished_at": "2026-10-22T09:20:00.970425Z",
+  "dataset_id": "ds-20261022T091903Z-cd54094f",
   "dataset": {
     "sha256": "eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed",
     "source_name": "mammography.csv",
@@ -15,7 +15,8 @@
       "group_column": null,
       "time_column": null,
       "expected_dtypes": {},
-      "split_strategy": "stratified"
+      "split_strategy": "stratified",
+      "duplicate_groups": false
     },
     "positive_label_coerced": false,
     "notes": []
@@ -25,12 +26,17 @@
     "config": {
       "test_size": 0.2,
       "gap": 0,
-      "seed": 42
+      "seed": 42,
+      "max_eval_group_fraction": 0.25
     },
     "n_outer_train": 8946,
     "n_test": 2237,
     "n_gap": 0,
-    "test_sha256": "ee4a3c8a3d3efbbfac7e1c20ba4c7fae2c3d9cec55bdd2101aed8a75a2a271c7"
+    "test_sha256": "ee4a3c8a3d3efbbfac7e1c20ba4c7fae2c3d9cec55bdd2101aed8a75a2a271c7",
+    "duplicate_groups": false,
+    "n_pinned_groups": 0,
+    "n_pinned_rows": 0,
+    "group_info": null
   },
   "cv": {
     "strategy": "stratified",
@@ -38,11 +44,16 @@
       "n_splits": 5,
       "n_repeats": 3,
       "gap": 0,
-      "seed": 42
+      "seed": 42,
+      "max_eval_group_fraction": 0.25
     },
     "n_repeats_effective": 3,
     "n_folds_total": 15,
-    "fold_indices_sha256": "273eb075663b91f47cad5b3600106b2b8617408cc133e221ca2f251fcb6da372"
+    "fold_indices_sha256": "273eb075663b91f47cad5b3600106b2b8617408cc133e221ca2f251fcb6da372",
+    "duplicate_groups": false,
+    "n_groups_outer_train": null,
+    "n_pinned_groups": 0,
+    "n_pinned_rows": 0
   },
   "seed": 42,
   "primary_metric": "average_precision",

@@ -1,5 +1,9 @@
 """Outer holdout and inner CV folds for stratified, group, and temporal strategies.
 
+Splitting is group-aware (``StratifiedGroupKFold``) whenever groups resolve: a declared
+``group_column`` (group strategy) and/or exact-duplicate clusters
+(``schema.duplicate_groups=True``, see :mod:`imbalancelab.splitting.groups`).
+
 All indices are absolute row positions into ``LoadedDataset.frame``. The outer holdout is
 created once per dataset (see :func:`get_or_create_holdout`). Inner CV folds are built from
 outer-train rows only.
@@ -19,6 +23,10 @@ from sklearn.model_selection import RepeatedStratifiedKFold, StratifiedGroupKFol
 from imbalancelab.data.loader import LoadedDataset
 from imbalancelab.data.schema import SplitStrategy
 from imbalancelab.profiling.warnings import ProfileWarning
+from imbalancelab.splitting.groups import GroupInfo, GroupingError, resolve_groups
+
+# a test set in which one group exceeds this share is flagged, whatever the pinning setting
+DOMINANT_GROUP_SHARE = 0.5
 
 
 class SplitError(ValueError):
@@ -33,6 +41,9 @@ class HoldoutConfig(BaseModel):
     test_size: float = Field(default=0.2, gt=0, lt=1)
     gap: int = Field(default=0, ge=0)  # temporal: distinct time values dropped before test
     seed: int = 42
+    # group-aware splits: a group larger than this fraction of the target test-set size is
+    # pinned to the training side (see ``pin_oversized_groups``)
+    max_eval_group_fraction: float = Field(default=0.25, gt=0, le=1)
 
 
 class CVConfig(BaseModel):
@@ -40,6 +51,7 @@ class CVConfig(BaseModel):
     n_repeats: int = Field(default=3, ge=1)
     gap: int = Field(default=0, ge=0)  # temporal: distinct time values dropped before val
     seed: int = 42
+    max_eval_group_fraction: float = Field(default=0.25, gt=0, le=1)
 
 
 class Holdout(BaseModel):
@@ -51,6 +63,11 @@ class Holdout(BaseModel):
     test_idx: list[int]
     gap_idx: list[int] = Field(default_factory=list)
     test_sha256: str
+    duplicate_groups: bool = False
+    group_info: GroupInfo | None = None
+    n_pinned_groups: int = 0  # oversized groups forced into outer-train
+    n_pinned_rows: int = 0
+    warnings: list[ProfileWarning] = Field(default_factory=list)
 
     def save(self, path: Path) -> None:
         Path(path).write_text(self.model_dump_json(indent=2), encoding="utf-8")
@@ -74,6 +91,10 @@ class CVPlan(BaseModel):
     folds: list[Fold]
     fold_indices_sha256: str
     warnings: list[ProfileWarning] = Field(default_factory=list)
+    duplicate_groups: bool = False
+    n_groups: int | None = None  # split groups in outer-train (group-aware CV only)
+    n_pinned_groups: int = 0  # oversized groups kept on the training side of every fold
+    n_pinned_rows: int = 0
 
 
 def indices_sha256(payload: Any) -> str:
@@ -108,14 +129,92 @@ def _time_values(dataset: LoadedDataset) -> np.ndarray:
     return series.to_numpy(dtype=float)
 
 
-def _groups(dataset: LoadedDataset) -> np.ndarray:
-    col = dataset.schema.group_column
-    if col is None:
-        raise SplitError("group strategy requires schema.group_column")
-    series = dataset.frame[col]
-    if series.isna().any():
-        raise SplitError(f"group column {col!r} has missing values")
-    return series.astype(str).to_numpy()
+def pin_oversized_groups(groups: np.ndarray, eval_size: float, fraction: float) -> np.ndarray:
+    """Boolean mask of rows whose group is too large to sit in an evaluation set.
+
+    A group larger than ``fraction * eval_size`` rows cannot be placed in a test or validation
+    set without dominating it: ``StratifiedGroupKFold`` then fills the rest of that set with
+    whatever rebalances the class ratio, and the evaluation set stops being representative.
+    Such groups are pinned to the training side instead. The evaluation population then excludes
+    their rows, and callers record and report this.
+    """
+    sizes = pd.Series(groups).value_counts()
+    oversized = sizes.index[sizes > fraction * eval_size]
+    return np.isin(groups, np.asarray(oversized))
+
+
+def _pinned_warning(
+    where: str, mask: np.ndarray, groups: np.ndarray, limit: float
+) -> ProfileWarning:
+    n_groups = int(len(np.unique(groups[mask])))
+    return ProfileWarning(
+        code="oversized_groups_pinned_to_train",
+        message=(
+            f"{n_groups} group(s) covering {int(mask.sum())} rows exceed {limit:.0f} rows "
+            f"(max_eval_group_fraction of the {where} size) and are always on the training "
+            f"side; {where} metrics do not cover these rows."
+        ),
+        evidence={
+            "where": where,
+            "n_groups": n_groups,
+            "n_rows": int(mask.sum()),
+            "row_limit": float(limit),
+        },
+    )
+
+
+def _balance_warnings(
+    y: np.ndarray,
+    test_idx: np.ndarray,
+    eligible: np.ndarray,
+    config: HoldoutConfig,
+    n: int,
+    groups: np.ndarray,
+) -> list[ProfileWarning]:
+    """Warn when the test set's size, prevalence or group composition is far from requested."""
+    out: list[ProfileWarning] = []
+    largest = float(pd.Series(groups[test_idx]).value_counts().iloc[0]) / max(len(test_idx), 1)
+    if largest > DOMINANT_GROUP_SHARE:
+        out.append(
+            ProfileWarning(
+                code="holdout_dominated_by_group",
+                message=(
+                    f"One split group makes up {largest:.1%} of the test set (more than "
+                    f"{DOMINANT_GROUP_SHARE:.0%}); the test set may not be representative."
+                ),
+                evidence={"largest_group_share": largest},
+            )
+        )
+    frac = len(test_idx) / n
+    if abs(frac - config.test_size) > 0.25 * config.test_size:
+        out.append(
+            ProfileWarning(
+                code="holdout_size_deviation",
+                message=f"Test set is {frac:.1%} of rows; requested {config.test_size:.1%}.",
+                evidence={"test_fraction": frac, "requested": config.test_size},
+            )
+        )
+    ref = float(y[eligible].mean())
+    prev = float(y[test_idx].mean())
+    if ref > 0 and abs(prev - ref) > 0.25 * ref:
+        out.append(
+            ProfileWarning(
+                code="holdout_prevalence_deviation",
+                message=(
+                    f"Test prevalence {prev:.4f} differs from {ref:.4f} (rows eligible for test) "
+                    "by more than 25%."
+                ),
+                evidence={"test_prevalence": prev, "eligible_prevalence": ref},
+            )
+        )
+    return out
+
+
+def _resolve(dataset: LoadedDataset) -> tuple[np.ndarray | None, GroupInfo | None, list]:
+    try:
+        return resolve_groups(dataset)
+    except GroupingError as exc:
+        raise SplitError(str(exc)) from exc
 
 
 # --------------------------------------------------------------------------- holdout
@@ -129,8 +228,10 @@ def make_holdout(dataset: LoadedDataset, config: HoldoutConfig | None = None) ->
     y = dataset.y
     all_idx = np.arange(n)
     gap_idx = np.array([], dtype=int)
+    groups, group_info, group_warnings = _resolve(dataset)
+    n_pinned_groups = n_pinned_rows = 0
 
-    if strategy == "stratified":
+    if strategy != "temporal" and groups is None:
         n_test = int(np.ceil(config.test_size * n))
         n_pos = int(y.sum())
         if min(n_pos, n - n_pos) < 2 or n_test < 2 or n - n_test < 2:
@@ -144,16 +245,28 @@ def make_holdout(dataset: LoadedDataset, config: HoldoutConfig | None = None) ->
             test_parts.append(rng.choice(members, size=k, replace=False))
         test_idx = np.concatenate(test_parts)
         train_idx = np.setdiff1d(all_idx, test_idx)
-    elif strategy == "group":
-        groups = _groups(dataset)
-        n_folds = max(2, int(round(1.0 / config.test_size)))
-        if len(np.unique(groups)) < n_folds:
+    elif groups is not None:
+        target = config.test_size * n
+        pinned = pin_oversized_groups(groups, target, config.max_eval_group_fraction)
+        eligible = all_idx[~pinned]
+        n_folds = max(2, int(round(len(eligible) / target)))
+        n_eligible_groups = len(np.unique(groups[eligible]))
+        if n_eligible_groups < n_folds:
             raise SplitError(
-                f"group holdout needs at least {n_folds} distinct groups, "
-                f"found {len(np.unique(groups))}"
+                f"group holdout needs at least {n_folds} distinct groups, found {n_eligible_groups}"
             )
         sgkf = StratifiedGroupKFold(n_splits=n_folds, shuffle=True, random_state=config.seed)
-        train_idx, test_idx = next(iter(sgkf.split(all_idx, y, groups)))
+        tr, te = next(iter(sgkf.split(eligible, y[eligible], groups[eligible])))
+        test_idx = eligible[te]
+        train_idx = np.concatenate([eligible[tr], all_idx[pinned]])
+        n_pinned_groups, n_pinned_rows = int(len(np.unique(groups[pinned]))), int(pinned.sum())
+        if n_pinned_rows:
+            limit = config.max_eval_group_fraction * target
+            group_warnings = [*group_warnings, _pinned_warning("test set", pinned, groups, limit)]
+        group_warnings = [
+            *group_warnings,
+            *_balance_warnings(y, np.asarray(test_idx), eligible, config, n, groups),
+        ]
     else:
         t = _time_values(dataset)
         uniq = np.unique(t)
@@ -180,6 +293,11 @@ def make_holdout(dataset: LoadedDataset, config: HoldoutConfig | None = None) ->
         test_idx=test_list,
         gap_idx=_sorted_list(gap_idx),
         test_sha256=indices_sha256(test_list),
+        duplicate_groups=dataset.schema.duplicate_groups,
+        group_info=group_info,
+        n_pinned_groups=n_pinned_groups,
+        n_pinned_rows=n_pinned_rows,
+        warnings=group_warnings,
     )
 
 
@@ -199,6 +317,8 @@ def get_or_create_holdout(
             raise HoldoutMismatchError("stored holdout belongs to a different dataset (SHA-256)")
         if holdout.strategy != dataset.schema.split_strategy:
             raise HoldoutMismatchError("stored holdout used a different split strategy")
+        if holdout.duplicate_groups != dataset.schema.duplicate_groups:
+            raise HoldoutMismatchError("stored holdout used a different duplicate_groups setting")
         if config is not None and holdout.config != config:
             raise HoldoutMismatchError("stored holdout was created with a different config")
         if holdout.test_sha256 != indices_sha256(holdout.test_idx):
@@ -236,8 +356,11 @@ def make_cv_folds(
     warnings: list[ProfileWarning] = []
     folds: list[Fold] = []
     n_repeats = config.n_repeats
+    all_groups, _, _ = _resolve(dataset)
+    n_groups: int | None = None
+    n_pinned_groups = n_pinned_rows = 0
 
-    if strategy == "stratified":
+    if strategy != "temporal" and all_groups is None:
         n_min = int(min(y_outer.sum(), len(y_outer) - y_outer.sum()))
         if n_min < config.n_splits:
             raise SplitError(
@@ -249,19 +372,31 @@ def make_cv_folds(
         )
         for i, (tr, va) in enumerate(rskf.split(outer, y_outer)):
             folds.append(_fold(i // config.n_splits, i % config.n_splits, outer[tr], outer[va]))
-    elif strategy == "group":
-        groups = _groups(dataset)[outer]
+    elif all_groups is not None:
+        groups = all_groups[outer]
         n_groups = len(np.unique(groups))
-        if n_groups < config.n_splits:
+        fold_size = len(outer) / config.n_splits
+        pinned = pin_oversized_groups(groups, fold_size, config.max_eval_group_fraction)
+        eligible, always_train = outer[~pinned], outer[pinned]
+        n_eligible_groups = len(np.unique(groups[~pinned]))
+        if n_eligible_groups < config.n_splits:
             raise SplitError(
-                f"only {n_groups} groups in outer-train; cannot build {config.n_splits} folds"
+                f"only {n_eligible_groups} groups in outer-train; cannot build "
+                f"{config.n_splits} folds"
             )
+        if pinned.any():
+            n_pinned_groups = int(len(np.unique(groups[pinned])))
+            n_pinned_rows = int(pinned.sum())
+            limit = config.max_eval_group_fraction * fold_size
+            warnings.append(_pinned_warning("validation fold", pinned, groups, limit))
         for r in range(config.n_repeats):
             sgkf = StratifiedGroupKFold(
                 n_splits=config.n_splits, shuffle=True, random_state=config.seed + r
             )
-            for f, (tr, va) in enumerate(sgkf.split(outer, y_outer, groups)):
-                folds.append(_fold(r, f, outer[tr], outer[va]))
+            for f, (tr, va) in enumerate(sgkf.split(eligible, y[eligible], groups[~pinned])):
+                folds.append(
+                    _fold(r, f, np.concatenate([eligible[tr], always_train]), eligible[va])
+                )
     else:
         if config.n_repeats != 1:
             warnings.append(
@@ -310,6 +445,10 @@ def make_cv_folds(
         folds=folds,
         fold_indices_sha256=folds_sha256(folds),
         warnings=warnings,
+        duplicate_groups=dataset.schema.duplicate_groups,
+        n_groups=n_groups,
+        n_pinned_groups=n_pinned_groups,
+        n_pinned_rows=n_pinned_rows,
     )
 
 

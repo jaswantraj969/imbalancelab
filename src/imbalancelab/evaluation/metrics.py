@@ -5,6 +5,18 @@ a single-class ``y_true``, or precision with no positive predictions) returns
 ``MetricResult(value=None, defined=False, reason=...)``. It never returns a silent 0, an
 unexplained NaN, or a crash. Threshold metrics are computed from confusion counts, using the
 convention ``score >= threshold`` means "predict positive".
+
+Edge-case contract (tested in ``tests/test_metrics.py``):
+
+* **Single-class ``y_true``** (all negative or all positive): average precision, ROC AUC,
+  balanced accuracy and MCC are **undefined** (``value=None, defined=False`` with a reason).
+  Recall is undefined when there are no positives.
+* **Constant scores** with both classes present: average precision is **defined and equals the
+  prevalence**, and ROC AUC is **defined and equals 0.5** (chance level, all ties). Both carry
+  ``note="constant scores: value equals the chance level (all ties)"``. This is what the prior
+  ``DummyClassifier`` baseline produces. MCC is undefined because predictions are constant.
+* **No positive predictions** at the threshold: precision is undefined, and recall and F-beta
+  are 0 (defined) when positives exist.
 """
 
 import math

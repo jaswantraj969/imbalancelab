@@ -1,0 +1,417 @@
+{
+  "analyses": {
+    "hgb+smote": {
+      "model": "hgb+smote",
+      "strategy": {
+        "kind": "max_fbeta",
+        "beta": 2.0,
+        "target": null,
+        "cost_fp": 1.0,
+        "cost_fn": 1.0
+      },
+      "provenance": "oof",
+      "selection_rule": "median of per-repeat thresholds selected on out-of-fold predictions",
+      "chosen_threshold": 0.6035967212953656,
+      "per_repeat": [
+        {
+          "repeat": 0,
+          "n": 5890,
+          "threshold": 0.6035967212953656,
+          "precision": 0.6186440677966102,
+          "recall": 0.7684210526315789,
+          "fbeta": 0.7329317269076305,
+          "expected_cost": 0.02275042444821732,
+          "tp": 146,
+          "fp": 90,
+          "fn": 44,
+          "tn": 5610
+        },
+        {
+          "repeat": 1,
+          "n": 5890,
+          "threshold": 0.5170019938166185,
+          "precision": 0.5742971887550201,
+          "recall": 0.7526315789473684,
+          "fbeta": 0.7086223984142715,
+          "expected_cost": 0.02597623089983022,
+          "tp": 143,
+          "fp": 106,
+          "fn": 47,
+          "tn": 5594
+        },
+        {
+          "repeat": 2,
+          "n": 5890,
+          "threshold": 0.6796159077092936,
+          "precision": 0.6086956521739131,
+          "recall": 0.7368421052631579,
+          "fbeta": 0.7070707070707071,
+          "expected_cost": 0.023769100169779286,
+          "tp": 140,
+          "fp": 90,
+          "fn": 50,
+          "tn": 5610
+        }
+      ],
+      "per_repeat_spread": {
+        "threshold": {
+          "mean": 0.6000715409404259,
+          "std": 0.0813642514884438,
+          "min": 0.5170019938166185,
+          "max": 0.6796159077092936,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.6005456362418479,
+          "std": 0.02326969037078155,
+          "min": 0.5742971887550201,
+          "max": 0.6186440677966102,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.7526315789473684,
+          "std": 0.01578947368421052,
+          "min": 0.7368421052631579,
+          "max": 0.7684210526315789,
+          "n": 3
+        },
+        "fbeta": {
+          "mean": 0.7162082774642031,
+          "std": 0.014503698061928185,
+          "min": 0.7070707070707071,
+          "max": 0.7329317269076305,
+          "n": 3
+        },
+        "expected_cost": {
+          "mean": 0.02416525183927561,
+          "std": 0.001648987242143006,
+          "min": 0.02275042444821732,
+          "max": 0.02597623089983022,
+          "n": 3
+        }
+      },
+      "chosen_threshold_on_oof": {
+        "note": "chosen threshold re-applied to each repeat's OOF predictions (optimistic)",
+        "spread": {
+          "precision": {
+            "mean": 0.5974715198666296,
+            "std": 0.022543388486338106,
+            "min": 0.5737704918032787,
+            "max": 0.6186440677966102,
+            "n": 3
+          },
+          "recall": {
+            "mean": 0.743859649122807,
+            "std": 0.021912273678590832,
+            "min": 0.7263157894736842,
+            "max": 0.7684210526315789,
+            "n": 3
+          },
+          "fbeta": {
+            "mean": 0.7090375264186045,
+            "std": 0.02069333680917896,
+            "min": 0.696969696969697,
+            "max": 0.7329317269076305,
+            "n": 3
+          },
+          "expected_cost": {
+            "mean": 0.024448217317487267,
+            "std": 0.0016977928692699477,
+            "min": 0.02275042444821732,
+            "max": 0.026146010186757215,
+            "n": 3
+          }
+        }
+      },
+      "created_at": "2026-10-22T09:21:14.377870Z"
+    },
+    "dummy_prior": {
+      "model": "dummy_prior",
+      "strategy": {
+        "kind": "max_fbeta",
+        "beta": 2.0,
+        "target": null,
+        "cost_fp": 1.0,
+        "cost_fn": 1.0
+      },
+      "provenance": "oof",
+      "selection_rule": "median of per-repeat thresholds selected on out-of-fold predictions",
+      "chosen_threshold": 0.01977365999253824,
+      "per_repeat": [
+        {
+          "repeat": 0,
+          "n": 5890,
+          "threshold": 0.01977365999253824,
+          "precision": 0.03225806451612903,
+          "recall": 1.0,
+          "fbeta": 0.14285714285714285,
+          "expected_cost": 0.967741935483871,
+          "tp": 190,
+          "fp": 5700,
+          "fn": 0,
+          "tn": 0
+        },
+        {
+          "repeat": 1,
+          "n": 5890,
+          "threshold": 0.01977365999253824,
+          "precision": 0.03225806451612903,
+          "recall": 1.0,
+          "fbeta": 0.14285714285714285,
+          "expected_cost": 0.967741935483871,
+          "tp": 190,
+          "fp": 5700,
+          "fn": 0,
+          "tn": 0
+        },
+        {
+          "repeat": 2,
+          "n": 5890,
+          "threshold": 0.01977365999253824,
+          "precision": 0.03225806451612903,
+          "recall": 1.0,
+          "fbeta": 0.14285714285714285,
+          "expected_cost": 0.967741935483871,
+          "tp": 190,
+          "fp": 5700,
+          "fn": 0,
+          "tn": 0
+        }
+      ],
+      "per_repeat_spread": {
+        "threshold": {
+          "mean": 0.01977365999253824,
+          "std": 0.0,
+          "min": 0.01977365999253824,
+          "max": 0.01977365999253824,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.03225806451612903,
+          "std": 0.0,
+          "min": 0.03225806451612903,
+          "max": 0.03225806451612903,
+          "n": 3
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n": 3
+        },
+        "fbeta": {
+          "mean": 0.14285714285714285,
+          "std": 0.0,
+          "min": 0.14285714285714285,
+          "max": 0.14285714285714285,
+          "n": 3
+        },
+        "expected_cost": {
+          "mean": 0.967741935483871,
+          "std": 0.0,
+          "min": 0.967741935483871,
+          "max": 0.967741935483871,
+          "n": 3
+        }
+      },
+      "chosen_threshold_on_oof": {
+        "note": "chosen threshold re-applied to each repeat's OOF predictions (optimistic)",
+        "spread": {
+          "precision": {
+            "mean": 0.03225806451612903,
+            "std": 0.0,
+            "min": 0.03225806451612903,
+            "max": 0.03225806451612903,
+            "n": 3
+          },
+          "recall": {
+            "mean": 1.0,
+            "std": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "n": 3
+          },
+          "fbeta": {
+            "mean": 0.14285714285714285,
+            "std": 0.0,
+            "min": 0.14285714285714285,
+            "max": 0.14285714285714285,
+            "n": 3
+          },
+          "expected_cost": {
+            "mean": 0.967741935483871,
+            "std": 0.0,
+            "min": 0.967741935483871,
+            "max": 0.967741935483871,
+            "n": 3
+          }
+        }
+      },
+      "created_at": "2026-10-22T09:21:14.469713Z"
+    },
+    "logreg_balanced": {
+      "model": "logreg_balanced",
+      "strategy": {
+        "kind": "max_fbeta",
+        "beta": 2.0,
+        "target": null,
+        "cost_fp": 1.0,
+        "cost_fn": 1.0
+      },
+      "provenance": "oof",
+      "selection_rule": "median of per-repeat thresholds selected on out-of-fold predictions",
+      "chosen_threshold": 0.86051899518739,
+      "per_repeat": [
+        {
+          "repeat": 0,
+          "n": 5890,
+          "threshold": 0.8880476083496759,
+          "precision": 0.5236051502145923,
+          "recall": 0.6421052631578947,
+          "fbeta": 0.6143001007049346,
+          "expected_cost": 0.03039049235993209,
+          "tp": 122,
+          "fp": 111,
+          "fn": 68,
+          "tn": 5589
+        },
+        {
+          "repeat": 1,
+          "n": 5890,
+          "threshold": 0.8291255982216805,
+          "precision": 0.40181268882175225,
+          "recall": 0.7,
+          "fbeta": 0.6095325389550871,
+          "expected_cost": 0.0432937181663837,
+          "tp": 133,
+          "fp": 198,
+          "fn": 57,
+          "tn": 5502
+        },
+        {
+          "repeat": 2,
+          "n": 5890,
+          "threshold": 0.86051899518739,
+          "precision": 0.450354609929078,
+          "recall": 0.6684210526315789,
+          "fbeta": 0.6094049904030711,
+          "expected_cost": 0.03701188455008489,
+          "tp": 127,
+          "fp": 155,
+          "fn": 63,
+          "tn": 5545
+        }
+      ],
+      "per_repeat_spread": {
+        "threshold": {
+          "mean": 0.8592307339195822,
+          "std": 0.02948212224724498,
+          "min": 0.8291255982216805,
+          "max": 0.8880476083496759,
+          "n": 3
+        },
+        "precision": {
+          "mean": 0.45859081632180754,
+          "std": 0.061312537338127984,
+          "min": 0.40181268882175225,
+          "max": 0.5236051502145923,
+          "n": 3
+        },
+        "recall": {
+          "mean": 0.6701754385964912,
+          "std": 0.02898721340676894,
+          "min": 0.6421052631578947,
+          "max": 0.7,
+          "n": 3
+        },
+        "fbeta": {
+          "mean": 0.6110792100210309,
+          "std": 0.0027901021050354825,
+          "min": 0.6094049904030711,
+          "max": 0.6143001007049346,
+          "n": 3
+        },
+        "expected_cost": {
+          "mean": 0.036898698358800226,
+          "std": 0.00645235750625249,
+          "min": 0.03039049235993209,
+          "max": 0.0432937181663837,
+          "n": 3
+        }
+      },
+      "chosen_threshold_on_oof": {
+        "note": "chosen threshold re-applied to each repeat's OOF predictions (optimistic)",
+        "spread": {
+          "precision": {
+            "mean": 0.4493368928741701,
+            "std": 0.0029210110709501384,
+            "min": 0.4460431654676259,
+            "max": 0.45161290322580644,
+            "n": 3
+          },
+          "recall": {
+            "mean": 0.6614035087719299,
+            "std": 0.008039606482378631,
+            "min": 0.6526315789473685,
+            "max": 0.6684210526315789,
+            "n": 3
+          },
+          "fbeta": {
+            "mean": 0.6043532523367365,
+            "std": 0.006294010520864932,
+            "min": 0.5973025048169557,
+            "max": 0.6094049904030711,
+            "n": 3
+          },
+          "expected_cost": {
+            "mean": 0.03706847764572722,
+            "std": 0.000259342144592861,
+            "min": 0.03684210526315789,
+            "max": 0.03735144312393888,
+            "n": 3
+          }
+        }
+      },
+      "created_at": "2026-10-22T09:21:14.504474Z"
+    }
+  },
+  "history": [
+    {
+      "model": "hgb+smote",
+      "created_at": "2026-10-22T09:21:14.377870Z",
+      "chosen_threshold": 0.6035967212953656,
+      "strategy": {
+        "kind": "max_fbeta",
+        "beta": 2.0,
+        "target": null,
+        "cost_fp": 1.0,
+        "cost_fn": 1.0
+      }
+    },
+    {
+      "model": "dummy_prior",
+      "created_at": "2026-10-22T09:21:14.469713Z",
+      "chosen_threshold": 0.01977365999253824,
+      "strategy": {
+        "kind": "max_fbeta",
+        "beta": 2.0,
+        "target": null,
+        "cost_fp": 1.0,
+        "cost_fn": 1.0
+      }
+    },
+    {
+      "model": "logreg_balanced",
+      "created_at": "2026-10-22T09:21:14.504474Z",
+      "chosen_threshold": 0.86051899518739,
+      "strategy": {
+        "kind": "max_fbeta",
+        "beta": 2.0,
+        "target": null,
+        "cost_fp": 1.0,
+        "cost_fn": 1.0
+      }
+    }
+  ]
+}

@@ -131,3 +131,17 @@ def test_input_validation() -> None:
         average_precision([0, 1], [0.1, np.nan])
     with pytest.raises(ValueError, match="binary"):
         roc_auc([0, 2], [0.1, 0.2])
+
+
+@pytest.mark.parametrize("cls", [0, 1])
+def test_documented_contract_single_class_undefined_constant_scores_defined(cls: int) -> None:
+    """The edge-case table in README.md and the metrics docstring."""
+    single = compute_metrics(np.full(10, cls), np.linspace(0.1, 0.9, 10))
+    for name in ("average_precision", "roc_auc"):
+        r = single.metrics[name]
+        assert (r.defined, r.value) == (False, None) and r.reason
+    y = np.array([0, 0, 0, 1, 0, 0, 1, 0, 0, 0])
+    constant = compute_metrics(y, np.full(10, 0.42))
+    assert constant.metrics["average_precision"].value == pytest.approx(y.mean())
+    assert constant.metrics["roc_auc"].value == pytest.approx(0.5)
+    assert constant.metrics["average_precision"].defined and constant.metrics["roc_auc"].defined

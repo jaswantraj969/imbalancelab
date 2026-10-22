@@ -1,4 +1,4 @@
-# ImbalanceLab audit report: run run-20261022T083838Z-b12a4417
+# ImbalanceLab audit report: run run-20261022T091904Z-596af186
 
 ## 1. Verdict
 
@@ -55,6 +55,8 @@ Duplicates: 3334 exact duplicate rows; 1 conflicting-label groups (3329 rows).
 | Inner CV strategy | stratified |
 | Folds × repeats | 5 × 3 (15 folds) |
 | Fold indices SHA-256 | `273eb075663b91f47cad5b3600106b2b8617408cc133e221ca2f251fcb6da372` |
+| Duplicate-aware groups | off |
+| Oversized groups pinned to training (test / CV) | 0 groups, 0 rows / 0 groups, 0 rows |
 
 CV, model selection and threshold selection use outer-train rows only. All models were fit on identical stored folds.
 
@@ -123,7 +125,7 @@ Precision, recall and F-beta are per-repeat means at each repeat's own selected 
 
 ## 8. Final test evaluation
 
-Model **hgb+smote** refit on 8946 outer-train rows and scored once on 2237 test rows (52 positive) at threshold 0.4292 (selected on out-of-fold predictions, strategy `max_fbeta`). Evaluated at 2026-10-22T08:39:13.659511Z.
+Model **hgb+smote** refit on 8946 outer-train rows and scored once on 2237 test rows (52 positive) at threshold 0.4292 (selected on out-of-fold predictions, strategy `max_fbeta`). Evaluated at 2026-10-22T09:20:02.458900Z.
 
 | Model | Threshold | AP | ROC AUC | Brier ↓ | Precision | Recall | F-beta | MCC | TP/FP/FN/TN |
 |---|---|---|---|---|---|---|---|---|---|
@@ -137,8 +139,8 @@ Model **hgb+smote** refit on 8946 outer-train rows and scored once on 2237 test 
 
 Final-evaluation log: 2 entries.
 
-- 2026-10-22T08:39:13.659511Z: final_evaluation
-- 2026-10-22T08:39:13.751547Z: model_persisted
+- 2026-10-22T09:20:02.458900Z: final_evaluation
+- 2026-10-22T09:20:02.589570Z: model_persisted
 
 ## 9. Limitations
 
@@ -152,8 +154,8 @@ Final-evaluation log: 2 entries.
 
 | Field | Value |
 |---|---|
-| Run ID | run-20261022T083838Z-b12a4417 |
-| Created / finished | 2026-10-22T08:38:38.017263Z / 2026-10-22T08:39:12.763012Z |
+| Run ID | run-20261022T091904Z-596af186 |
+| Created / finished | 2026-10-22T09:19:03.947744Z / 2026-10-22T09:20:00.970425Z |
 | Seed | 42 |
 | Dataset SHA-256 | `eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed` |
 | Fold indices SHA-256 | `273eb075663b91f47cad5b3600106b2b8617408cc133e221ca2f251fcb6da372` |
@@ -196,7 +198,8 @@ Experiment config (`config.json`):
     "n_splits": 5,
     "n_repeats": 3,
     "gap": 0,
-    "seed": 42
+    "seed": 42,
+    "max_eval_group_fraction": 0.25
   },
   "seed": 42,
   "threshold": 0.5,

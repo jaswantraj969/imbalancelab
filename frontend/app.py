@@ -68,6 +68,9 @@ def page_upload(client: ApiClient) -> None:
         test_size = c6.number_input("Test size", 0.05, 0.5, 0.2, 0.05)
         gap = c7.number_input("Temporal gap (distinct time values)", 0, 1000, 0)
         seed = c8.number_input("Holdout seed", 0, 2**31 - 1, 42)
+        duplicate_groups = st.checkbox(
+            "Duplicate-aware groups (identical feature rows never cross a split boundary)"
+        )
         submitted = st.form_submit_button("Register dataset")
     if submitted:
         if upload is None:
@@ -77,6 +80,7 @@ def page_upload(client: ApiClient) -> None:
                 "target": target,
                 "positive_label": positive,
                 "split_strategy": strategy,
+                "duplicate_groups": duplicate_groups,
             }
             for field, value in (
                 ("id_column", id_col),

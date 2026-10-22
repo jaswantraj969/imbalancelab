@@ -25,6 +25,8 @@ class DatasetSchema(BaseModel):
     time_column: str | None = None
     expected_dtypes: dict[str, ExpectedDtype] = Field(default_factory=dict)
     split_strategy: SplitStrategy = "stratified"
+    # group rows with identical feature values so no duplicate cluster crosses a split boundary
+    duplicate_groups: bool = False
 
     @model_validator(mode="after")
     def _check_consistency(self) -> Self:
@@ -32,6 +34,8 @@ class DatasetSchema(BaseModel):
             raise ValueError("split_strategy='group' requires group_column")
         if self.split_strategy == "temporal" and self.time_column is None:
             raise ValueError("split_strategy='temporal' requires time_column")
+        if self.split_strategy == "temporal" and self.duplicate_groups:
+            raise ValueError("duplicate_groups is not supported with split_strategy='temporal'")
         special = [
             c for c in (self.id_column, self.group_column, self.time_column) if c is not None
         ]

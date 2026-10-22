@@ -1,0 +1,10 @@
+{
+  "fold_indices.json": {
+    "bytes": 2015855,
+    "sha256": "08f33088e508526127d5e886bfc98cb7aed2cf777a17ec3aeee67b734583733b"
+  },
+  "oof_predictions.parquet": {
+    "bytes": 1222802,
+    "sha256": "b30cbcdfec258860e48b80e66a0a46d42191aba937e7206763d458fa75e6b361"
+  }
+}

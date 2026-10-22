@@ -48,6 +48,8 @@ Duplicates: <n> exact duplicate rows; <n> conflicting-label groups (<n> rows).
 | Inner CV strategy | stratified |
 | Folds × repeats | <n> × <n> (<n> folds) |
 | Fold indices SHA<n> | `<sha<n>>` |
+| Duplicate-aware groups | off |
+| Oversized groups pinned to training (test / CV) | <n> groups, <n> rows / <n> groups, <n> rows |
 
 CV, model selection and threshold selection use outer-train rows only. All models were fit on identical stored folds.
 
@@ -156,7 +158,8 @@ Experiment config (`config.json`):
     "n_splits": <n>,
     "n_repeats": <n>,
     "gap": <n>,
-    "seed": <n>
+    "seed": <n>,
+    "max_eval_group_fraction": <n>
   },
   "seed": <n>,
   "threshold": <n>,

@@ -133,7 +133,11 @@ def run_experiment(
     plan: CVPlan = make_cv_folds(dataset, holdout, config.cv)
     features = infer_feature_spec(dataset.frame, dataset.feature_columns)
     profile = profile or profile_dataset(dataset)
-    split_warnings = [*plan.warnings, *cross_boundary_duplicates(dataset, holdout, plan)]
+    split_warnings = [
+        *holdout.warnings,
+        *plan.warnings,
+        *cross_boundary_duplicates(dataset, holdout, plan),
+    ]
     specs = config.all_specs()
 
     store = rec.RunStore(runs_dir)
@@ -159,6 +163,12 @@ def run_experiment(
             "n_test": len(holdout.test_idx),
             "n_gap": len(holdout.gap_idx),
             "test_sha256": holdout.test_sha256,
+            "duplicate_groups": holdout.duplicate_groups,
+            "n_pinned_groups": holdout.n_pinned_groups,
+            "n_pinned_rows": holdout.n_pinned_rows,
+            "group_info": None
+            if holdout.group_info is None
+            else holdout.group_info.model_dump(mode="json"),
         },
         "cv": {
             "strategy": plan.strategy,
@@ -166,6 +176,10 @@ def run_experiment(
             "n_repeats_effective": plan.n_repeats_effective,
             "n_folds_total": len(plan.folds),
             "fold_indices_sha256": plan.fold_indices_sha256,
+            "duplicate_groups": plan.duplicate_groups,
+            "n_groups_outer_train": plan.n_groups,
+            "n_pinned_groups": plan.n_pinned_groups,
+            "n_pinned_rows": plan.n_pinned_rows,
         },
         "seed": config.seed,
         "primary_metric": PRIMARY_METRIC,

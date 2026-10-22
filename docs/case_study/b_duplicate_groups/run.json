@@ -1,0 +1,177 @@
+{
+  "run_id": "run-20261022T092013Z-2056207e",
+  "status": "completed",
+  "created_at": "2026-10-22T09:20:08.347222Z",
+  "finished_at": "2026-10-22T09:21:14.289357Z",
+  "dataset_id": "ds-20261022T092006Z-f006ea5d",
+  "dataset": {
+    "sha256": "eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed",
+    "source_name": "mammography.csv",
+    "n_rows": 11183,
+    "schema": {
+      "target": "target",
+      "positive_label": 1,
+      "id_column": null,
+      "group_column": null,
+      "time_column": null,
+      "expected_dtypes": {},
+      "split_strategy": "stratified",
+      "duplicate_groups": true
+    },
+    "positive_label_coerced": false,
+    "notes": []
+  },
+  "holdout": {
+    "strategy": "stratified",
+    "config": {
+      "test_size": 0.2,
+      "gap": 0,
+      "seed": 42,
+      "max_eval_group_fraction": 0.25
+    },
+    "n_outer_train": 9219,
+    "n_test": 1964,
+    "n_gap": 0,
+    "test_sha256": "7ee8afda21eac8e55d32cec3c391e8d48d7034924747d626e357f536c5ebdd89",
+    "duplicate_groups": true,
+    "n_pinned_groups": 1,
+    "n_pinned_rows": 3329,
+    "group_info": {
+      "source": "duplicates",
+      "duplicate_groups": true,
+      "n_rows": 11183,
+      "n_groups": 7848,
+      "n_duplicate_clusters": 3,
+      "n_rows_in_duplicate_clusters": 3338,
+      "n_conflicting_label_clusters": 1,
+      "n_rows_in_conflicting_clusters": 3329,
+      "n_clusters_spanning_declared_groups": 0,
+      "n_declared_groups": null,
+      "n_declared_groups_merged": 0
+    }
+  },
+  "cv": {
+    "strategy": "stratified",
+    "config": {
+      "n_splits": 5,
+      "n_repeats": 3,
+      "gap": 0,
+      "seed": 42,
+      "max_eval_group_fraction": 0.25
+    },
+    "n_repeats_effective": 3,
+    "n_folds_total": 15,
+    "fold_indices_sha256": "f59d5586847fafdfbb5f7ea5f808783f63a2ac15f918acdf1c14aa3716e8ffd0",
+    "duplicate_groups": true,
+    "n_groups_outer_train": 5888,
+    "n_pinned_groups": 1,
+    "n_pinned_rows": 3329
+  },
+  "seed": 42,
+  "primary_metric": "average_precision",
+  "baselines": [
+    "dummy_prior",
+    "logreg_balanced"
+  ],
+  "candidates": [
+    "hgb",
+    "hgb+random_under",
+    "hgb+smote",
+    "random_forest"
+  ],
+  "models": [
+    "dummy_prior",
+    "logreg_balanced",
+    "hgb",
+    "hgb+random_under",
+    "hgb+smote",
+    "random_forest"
+  ],
+  "model_specs": [
+    {
+      "name": "dummy_prior",
+      "model": "dummy_prior",
+      "sampler": "none",
+      "description": "DummyClassifier(strategy='prior'): predicts the training prevalence"
+    },
+    {
+      "name": "logreg_balanced",
+      "model": "logreg_balanced",
+      "sampler": "none",
+      "description": "LogisticRegression(class_weight='balanced', max_iter=2000)"
+    },
+    {
+      "name": "hgb",
+      "model": "hgb",
+      "sampler": "none",
+      "description": "HistGradientBoostingClassifier(max_iter=200, learning_rate=0.1, early_stopping=False)"
+    },
+    {
+      "name": "hgb+random_under",
+      "model": "hgb",
+      "sampler": "random_under",
+      "description": "HistGradientBoostingClassifier(max_iter=200, learning_rate=0.1, early_stopping=False)"
+    },
+    {
+      "name": "hgb+smote",
+      "model": "hgb",
+      "sampler": "smote",
+      "description": "HistGradientBoostingClassifier(max_iter=200, learning_rate=0.1, early_stopping=False)"
+    },
+    {
+      "name": "random_forest",
+      "model": "random_forest",
+      "sampler": "none",
+      "description": "RandomForestClassifier(n_estimators=300, min_samples_leaf=2, class_weight='balanced_subsample')"
+    }
+  ],
+  "feature_spec": {
+    "numeric": [
+      "feature_0",
+      "feature_1",
+      "feature_2",
+      "feature_3",
+      "feature_4",
+      "feature_5"
+    ],
+    "categorical": [],
+    "dropped": {}
+  },
+  "split_warnings": [
+    {
+      "code": "conflicting_label_clusters",
+      "column": null,
+      "severity": "info",
+      "message": "1 duplicate cluster(s) (3329 rows) have identical features but different labels; they are kept and split together.",
+      "evidence": {
+        "n_clusters": 1,
+        "n_rows": 3329
+      }
+    },
+    {
+      "code": "oversized_groups_pinned_to_train",
+      "column": null,
+      "severity": "warning",
+      "message": "1 group(s) covering 3329 rows exceed 559 rows (max_eval_group_fraction of the test set size) and are always on the training side; test set metrics do not cover these rows.",
+      "evidence": {
+        "where": "test set",
+        "n_groups": 1,
+        "n_rows": 3329,
+        "row_limit": 559.15
+      }
+    },
+    {
+      "code": "oversized_groups_pinned_to_train",
+      "column": null,
+      "severity": "warning",
+      "message": "1 group(s) covering 3329 rows exceed 461 rows (max_eval_group_fraction of the validation fold size) and are always on the training side; validation fold metrics do not cover these rows.",
+      "evidence": {
+        "where": "validation fold",
+        "n_groups": 1,
+        "n_rows": 3329,
+        "row_limit": 460.95
+      }
+    }
+  ],
+  "error": null
+}

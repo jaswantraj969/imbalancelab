@@ -98,6 +98,22 @@ def final_test_verdict(c: dict[str, Any]) -> str:
     )
 
 
+def _group_summary(h: dict[str, Any]) -> str:
+    info = h.get("group_info")
+    if not h.get("duplicate_groups"):
+        if info:
+            return f"off (declared groups: {info['n_groups']})"
+        return "off"
+    if info is None:
+        return "on (no group info recorded)"
+    return (
+        f"on: {info['n_groups']} split groups ({info['source']}); "
+        f"{info['n_duplicate_clusters']} duplicate clusters covering "
+        f"{info['n_rows_in_duplicate_clusters']} rows; "
+        f"{info['n_conflicting_label_clusters']} with conflicting labels"
+    )
+
+
 def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[Path]]:
     run = record.run
     summary = record.summary
@@ -231,6 +247,12 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
                     f" ({cv['n_folds_total']} folds)",
                 ],
                 ["Fold indices SHA-256", f"`{cv['fold_indices_sha256']}`"],
+                ["Duplicate-aware groups", _group_summary(h)],
+                [
+                    "Oversized groups pinned to training (test / CV)",
+                    f"{h.get('n_pinned_groups', 0)} groups, {h.get('n_pinned_rows', 0)} rows / "
+                    f"{cv.get('n_pinned_groups', 0)} groups, {cv.get('n_pinned_rows', 0)} rows",
+                ],
             ],
         )
     )

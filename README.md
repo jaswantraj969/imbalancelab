@@ -9,7 +9,9 @@ record.
   duplicates and constant columns. These are flagged as *warnings with evidence*, never as
   proof.
 - **Splits:** an outer train/test holdout created **once per dataset** (stratified, group, or
-  temporal), with inner repeated CV on outer-train rows only.
+  temporal), with inner repeated CV on outer-train rows only. With
+  `DatasetSchema(duplicate_groups=True)`, rows with identical feature values form one group,
+  so no duplicate cluster crosses any train/validation/test boundary.
 - **Pipelines:** imblearn pipelines in which imputation, scaling, encoding and resampling are
   fit inside each training fold.
 - **Comparison:** Dummy and class-weighted LogReg baselines run on identical stored folds, with
@@ -147,6 +149,17 @@ A run directory (`runs/<run_id>/`) contains `run.json`, `config.json`, `environm
    selection and thresholds use outer-train rows. Test rows are scored once, after model and
    threshold are fixed. Persisted models are refit on outer-train rows only.
 
+## Metric edge cases
+
+| Input | Average precision | ROC AUC | Other |
+|---|---|---|---|
+| Single-class `y_true` (all 0 or all 1) | **undefined** (`value=None`, reason given) | **undefined** | balanced accuracy and MCC undefined; recall undefined without positives |
+| Constant scores, both classes present | **defined = prevalence** (with a note) | **defined = 0.5** (with a note) | MCC undefined (constant predictions) |
+| No positive predictions at the threshold | unaffected | unaffected | precision undefined; recall and F-beta 0 |
+
+Undefined metrics are never returned as 0 or as a bare NaN. The prior Dummy baseline's AP
+equals the prevalence, which is the chance level every model must beat.
+
 ## Run checks
 
 ```bash
@@ -163,5 +176,9 @@ CI (`.github/workflows/ci.yml`) runs the same checks on Python 3.11 and 3.13.
 - Datetime features are dropped, not encoded. SMOTE interpolates one-hot columns.
 - Probabilities are not calibrated. Test results are single evaluations with no spread.
 - Profile heuristics can miss leakage and can flag innocent columns. They need domain review.
+- Group-aware splits (declared groups or `duplicate_groups=True`) pin any group larger than
+  `max_eval_group_fraction` (default 25%) of the target test/validation size to the training
+  side. Test and validation metrics then do not cover those rows. This is recorded in the run
+  record and stated in the report. `duplicate_groups` is not supported with temporal splits.
 - joblib artifacts are pickles. Only load models from a workspace you trust (the SHA-256 is
   checked before loading).

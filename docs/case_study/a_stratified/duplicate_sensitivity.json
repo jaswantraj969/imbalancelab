@@ -1,47 +1,55 @@
 {
   "description": "post-hoc re-slicing of stored final test predictions; no refit, no re-scoring, no selection",
+  "n_pinned_rows": 0,
+  "n_positive_pinned_rows": 0,
   "n_test": 2237,
   "n_test_rows_duplicating_outer_train": 632,
   "n_positive_test_rows_duplicating_outer_train": 2,
   "models": {
     "hgb+smote": {
       "all_rows": {
-        "n": 2237,
+        "n_rows": 2237,
         "n_positive": 52,
+        "prevalence": 0.0232454179704962,
         "average_precision": 0.6670128180462115,
         "roc_auc": 0.8916916035909171
       },
       "excluding_duplicates_of_train": {
-        "n": 1605,
+        "n_rows": 1605,
         "n_positive": 50,
+        "prevalence": 0.03115264797507788,
         "average_precision": 0.7060147490654901,
         "roc_auc": 0.9249003215434083
       }
     },
     "dummy_prior": {
       "all_rows": {
-        "n": 2237,
+        "n_rows": 2237,
         "n_positive": 52,
+        "prevalence": 0.0232454179704962,
         "average_precision": 0.0232454179704962,
         "roc_auc": 0.5
       },
       "excluding_duplicates_of_train": {
-        "n": 1605,
+        "n_rows": 1605,
         "n_positive": 50,
+        "prevalence": 0.03115264797507788,
         "average_precision": 0.03115264797507788,
         "roc_auc": 0.5
       }
     },
     "logreg_balanced": {
       "all_rows": {
-        "n": 2237,
+        "n_rows": 2237,
         "n_positive": 52,
+        "prevalence": 0.0232454179704962,
         "average_precision": 0.4669153204726046,
         "roc_auc": 0.9166960042246083
       },
       "excluding_duplicates_of_train": {
-        "n": 1605,
+        "n_rows": 1605,
         "n_positive": 50,
+        "prevalence": 0.03115264797507788,
         "average_precision": 0.4848719089840438,
         "roc_auc": 0.9277170418006431
       }

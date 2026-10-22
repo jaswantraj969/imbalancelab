@@ -1,0 +1,52 @@
+[
+  {
+    "screenshot": "01_upload_and_profile.png",
+    "error_elements": [],
+    "exceptions": [],
+    "console_errors": [],
+    "expected_error_elements": 0,
+    "ok": true
+  },
+  {
+    "screenshot": "02_run_experiment.png",
+    "error_elements": [],
+    "exceptions": [],
+    "console_errors": [],
+    "expected_error_elements": 0,
+    "ok": true
+  },
+  {
+    "screenshot": "03_results_and_thresholds.png",
+    "error_elements": [],
+    "exceptions": [],
+    "console_errors": [],
+    "expected_error_elements": 0,
+    "ok": true
+  },
+  {
+    "screenshot": "04_final_evaluation.png",
+    "error_elements": [],
+    "exceptions": [],
+    "console_errors": [],
+    "expected_error_elements": 0,
+    "ok": true
+  },
+  {
+    "screenshot": "05_final_evaluation_refused.png",
+    "error_elements": [
+      "API error 409 (final_evaluation_exists): this run already has a final evaluation; the test set is scored once. Pass force=True with a reason to re-evaluate (this is logged)."
+    ],
+    "exceptions": [],
+    "console_errors": [],
+    "expected_error_elements": 1,
+    "ok": true
+  },
+  {
+    "screenshot": "06_report.png",
+    "error_elements": [],
+    "exceptions": [],
+    "console_errors": [],
+    "expected_error_elements": 0,
+    "ok": true
+  }
+]

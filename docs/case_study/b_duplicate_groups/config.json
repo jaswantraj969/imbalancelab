@@ -1,0 +1,31 @@
+{
+  "candidates": [
+    {
+      "model": "hgb",
+      "sampler": "none"
+    },
+    {
+      "model": "hgb",
+      "sampler": "random_under"
+    },
+    {
+      "model": "hgb",
+      "sampler": "smote"
+    },
+    {
+      "model": "random_forest",
+      "sampler": "none"
+    }
+  ],
+  "cv": {
+    "n_splits": 5,
+    "n_repeats": 3,
+    "gap": 0,
+    "seed": 42,
+    "max_eval_group_fraction": 0.25
+  },
+  "seed": 42,
+  "threshold": 0.5,
+  "beta": 1.0,
+  "smote_k_neighbors": 5
+}

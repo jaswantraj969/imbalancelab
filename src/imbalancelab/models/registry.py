@@ -36,7 +36,7 @@ def make_estimator(name: str, seed: int) -> Any:
             n_estimators=300,
             min_samples_leaf=2,
             class_weight="balanced_subsample",
-            n_jobs=-1,
+            n_jobs=1,  # multi-threaded tree averaging is not bit-reproducible
             random_state=seed,
         )
     raise ValueError(f"unknown model {name!r}; expected one of {MODEL_NAMES}")
