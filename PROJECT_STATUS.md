@@ -8,7 +8,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M0 | Skeleton, tooling, plan | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (T0) |
 | M1 | Data loading, schema validation, profiling | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M1) |
 | M2 | Splitting + leakage-safe pipeline builder | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M2) |
-| M3 | Metrics module incl. edge cases | not started | — |
+| M3 | Metrics module incl. edge cases | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M3) |
 | M4 | Experiment runner, baselines, run records | not started | — |
 | M5 | Threshold analysis (OOF/validation only) | not started | — |
 | M6 | Evidence-based audit report | not started | — |
@@ -53,7 +53,18 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 - **D10:** the sampler runs after preprocessing, because SMOTE needs complete numeric input.
   One-hot uses `max_categories=50` to keep dense output bounded, with `handle_unknown="ignore"`
   as specified.
+- **D11:** constant scores do not make AP or ROC AUC undefined. With all ties, AP equals the
+  prevalence and AUC equals 0.5: well-defined chance-level values, not 0/0. The prior
+  `DummyClassifier` baseline produces exactly such scores, and its AP (= prevalence) is the
+  reference every model must beat, so making it undefined would remove the baseline. These
+  values carry `note="constant scores: value equals the chance level (all ties)"`. Constant
+  scores do make MCC undefined (constant predictions), and precision undefined when nothing is
+  predicted positive.
+- **D12:** F-beta is computed as (1+β²)TP / ((1+β²)TP + β²FN + FP), which is undefined only when
+  the denominator is 0. Hence "no positive predictions but positives exist" gives F = 0
+  (defined), even though precision is undefined. This matches the counts-based definition and
+  scikit-learn's value.
 
 ## Last updated
 
-2026-10-22 — M2 (Implementation Engineer)
+2026-10-22 — M3 (Implementation Engineer)

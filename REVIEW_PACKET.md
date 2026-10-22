@@ -404,3 +404,99 @@ TOTAL                                        690     14    98%
   equal row counts.
 - SMOTE interpolates one-hot columns, producing fractional values. SMOTENC is not used in the
   MVP.
+
+---
+
+### Task M3 — Metrics module
+
+**Date:** 2026-10-22 · **Milestone:** M3
+
+#### Summary of changes
+- `evaluation/metrics.py`:
+  - `MetricResult(name, value, defined, reason, note)`, `ConfusionCounts`, and `MetricSet`.
+  - Metrics: average precision (primary), ROC AUC, Brier, precision, recall, F1, F-beta,
+    balanced accuracy, MCC, and the confusion matrix at a threshold (`score >= threshold`
+    predicts positive).
+  - Threshold metrics are computed from confusion counts. Each is undefined exactly when its
+    denominator is zero, with a stated reason:
+    - precision: no positive predictions
+    - recall: no positives in y_true
+    - F-beta: no positives and no positive predictions
+    - balanced accuracy: single-class y_true
+    - MCC: single-class y_true, or constant predictions
+  - Ranking metrics are undefined for single-class or empty y_true. Brier is undefined for
+    empty input or scores outside [0, 1].
+  - Malformed input raises `ValueError`: length mismatch, NaN/inf scores, or non-binary y_true.
+- Tests compare every metric with scikit-learn on 9 (threshold, beta) combinations and cover
+  single-class folds (both classes), no positive predictions, constant scores, perfect
+  predictions, empty input, and input validation.
+
+#### Files changed
+- added: `src/imbalancelab/evaluation/metrics.py`, `tests/test_metrics.py`
+- modified: `src/imbalancelab/evaluation/__init__.py`, `PROJECT_STATUS.md`, `REVIEW_PACKET.md`
+
+#### Exact commands run
+    pytest -q tests/test_metrics.py     # 17 passed on first run
+    ruff format . ; ruff check . ; mypy
+    bash scripts/gate.sh
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+28 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 20 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 93%]
+.....                                                                    [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src\imbalancelab\__init__.py                   2      0   100%
+src\imbalancelab\api\__init__.py               0      0   100%
+src\imbalancelab\config.py                    12      1    92%   24
+src\imbalancelab\data\__init__.py              4      0   100%
+src\imbalancelab\data\errors.py               21      0   100%
+src\imbalancelab\data\loader.py              143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py               37      0   100%
+src\imbalancelab\evaluation\__init__.py        2      0   100%
+src\imbalancelab\evaluation\metrics.py       115      0   100%
+src\imbalancelab\models\__init__.py            0      0   100%
+src\imbalancelab\pipelines\__init__.py         2      0   100%
+src\imbalancelab\pipelines\builder.py         66      0   100%
+src\imbalancelab\profiling\__init__.py         3      0   100%
+src\imbalancelab\profiling\profile.py        169      5    97%   83, 85, 301, 341, 363
+src\imbalancelab\profiling\warnings.py         9      0   100%
+src\imbalancelab\reporting\__init__.py         0      0   100%
+src\imbalancelab\splitting\__init__.py         3      0   100%
+src\imbalancelab\splitting\duplicates.py      24      0   100%
+src\imbalancelab\splitting\splits.py         195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py          0      0   100%
+------------------------------------------------------------------------
+TOTAL                                        807     14    98%
+77 passed in 7.01s
+[exit 0]
+```
+
+#### Invariant re-check
+- 4: `PRIMARY_METRIC = "average_precision"`.
+- 6: metrics are pure functions of the predictions they receive. Nothing is fabricated, and
+  undefined values are explicit (`value=None`, `defined=False`).
+
+#### Deviations from instructions
+- **Constant scores** are handled as an edge case, but AP and ROC AUC stay *defined* (AP equals
+  prevalence, AUC is 0.5) and carry a `note`. MCC and precision become undefined when constant
+  scores produce constant predictions. See D11.
+
+#### Known limitations
+- No confidence intervals per metric. Spread across folds is reported by the runner (M4).
