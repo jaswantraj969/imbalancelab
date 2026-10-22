@@ -19,6 +19,7 @@ from imbalancelab.evaluation.config import ExperimentConfig
 from imbalancelab.evaluation.final import final_evaluate, record_persisted_model
 from imbalancelab.evaluation.runner import run_experiment
 from imbalancelab.evaluation.thresholds import ThresholdStrategy, run_threshold_analysis
+from imbalancelab.evaluation.uncertainty import BootstrapConfig
 from imbalancelab.models import persistence
 from imbalancelab.profiling.profile import DatasetProfile, ProfileThresholds, profile_dataset
 from imbalancelab.reporting.report import generate_report
@@ -222,6 +223,7 @@ def finalize_run(
     force: bool = False,
     reason: str | None = None,
     persist_model: bool = True,
+    bootstrap: BootstrapConfig | None = None,
 ) -> dict[str, Any]:
     """Final evaluation of a run on its dataset's stored test rows.
 
@@ -233,7 +235,9 @@ def finalize_run(
     if not dataset_id:
         raise rec.RecordNotFoundError("run has no registered dataset_id")
     dataset, holdout, _ = load_registered(ws, dataset_id)
-    result = final_evaluate(dataset, run_dir, model=model, force=force, reason=reason)
+    result = final_evaluate(
+        dataset, run_dir, model=model, force=force, reason=reason, bootstrap=bootstrap
+    )
     if not persist_model:
         return result.record
     meta = persistence.save_model(

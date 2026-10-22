@@ -266,3 +266,32 @@ def test_final_evaluation_guards(completed_run, write_csv) -> None:
         final_evaluate(ds, run_dir, "hgb")
     with pytest.raises(ThresholdSelectionError, match="not completed"):
         run_threshold_analysis(run_dir, "hgb", ThresholdStrategy())
+
+
+def test_final_evaluation_stores_bootstrap_cis_and_amend_reproduces_them(completed_run) -> None:
+    from imbalancelab.evaluation.final import amend_bootstrap_cis
+    from imbalancelab.evaluation.uncertainty import CI_METRICS, BootstrapConfig
+
+    ds, holdout, run_dir = completed_run
+    run_threshold_analysis(run_dir, "hgb", ThresholdStrategy(kind="max_fbeta", beta=2.0))
+    out = final_evaluate(ds, run_dir, "hgb", bootstrap=BootstrapConfig(n_resamples=300, seed=9))
+    assert out.record["bootstrap"]["n_resamples"] == 300 and out.record["bootstrap"]["seed"] == 9
+    for name, r in out.record["results"].items():
+        assert set(r["ci"]) == set(CI_METRICS)
+        for metric, ci in r["ci"].items():
+            point = r["metrics"][metric]["value"]
+            assert ci["point"] == point
+            assert ci["n_defined"] + ci["n_undefined"] == 300
+            if point is not None and ci["lower"] is not None:
+                assert ci["lower"] <= point <= ci["upper"] or ci["n_undefined"] > 0, (name, metric)
+    stored = RunRecord(run_dir).final_evaluation
+    assert stored["results"]["hgb"]["ci"] == out.record["results"]["hgb"]["ci"]
+
+    # amending from stored predictions with the same config reproduces the CIs exactly and is
+    # logged; the stored test predictions are not touched
+    preds_before = (run_dir / "final_predictions.parquet").read_bytes()
+    amended = amend_bootstrap_cis(run_dir, BootstrapConfig(n_resamples=300, seed=9))
+    assert amended["results"]["hgb"]["ci"] == out.record["results"]["hgb"]["ci"]
+    assert amended["amendments"][-1]["what"].startswith("added bootstrap CIs")
+    assert (run_dir / "final_predictions.parquet").read_bytes() == preds_before
+    assert RunRecord(run_dir).final_log()[-1]["event"] == "bootstrap_cis_added"

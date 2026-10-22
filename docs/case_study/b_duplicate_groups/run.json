@@ -171,7 +171,58 @@
         "n_rows": 3329,
         "row_limit": 460.95
       }
+    },
+    {
+      "code": "evaluation_coverage_gap",
+      "column": null,
+      "severity": "warning",
+      "message": "3329 rows (29.8% of the dataset, 7 positives) are never in any test or validation set (oversized groups forced to train). Results do not describe these rows.",
+      "evidence": {
+        "n_rows": 3329,
+        "n_positive": 7,
+        "pct_of_rows": 29.768398461951175,
+        "threshold_pct": 10.0
+      }
     }
   ],
-  "error": null
+  "error": null,
+  "evaluation_coverage": {
+    "n_rows": 11183,
+    "n_positive": 260,
+    "n_rows_evaluated": 7854,
+    "forced_to_train": {
+      "n_rows": 3329,
+      "n_positive": 7,
+      "pct_of_rows": 29.768398461951175,
+      "pct_of_positives": 2.6923076923076925,
+      "n_groups": 1,
+      "group_sizes": [
+        3329
+      ],
+      "group_positive_counts": [
+        7
+      ]
+    },
+    "gap_rows": 0,
+    "other_never_evaluated": {
+      "n_rows": 0,
+      "n_positive": 0,
+      "reason": "not in any test or validation fold"
+    },
+    "cutoff": {
+      "holdout_max_eval_group_fraction": 0.25,
+      "holdout_row_limit": 559.15,
+      "cv_max_eval_group_fraction": 0.25,
+      "cv_row_limit": 460.95,
+      "applies": true
+    },
+    "warning_threshold_pct": 10.0,
+    "warning": true
+  },
+  "amendments": [
+    {
+      "at": "2026-10-22T10:04:28.879800Z",
+      "what": "added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored"
+    }
+  ]
 }

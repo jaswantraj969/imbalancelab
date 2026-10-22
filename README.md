@@ -19,7 +19,10 @@ record.
 - **Thresholds:** selected on out-of-fold predictions per repeat. Test predictions are rejected
   for selection.
 - **Final evaluation:** a one-shot test evaluation (a repeat is refused unless forced, and
-  forcing is logged), and a Markdown/HTML audit report generated only from run records.
+  forcing is logged). Every test metric gets a stratified-bootstrap 95% CI (2000 resamples,
+  seeded; undefined resamples are counted). A Markdown/HTML audit report is generated only from
+  run records, and it includes an automatic **Evaluation coverage** section that warns when more
+  than 10% of rows were never evaluated.
 - **Serving:** persisted models with an integrity check and an inference endpoint.
 
 Status per milestone: [PROJECT_STATUS.md](PROJECT_STATUS.md). Plan:
@@ -174,7 +177,8 @@ CI (`.github/workflows/ci.yml`) runs the same checks on Python 3.11 and 3.13.
 - Synchronous API with no job queue, auth, or database (all storage is files). Intended for
   local or single-user use.
 - Datetime features are dropped, not encoded. SMOTE interpolates one-hot columns.
-- Probabilities are not calibrated. Test results are single evaluations with no spread.
+- Probabilities are not calibrated. Test results are single evaluations. Their bootstrap CIs
+  reflect test-sample variation only, not re-splitting or re-training.
 - Profile heuristics can miss leakage and can flag innocent columns. They need domain review.
 - Group-aware splits (declared groups or `duplicate_groups=True`) pin any group larger than
   `max_eval_group_fraction` (default 25%) of the target test/validation size to the training

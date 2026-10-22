@@ -51,6 +51,8 @@ class FinalEvaluationRequest(BaseModel):
     force: bool = False
     reason: str | None = None
     persist_model: bool = True
+    bootstrap_resamples: int = Field(default=2000, ge=100, le=20_000)
+    bootstrap_seed: int = 42
 
 
 class PredictRequest(BaseModel):

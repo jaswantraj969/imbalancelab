@@ -12,7 +12,7 @@ from imbalancelab.evaluation.runner import run_experiment
 from imbalancelab.evaluation.thresholds import ThresholdStrategy, run_threshold_analysis
 from imbalancelab.reporting import comparison_verdict, final_test_verdict, generate_report
 from imbalancelab.reporting.render import Document, Paragraph, Table, to_html, to_markdown
-from imbalancelab.reporting.report import fmt, fmt_summary
+from imbalancelab.reporting.report import fmt, fmt_ci, fmt_summary
 from imbalancelab.splitting import make_holdout
 from imbalancelab.tracking import RunRecord
 
@@ -64,7 +64,12 @@ def test_report_numbers_trace_to_run_records(write_csv, tmp_path) -> None:
         ap = fmt_summary(summary["models"][model]["average_precision"])
         assert f"| {model} | {ap} |" in md
     for model, r in final["results"].items():
-        ap = fmt(r["metrics"]["average_precision"]["value"])
+        ap = fmt_ci(r, "average_precision")  # point estimate + bootstrap CI from the record
+        ci = r["ci"]["average_precision"]
+        assert (
+            ap == f"{fmt(r['metrics']['average_precision']['value'])} "
+            f"[{ci['lower']:.4f}, {ci['upper']:.4f}]"
+        )
         assert f"| {model} | {fmt(r['threshold'])} | {ap} |" in md
     chosen = record.thresholds["analyses"]["hgb"]["chosen_threshold"]
     assert f"| hgb | max_fbeta (beta 2.0) | {fmt(chosen)} |" in md

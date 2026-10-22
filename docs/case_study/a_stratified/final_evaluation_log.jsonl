@@ -1,2 +1,3 @@
 {"event": "final_evaluation", "at": "2026-10-22T09:20:02.458900Z", "model": "hgb+smote", "forced": false, "reason": null}
 {"event": "model_persisted", "at": "2026-10-22T09:20:02.589570Z", "model_id": "model-20261022T092002Z-aedecb57"}
+{"event": "bootstrap_cis_added", "at": "2026-10-22T10:04:26.485352Z"}

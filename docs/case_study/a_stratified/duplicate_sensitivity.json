@@ -1,7 +1,5 @@
 {
-  "description": "post-hoc re-slicing of stored final test predictions; no refit, no re-scoring, no selection",
-  "n_pinned_rows": 0,
-  "n_positive_pinned_rows": 0,
+  "description": "post-hoc re-slicing of stored final test predictions; no refit, no re-scoring, no selection; CIs: stratified bootstrap (2000 resamples, seed 42)",
   "n_test": 2237,
   "n_test_rows_duplicating_outer_train": 632,
   "n_positive_test_rows_duplicating_outer_train": 2,
@@ -12,14 +10,58 @@
         "n_positive": 52,
         "prevalence": 0.0232454179704962,
         "average_precision": 0.6670128180462115,
-        "roc_auc": 0.8916916035909171
+        "roc_auc": 0.8916916035909171,
+        "ci": {
+          "average_precision": {
+            "name": "average_precision",
+            "point": 0.6670128180462115,
+            "lower": 0.5404426438985251,
+            "upper": 0.7907712532065597,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          },
+          "roc_auc": {
+            "name": "roc_auc",
+            "point": 0.8916916035909171,
+            "lower": 0.8238394428797747,
+            "upper": 0.9502772399225489,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          }
+        }
       },
       "excluding_duplicates_of_train": {
         "n_rows": 1605,
         "n_positive": 50,
         "prevalence": 0.03115264797507788,
         "average_precision": 0.7060147490654901,
-        "roc_auc": 0.9249003215434083
+        "roc_auc": 0.9249003215434083,
+        "ci": {
+          "average_precision": {
+            "name": "average_precision",
+            "point": 0.7060147490654901,
+            "lower": 0.5846820120995051,
+            "upper": 0.8160098147294987,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          },
+          "roc_auc": {
+            "name": "roc_auc",
+            "point": 0.9249003215434083,
+            "lower": 0.8660482315112541,
+            "upper": 0.9677218649517685,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          }
+        }
       }
     },
     "dummy_prior": {
@@ -28,14 +70,58 @@
         "n_positive": 52,
         "prevalence": 0.0232454179704962,
         "average_precision": 0.0232454179704962,
-        "roc_auc": 0.5
+        "roc_auc": 0.5,
+        "ci": {
+          "average_precision": {
+            "name": "average_precision",
+            "point": 0.0232454179704962,
+            "lower": 0.0232454179704962,
+            "upper": 0.0232454179704962,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          },
+          "roc_auc": {
+            "name": "roc_auc",
+            "point": 0.5,
+            "lower": 0.5,
+            "upper": 0.5,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          }
+        }
       },
       "excluding_duplicates_of_train": {
         "n_rows": 1605,
         "n_positive": 50,
         "prevalence": 0.03115264797507788,
         "average_precision": 0.03115264797507788,
-        "roc_auc": 0.5
+        "roc_auc": 0.5,
+        "ci": {
+          "average_precision": {
+            "name": "average_precision",
+            "point": 0.03115264797507788,
+            "lower": 0.03115264797507788,
+            "upper": 0.03115264797507788,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          },
+          "roc_auc": {
+            "name": "roc_auc",
+            "point": 0.5,
+            "lower": 0.5,
+            "upper": 0.5,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          }
+        }
       }
     },
     "logreg_balanced": {
@@ -44,14 +130,58 @@
         "n_positive": 52,
         "prevalence": 0.0232454179704962,
         "average_precision": 0.4669153204726046,
-        "roc_auc": 0.9166960042246083
+        "roc_auc": 0.9166960042246083,
+        "ci": {
+          "average_precision": {
+            "name": "average_precision",
+            "point": 0.4669153204726046,
+            "lower": 0.34705748292339655,
+            "upper": 0.6331968835659836,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          },
+          "roc_auc": {
+            "name": "roc_auc",
+            "point": 0.9166960042246083,
+            "lower": 0.8547014170040486,
+            "upper": 0.9637629818693891,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          }
+        }
       },
       "excluding_duplicates_of_train": {
         "n_rows": 1605,
         "n_positive": 50,
         "prevalence": 0.03115264797507788,
         "average_precision": 0.4848719089840438,
-        "roc_auc": 0.9277170418006431
+        "roc_auc": 0.9277170418006431,
+        "ci": {
+          "average_precision": {
+            "name": "average_precision",
+            "point": 0.4848719089840438,
+            "lower": 0.37201608517415313,
+            "upper": 0.6527439538780015,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          },
+          "roc_auc": {
+            "name": "roc_auc",
+            "point": 0.9277170418006431,
+            "lower": 0.874507073954984,
+            "upper": 0.9685540192926044,
+            "confidence": 0.95,
+            "n_resamples": 2000,
+            "n_defined": 2000,
+            "n_undefined": 0
+          }
+        }
       }
     }
   }

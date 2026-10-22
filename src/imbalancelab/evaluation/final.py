@@ -19,6 +19,7 @@ from imbalancelab.evaluation.config import CandidateSpec, ExperimentConfig
 from imbalancelab.evaluation.metrics import PRIMARY_METRIC, compute_metrics
 from imbalancelab.evaluation.runner import make_candidate_pipeline, positive_scores
 from imbalancelab.evaluation.thresholds import ThresholdStrategy, run_threshold_analysis
+from imbalancelab.evaluation.uncertainty import BootstrapConfig, bootstrap_cis
 from imbalancelab.pipelines.builder import FeatureSpec
 from imbalancelab.splitting.splits import Holdout, HoldoutMismatchError, check_holdout
 from imbalancelab.tracking import records as rec
@@ -58,9 +59,13 @@ def final_evaluate(
     model: str | None = None,
     force: bool = False,
     reason: str | None = None,
+    bootstrap: BootstrapConfig | None = None,
 ) -> FinalEvaluationResult:
     """Refit ``model`` (default: best candidate by OOF AP) and the baselines on outer-train
-    rows, score the stored test rows once, and record the results in the run directory."""
+    rows, score the stored test rows once, and record the results in the run directory.
+
+    Each model's test metrics get a stratified-bootstrap percentile CI (``bootstrap``; default
+    2000 resamples, seed 42) computed from the same test predictions."""
     run_dir = Path(run_dir)
     record = rec.RunRecord(run_dir)
     meta = record.run
@@ -193,11 +198,12 @@ def final_evaluate(
         },
         "results": results,
         "comparisons": comparisons,
-        "note": "single test-set evaluation; one number per model, no fold spread",
+        "note": "single test-set evaluation; uncertainty from stratified bootstrap of the "
+        "test rows (no fold spread)",
     }
-    pd.concat(pred_parts, ignore_index=True).to_parquet(
-        run_dir / rec.FINAL_PREDICTIONS_FILE, index=False
-    )
+    predictions = pd.concat(pred_parts, ignore_index=True)
+    add_bootstrap_cis(out, predictions, bootstrap or BootstrapConfig(), beta=strategy.beta)
+    predictions.to_parquet(run_dir / rec.FINAL_PREDICTIONS_FILE, index=False)
     rec.write_json(previous, out)
     _append_log(
         run_dir,
@@ -224,3 +230,60 @@ def record_persisted_model(run_dir: Path, model_id: str) -> dict[str, Any]:
         Path(run_dir), {"event": "model_persisted", "at": rec.utc_now(), "model_id": model_id}
     )
     return out
+
+
+def add_bootstrap_cis(
+    record: dict[str, Any],
+    predictions: pd.DataFrame,
+    config: BootstrapConfig,
+    beta: float,
+) -> dict[str, Any]:
+    """Add per-model bootstrap CIs (at each model's stored threshold) to a final-evaluation
+    record, in place. Uses only the stored test predictions: nothing is refit or re-scored."""
+    for name, result in record["results"].items():
+        g = predictions[predictions["model"] == name]
+        cis = bootstrap_cis(
+            g["y_true"].to_numpy(dtype=int),
+            g["y_score"].to_numpy(dtype=float),
+            threshold=result["threshold"],
+            beta=beta,
+            config=config,
+        )
+        result["ci"] = {k: v.model_dump(mode="json") for k, v in cis.items()}
+    record["bootstrap"] = {
+        "method": "stratified bootstrap (positives and negatives resampled separately), "
+        "percentile interval",
+        "n_resamples": config.n_resamples,
+        "seed": config.seed,
+        "confidence": config.confidence,
+        "beta": beta,
+        "source": "stored final test predictions",
+        "computed_at": rec.utc_now(),
+    }
+    return record
+
+
+def amend_bootstrap_cis(run_dir: Path, config: BootstrapConfig | None = None) -> dict[str, Any]:
+    """Add bootstrap CIs to an existing final evaluation from its stored test predictions.
+
+    This does not score the test set again. The amendment is logged in the final-evaluation log
+    and in ``final_evaluation.json["amendments"]``.
+    """
+    run_dir = Path(run_dir)
+    record = rec.RunRecord(run_dir)
+    final = record.final_evaluation
+    predictions = record.final_predictions()
+    if final is None or predictions is None:
+        raise FinalEvaluationError("run has no final evaluation to amend")
+    beta = float(final["threshold_provenance"]["strategy"]["beta"])
+    add_bootstrap_cis(final, predictions, config or BootstrapConfig(), beta=beta)
+    final.setdefault("amendments", []).append(
+        {
+            "at": final["bootstrap"]["computed_at"],
+            "what": "added bootstrap CIs computed from stored final_predictions.parquet "
+            "(no refit, no re-scoring)",
+        }
+    )
+    rec.write_json(run_dir / rec.FINAL_FILE, final)
+    _append_log(run_dir, {"event": "bootstrap_cis_added", "at": final["bootstrap"]["computed_at"]})
+    return final

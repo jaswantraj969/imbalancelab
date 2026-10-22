@@ -133,12 +133,18 @@ def test_conflicting_labels_kept_in_one_cluster_and_counted(write_csv) -> None:
         assert len(np.unique(groups[keys == key])) == 1
 
 
-def test_combined_with_declared_groups(write_csv) -> None:
+def test_combined_with_declared_groups(write_csv, caplog) -> None:
     frame = duplicated_frame()
     frame["group"] = np.arange(len(frame)) % 40  # duplicates land in different declared groups
     ds = _ds(write_csv, frame, "g.csv", group_column="group", split_strategy="group")
-    groups, info, warnings = resolve_groups(ds)
+    with caplog.at_level("WARNING", logger="imbalancelab.splitting.groups"):
+        groups, info, warnings = resolve_groups(ds)
     assert info is not None and info.source == "declared+duplicates"
+    logged = [r.getMessage() for r in caplog.records if "merged" in r.getMessage()]
+    assert len(logged) == 1
+    assert logged[0].startswith(f"duplicate_groups: {info.n_declared_groups_merged} declared")
+    merged_w = next(w for w in warnings if w.code == "duplicate_clusters_span_declared_groups")
+    assert merged_w.evidence["n_declared_groups_merged"] == info.n_declared_groups_merged
     assert info.n_clusters_spanning_declared_groups > 0
     assert info.n_groups <= 40 and info.n_declared_groups_merged == 40 - info.n_groups
     assert "duplicate_clusters_span_declared_groups" in {w.code for w in warnings}
@@ -268,3 +274,78 @@ def test_without_pinning_a_dominated_test_set_is_flagged(write_csv) -> None:
             assert "holdout_dominated_by_group" in codes
             return
     pytest.fail("no seed placed the giant cluster in the test set")
+
+
+def test_evaluation_coverage_recorded_and_reported_with_warning(write_csv, tmp_path) -> None:
+    from imbalancelab.reporting import generate_report
+
+    ds = _ds(write_csv, giant_cluster_frame(n=1000, giant=300), "cov.csv")
+    holdout = make_holdout(ds, HoldoutConfig(seed=0))
+    cfg = ExperimentConfig.model_validate(
+        {"candidates": [], "cv": {"n_splits": 3, "n_repeats": 2, "max_eval_group_fraction": 0.3}}
+    )
+    result = run_experiment(ds, holdout, cfg, tmp_path / "runs")
+    run = RunRecord(result.run_dir).run
+    cov = run["evaluation_coverage"]
+    # independent count: rows in neither the test set nor any validation fold
+    folds = RunRecord(result.run_dir).folds["folds"]
+    evaluated = set(holdout.test_idx).union(*[set(f["val_idx"]) for f in folds])
+    never = sorted(set(range(ds.n_rows)) - evaluated)
+    assert cov["forced_to_train"]["n_rows"] == len(never) == 300
+    assert cov["forced_to_train"]["n_positive"] == int(ds.y[never].sum()) == 2
+    assert cov["forced_to_train"]["pct_of_rows"] == pytest.approx(30.0)
+    assert cov["forced_to_train"]["group_sizes"] == [300]
+    assert cov["forced_to_train"]["group_positive_counts"] == [2]
+    assert cov["cutoff"]["holdout_max_eval_group_fraction"] == 0.25
+    assert cov["cutoff"]["cv_max_eval_group_fraction"] == 0.3  # config parameter is recorded
+    assert cov["warning"] is True
+    assert "evaluation_coverage_gap" in {w["code"] for w in run["split_warnings"]}
+    md = generate_report(result.run_dir).markdown.read_text(encoding="utf-8")
+    section = md.split("## 5. Evaluation coverage")[1].split("## 6.")[0]
+    assert "**WARNING:** 300 rows (30.0% of the dataset, 2 positives)" in section
+    assert "do not describe these rows" in section
+    assert "| Forced to train, never evaluated: rows / positives | 300 / 2 |" in section
+    assert "1: 300 rows (2 positive)" in section
+
+
+def test_evaluation_coverage_without_pinning_has_no_warning(write_csv, tmp_path) -> None:
+    from imbalancelab.reporting import generate_report
+
+    ds = _ds(write_csv, duplicate_groups=False)
+    cfg = ExperimentConfig.model_validate({"candidates": [], "cv": {"n_splits": 3, "n_repeats": 1}})
+    result = run_experiment(ds, make_holdout(ds), cfg, tmp_path / "runs")
+    cov = RunRecord(result.run_dir).run["evaluation_coverage"]
+    assert cov["forced_to_train"]["n_rows"] == 0 and cov["warning"] is False
+    assert cov["n_rows_evaluated"] == ds.n_rows and cov["cutoff"]["applies"] is False
+    md = generate_report(result.run_dir).markdown.read_text(encoding="utf-8")
+    section = md.split("## 5. Evaluation coverage")[1].split("## 6.")[0]
+    assert "WARNING" not in section and "not applicable" in section
+
+
+def test_amend_evaluation_coverage_reproduces_and_verifies_fold_hash(write_csv, tmp_path) -> None:
+    import json
+
+    from imbalancelab.evaluation.runner import amend_evaluation_coverage
+
+    ds = _ds(write_csv, giant_cluster_frame(n=1000, giant=300), "amend.csv")
+    cfg = ExperimentConfig.model_validate({"candidates": [], "cv": {"n_splits": 3, "n_repeats": 1}})
+    result = run_experiment(ds, make_holdout(ds), cfg, tmp_path / "runs")
+    path = result.run_dir / "run.json"
+    original = json.loads(path.read_text())
+    stripped = {k: v for k, v in original.items() if k != "evaluation_coverage"}
+    stripped["split_warnings"] = [
+        w for w in original["split_warnings"] if w["code"] != "evaluation_coverage_gap"
+    ]
+    path.write_text(json.dumps(stripped))
+    coverage = amend_evaluation_coverage(ds, result.run_dir)
+    amended = json.loads(path.read_text())
+    assert coverage == original["evaluation_coverage"] == amended["evaluation_coverage"]
+    assert "evaluation_coverage_gap" in {w["code"] for w in amended["split_warnings"]}
+    assert "fold-index SHA-256 verified" in amended["amendments"][-1]["what"]
+    amended["cv"]["fold_indices_sha256"] = "0" * 64
+    path.write_text(json.dumps(amended))
+    with pytest.raises(ValueError, match="fold-index"):
+        amend_evaluation_coverage(ds, result.run_dir)
+    other = _ds(write_csv, giant_cluster_frame(n=1000, giant=300, seed=1), "other.csv")
+    with pytest.raises(ValueError, match="SHA-256"):
+        amend_evaluation_coverage(other, result.run_dir)

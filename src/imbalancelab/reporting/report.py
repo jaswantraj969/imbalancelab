@@ -86,16 +86,91 @@ def comparison_verdict(c: dict[str, Any]) -> str:
     )
 
 
-def final_test_verdict(c: dict[str, Any]) -> str:
+def fmt_ci(result: dict[str, Any], metric: str) -> str:
+    """Point estimate with its bootstrap 95% CI, e.g. ``0.8228 [0.7612, 0.8790]``."""
+    value = fmt(result["metrics"][metric]["value"])
+    ci = (result.get("ci") or {}).get(metric)
+    if not ci:
+        return value
+    if ci["lower"] is None:
+        return f"{value} [CI undefined]"
+    undefined = f", {ci['n_undefined']} undefined" if ci["n_undefined"] else ""
+    return f"{value} [{ci['lower']:.4f}, {ci['upper']:.4f}{undefined}]"
+
+
+def final_test_verdict(c: dict[str, Any], results: dict[str, Any] | None = None) -> str:
     cand, base = f"**{c['candidate']}**", f"**{c['baseline']}**"
     if c["diff"] is None:
         return f"{cand} vs {base}: test {c['metric']} undefined for at least one model."
     word = "beats" if c["diff"] > 0 else "does NOT beat"
+    if results and c["candidate"] in results and c["baseline"] in results:
+        values = (
+            f"{fmt_ci(results[c['candidate']], c['metric'])} vs "
+            f"{fmt_ci(results[c['baseline']], c['metric'])} (95% CIs)"
+        )
+    else:
+        values = f"{fmt(c['candidate_value'])} vs {fmt(c['baseline_value'])}"
     return (
-        f"{cand} {word} {base} on the test set ({c['metric']}: "
-        f"{fmt(c['candidate_value'])} vs {fmt(c['baseline_value'])}, difference "
-        f"{fmt_signed(c['diff'])}; single evaluation, no spread)."
+        f"{cand} {word} {base} on the test set ({c['metric']}: {values}, point difference "
+        f"{fmt_signed(c['diff'])}; single evaluation)."
     )
+
+
+def coverage_blocks(run: dict[str, Any]) -> list[Any]:
+    """The 'Evaluation coverage' section body (also used by docs)."""
+    cov = run.get("evaluation_coverage")
+    if cov is None:
+        return [Paragraph("Evaluation coverage was not recorded for this run.")]
+    f = cov["forced_to_train"]
+    cut = cov["cutoff"]
+    blocks: list[Any] = []
+    if cov["warning"]:
+        blocks.append(
+            Paragraph(
+                f"**WARNING:** {f['n_rows']} rows ({f['pct_of_rows']:.1f}% of the dataset, "
+                f"{f['n_positive']} positives) were never in any test or validation set. "
+                "**The reported results do not describe these rows.**"
+            )
+        )
+    cutoff = (
+        f"groups larger than {cut['holdout_max_eval_group_fraction']:.0%} of the target test "
+        f"size ({cut['holdout_row_limit']:.0f} rows) or "
+        f"{cut['cv_max_eval_group_fraction']:.0%} of the target validation-fold size "
+        f"({cut['cv_row_limit']:.0f} rows) are forced to train"
+        if cut["applies"]
+        else "not applicable (splitting is not group-aware)"
+    )
+    sizes = ", ".join(
+        f"{n} rows ({p} positive)"
+        for n, p in zip(f["group_sizes"], f["group_positive_counts"], strict=True)
+    )
+    blocks.append(
+        Table(
+            ["Field", "Value"],
+            [
+                ["Rows / positives in dataset", f"{cov['n_rows']} / {cov['n_positive']}"],
+                ["Rows evaluated (test or any validation fold)", fmt(cov["n_rows_evaluated"])],
+                [
+                    "Forced to train, never evaluated: rows / positives",
+                    f"{f['n_rows']} / {f['n_positive']}",
+                ],
+                [
+                    "Forced to train: % of rows / % of positives",
+                    f"{f['pct_of_rows']:.2f}% / {f['pct_of_positives']:.2f}%",
+                ],
+                ["Large-group cut-off", cutoff],
+                ["Forced-to-train groups", f"{f['n_groups']}" + (f": {sizes}" if sizes else "")],
+                ["Temporal gap rows", fmt(cov["gap_rows"])],
+                [
+                    "Other never-evaluated rows",
+                    f"{cov['other_never_evaluated']['n_rows']} "
+                    f"({cov['other_never_evaluated']['reason']})",
+                ],
+                ["Warning threshold", f"{cov['warning_threshold_pct']:.0f}% of rows"],
+            ],
+        )
+    )
+    return blocks
 
 
 def _group_summary(h: dict[str, Any]) -> str:
@@ -141,7 +216,7 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
         lines.insert(0, "No candidate models besides the baselines were run.")
     if final:
         lines += [
-            final_test_verdict(c)
+            final_test_verdict(c, final["results"])
             for c in final["comparisons"]
             if c["metric"] == "average_precision"
         ]
@@ -266,8 +341,12 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
     if split_w:
         doc.add(BulletList([f"`{w['code']}` ({w['severity']}): {w['message']}" for w in split_w]))
 
-    # --- 5. models
-    doc.add(Heading(2, "5. Models"))
+    # --- 5. evaluation coverage
+    doc.add(Heading(2, "5. Evaluation coverage"))
+    doc.add(*coverage_blocks(run))
+
+    # --- 6. models
+    doc.add(Heading(2, "6. Models"))
     specs = run.get("model_specs") or [
         {"name": m, "sampler": "—", "description": ""} for m in run["models"]
     ]
@@ -288,7 +367,7 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
     )
 
     # --- 6. CV results
-    doc.add(Heading(2, "6. Cross-validation results (out-of-fold)"))
+    doc.add(Heading(2, "7. Cross-validation results (out-of-fold)"))
     doc.add(
         Paragraph(
             f"Mean ± sample std across folds. `@ref` metrics use the fixed reference threshold "
@@ -338,7 +417,7 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
     doc.add(*[Image(p, rel + p.name, f"OOF curve {p.stem}") for p in figs])
 
     # --- 7. thresholds
-    doc.add(Heading(2, "7. Threshold analysis (out-of-fold predictions only)"))
+    doc.add(Heading(2, "8. Threshold analysis (out-of-fold predictions only)"))
     if thresholds and thresholds.get("analyses"):
         rows = []
         for model, a in thresholds["analyses"].items():
@@ -388,7 +467,7 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
         doc.add(Paragraph("No threshold analysis recorded for this run."))
 
     # --- 8. final
-    doc.add(Heading(2, "8. Final test evaluation"))
+    doc.add(Heading(2, "9. Final test evaluation"))
     if final:
         prov = final["threshold_provenance"]
         doc.add(
@@ -414,13 +493,25 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
                     [
                         name,
                         fmt(r["threshold"]),
-                        *[fmt(r["metrics"][m]["value"]) for m, _ in TEST_TABLE_METRICS],
+                        *[fmt_ci(r, m) for m, _ in TEST_TABLE_METRICS],
                         "{tp}/{fp}/{fn}/{tn}".format(**r["confusion"]),
                     ]
                     for name, r in final["results"].items()
                 ],
             )
         )
+        bs = final.get("bootstrap")
+        if bs:
+            doc.add(
+                Paragraph(
+                    f"Brackets: {bs['confidence']:.0%} CI from a {bs['method']}, "
+                    f"{bs['n_resamples']} resamples, seed {bs['seed']}, computed from the stored "
+                    "test predictions. Undefined resamples are counted in the bracket; Brier has "
+                    "no CI."
+                )
+            )
+        else:
+            doc.add(Paragraph("No bootstrap CIs recorded for this final evaluation."))
         test_preds = record.final_predictions()
         if test_preds is not None:
             figs = plot_curves(test_preds, "test set", figure_dir, "test")
@@ -443,7 +534,7 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
         doc.add(Paragraph("Not yet performed. No test-set numbers exist for this run."))
 
     # --- 9. limitations
-    doc.add(Heading(2, "9. Limitations"))
+    doc.add(Heading(2, "10. Limitations"))
     lim = [
         "CV folds share training data, so fold scores are correlated; spreads understate "
         "uncertainty and no significance claims are made.",
@@ -452,7 +543,10 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
         "Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.",
     ]
     if final:
-        lim.append("Test results are a single evaluation per model with no spread.")
+        lim.append(
+            "Test results are a single evaluation per model; bootstrap CIs reflect test-sample "
+            "variation only, not model-training variation."
+        )
         if final["n_test_positive"] < FEW_TEST_POSITIVES:
             lim.append(
                 f"Only {final['n_test_positive']} positive test rows: test metrics have "
@@ -462,10 +556,16 @@ def build_document(record: RunRecord, figure_dir: Path) -> tuple[Document, list[
         lim.append("Temporal CV uses a single expanding-window repeat.")
     if split_w:
         lim.append("Split warnings were raised (section 4); affected scores may be optimistic.")
+    cov = run.get("evaluation_coverage")
+    if cov and cov["forced_to_train"]["n_rows"]:
+        lim.append(
+            f"{cov['forced_to_train']['n_rows']} rows in oversized groups were never evaluated "
+            "(section 5)."
+        )
     doc.add(BulletList(lim))
 
     # --- 10. reproducibility
-    doc.add(Heading(2, "10. Reproducibility"))
+    doc.add(Heading(2, "11. Reproducibility"))
     pk = env["packages"]
     doc.add(
         Table(

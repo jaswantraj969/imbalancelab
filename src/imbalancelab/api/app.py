@@ -31,6 +31,7 @@ from imbalancelab.data.schema import DatasetSchema
 from imbalancelab.evaluation.final import FinalEvaluationError, FinalEvaluationExistsError
 from imbalancelab.evaluation.runner import RunError
 from imbalancelab.evaluation.thresholds import ProvenanceError, ThresholdSelectionError
+from imbalancelab.evaluation.uncertainty import BootstrapConfig
 from imbalancelab.models.persistence import InputSchemaError, ModelIntegrityError
 from imbalancelab.splitting.splits import HoldoutConfig, SplitError
 from imbalancelab.tracking.records import InvalidIdError, RecordNotFoundError
@@ -184,6 +185,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             force=body.force,
             reason=body.reason,
             persist_model=body.persist_model,
+            bootstrap=BootstrapConfig(
+                n_resamples=body.bootstrap_resamples, seed=body.bootstrap_seed
+            ),
         )
 
     @app.get("/runs/{run_id}/report", response_model=None)

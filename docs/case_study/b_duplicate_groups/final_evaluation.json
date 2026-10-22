@@ -104,6 +104,68 @@
         "fp": 32,
         "fn": 14,
         "tp": 49
+      },
+      "ci": {
+        "average_precision": {
+          "name": "average_precision",
+          "point": 0.8228173655204865,
+          "lower": 0.7383149349145679,
+          "upper": 0.8977287335092867,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "roc_auc": {
+          "name": "roc_auc",
+          "point": 0.9589355644063692,
+          "lower": 0.917979885273415,
+          "upper": 0.988862169451333,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "precision": {
+          "name": "precision",
+          "point": 0.6049382716049383,
+          "lower": 0.523795681063123,
+          "upper": 0.7,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "recall": {
+          "name": "recall",
+          "point": 0.7777777777777778,
+          "lower": 0.6666666666666666,
+          "upper": 0.873015873015873,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "fbeta": {
+          "name": "fbeta",
+          "point": 0.7357357357357357,
+          "lower": 0.6475677948386607,
+          "upper": 0.8187134502923976,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "mcc": {
+          "name": "mcc",
+          "point": 0.6742899153049864,
+          "lower": 0.5930409333932679,
+          "upper": 0.7530868216386619,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        }
       }
     },
     "dummy_prior": {
@@ -180,6 +242,68 @@
         "fp": 1901,
         "fn": 0,
         "tp": 63
+      },
+      "ci": {
+        "average_precision": {
+          "name": "average_precision",
+          "point": 0.03207739307535642,
+          "lower": 0.03207739307535642,
+          "upper": 0.03207739307535642,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "roc_auc": {
+          "name": "roc_auc",
+          "point": 0.5,
+          "lower": 0.5,
+          "upper": 0.5,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "precision": {
+          "name": "precision",
+          "point": 0.03207739307535642,
+          "lower": 0.03207739307535642,
+          "upper": 0.03207739307535642,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "recall": {
+          "name": "recall",
+          "point": 1.0,
+          "lower": 1.0,
+          "upper": 1.0,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "fbeta": {
+          "name": "fbeta",
+          "point": 0.1421480144404332,
+          "lower": 0.1421480144404332,
+          "upper": 0.1421480144404332,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "mcc": {
+          "name": "mcc",
+          "point": null,
+          "lower": null,
+          "upper": null,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 0,
+          "n_undefined": 2000
+        }
       }
     },
     "logreg_balanced": {
@@ -256,6 +380,68 @@
         "fp": 48,
         "fn": 25,
         "tp": 38
+      },
+      "ci": {
+        "average_precision": {
+          "name": "average_precision",
+          "point": 0.5023150928383666,
+          "lower": 0.3926247935352603,
+          "upper": 0.644198051501516,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "roc_auc": {
+          "name": "roc_auc",
+          "point": 0.9225136310880655,
+          "lower": 0.8763802259462438,
+          "upper": 0.9610877316032498,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "precision": {
+          "name": "precision",
+          "point": 0.4418604651162791,
+          "lower": 0.36082474226804123,
+          "upper": 0.5333561643835615,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "recall": {
+          "name": "recall",
+          "point": 0.6031746031746031,
+          "lower": 0.47619047619047616,
+          "upper": 0.7146825396825375,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "fbeta": {
+          "name": "fbeta",
+          "point": 0.5621301775147929,
+          "lower": 0.4559259342034686,
+          "upper": 0.6595170735656585,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        },
+        "mcc": {
+          "name": "mcc",
+          "point": 0.49766327803718746,
+          "lower": 0.4047435271971437,
+          "upper": 0.5919686922332488,
+          "confidence": 0.95,
+          "n_resamples": 2000,
+          "n_defined": 2000,
+          "n_undefined": 0
+        }
       }
     }
   },
@@ -294,5 +480,20 @@
     }
   ],
   "note": "single test-set evaluation; one number per model, no fold spread",
-  "persisted_model_id": "model-20261022T092115Z-819a6e87"
+  "persisted_model_id": "model-20261022T092115Z-819a6e87",
+  "bootstrap": {
+    "method": "stratified bootstrap (positives and negatives resampled separately), percentile interval",
+    "n_resamples": 2000,
+    "seed": 42,
+    "confidence": 0.95,
+    "beta": 2.0,
+    "source": "stored final test predictions",
+    "computed_at": "2026-10-22T10:04:30.637958Z"
+  },
+  "amendments": [
+    {
+      "at": "2026-10-22T10:04:30.637958Z",
+      "what": "added bootstrap CIs computed from stored final_predictions.parquet (no refit, no re-scoring)"
+    }
+  ]
 }

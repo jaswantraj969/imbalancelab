@@ -12,8 +12,8 @@
 - **random_forest** beats **dummy_prior** on out-of-fold average precision: mean paired difference +0.6969, better in 15 of 15 folds (win fraction 1.00).
 - **random_forest** beats **logreg_balanced** on out-of-fold average precision: mean paired difference +0.1611, better in 15 of 15 folds (win fraction 1.00).
 - **logreg_balanced** beats **dummy_prior** on out-of-fold average precision: mean paired difference +0.5358, better in 15 of 15 folds (win fraction 1.00).
-- **hgb+smote** beats **dummy_prior** on the test set (average_precision: 0.8228 vs 0.0321, difference +0.7907; single evaluation, no spread).
-- **hgb+smote** beats **logreg_balanced** on the test set (average_precision: 0.8228 vs 0.5023, difference +0.3205; single evaluation, no spread).
+- **hgb+smote** beats **dummy_prior** on the test set (average_precision: 0.8228 [0.7383, 0.8977] vs 0.0321 [0.0321, 0.0321] (95% CIs), point difference +0.7907; single evaluation).
+- **hgb+smote** beats **logreg_balanced** on the test set (average_precision: 0.8228 [0.7383, 0.8977] vs 0.5023 [0.3926, 0.6442] (95% CIs), point difference +0.3205; single evaluation).
 
 Comparisons use paired differences on identical stored folds. CV folds are correlated, so no significance test is reported; win fractions and spreads are descriptive.
 
@@ -63,8 +63,25 @@ CV, model selection and threshold selection use outer-train rows only. All model
 - `conflicting_label_clusters` (info): 1 duplicate cluster(s) (3329 rows) have identical features but different labels; they are kept and split together.
 - `oversized_groups_pinned_to_train` (warning): 1 group(s) covering 3329 rows exceed 559 rows (max_eval_group_fraction of the test set size) and are always on the training side; test set metrics do not cover these rows.
 - `oversized_groups_pinned_to_train` (warning): 1 group(s) covering 3329 rows exceed 461 rows (max_eval_group_fraction of the validation fold size) and are always on the training side; validation fold metrics do not cover these rows.
+- `evaluation_coverage_gap` (warning): 3329 rows (29.8% of the dataset, 7 positives) are never in any test or validation set (oversized groups forced to train). Results do not describe these rows.
 
-## 5. Models
+## 5. Evaluation coverage
+
+**WARNING:** 3329 rows (29.8% of the dataset, 7 positives) were never in any test or validation set. **The reported results do not describe these rows.**
+
+| Field | Value |
+|---|---|
+| Rows / positives in dataset | 11183 / 260 |
+| Rows evaluated (test or any validation fold) | 7854 |
+| Forced to train, never evaluated: rows / positives | 3329 / 7 |
+| Forced to train: % of rows / % of positives | 29.77% / 2.69% |
+| Large-group cut-off | groups larger than 25% of the target test size (559 rows) or 25% of the target validation-fold size (461 rows) are forced to train |
+| Forced-to-train groups | 1: 3329 rows (7 positive) |
+| Temporal gap rows | 0 |
+| Other never-evaluated rows | 0 (not in any test or validation fold) |
+| Warning threshold | 10% of rows |
+
+## 6. Models
 
 | Name | Role | Sampler | Estimator |
 |---|---|---|---|
@@ -75,7 +92,7 @@ CV, model selection and threshold selection use outer-train rows only. All model
 | hgb+smote | candidate | smote | HistGradientBoostingClassifier(max_iter=200, learning_rate=0.1, early_stopping=False) |
 | random_forest | candidate | none | RandomForestClassifier(n_estimators=300, min_samples_leaf=2, class_weight='balanced_subsample') |
 
-## 6. Cross-validation results (out-of-fold)
+## 7. Cross-validation results (out-of-fold)
 
 Mean ± sample std across folds. `@ref` metrics use the fixed reference threshold 0.50, not a tuned threshold.
 
@@ -115,7 +132,7 @@ Mean ± sample std across folds. `@ref` metrics use the fixed reference threshol
 
 ![OOF curve oof_roc](figures/oof_roc.png)
 
-## 7. Threshold analysis (out-of-fold predictions only)
+## 8. Threshold analysis (out-of-fold predictions only)
 
 | Model | Strategy | Chosen (median) | Per-repeat threshold mean ± std [min, max] | Precision | Recall | F-beta | Repeats |
 |---|---|---|---|---|---|---|---|
@@ -125,34 +142,38 @@ Mean ± sample std across folds. `@ref` metrics use the fixed reference threshol
 
 Precision, recall and F-beta are per-repeat means at each repeat's own selected threshold, which is optimistic because selection and measurement use the same OOF predictions.
 
-## 8. Final test evaluation
+## 9. Final test evaluation
 
 Model **hgb+smote** refit on 9219 outer-train rows and scored once on 1964 test rows (63 positive) at threshold 0.6036 (selected on out-of-fold predictions, strategy `max_fbeta`). Evaluated at 2026-10-22T09:21:15.405438Z.
 
 | Model | Threshold | AP | ROC AUC | Brier ↓ | Precision | Recall | F-beta | MCC | TP/FP/FN/TN |
 |---|---|---|---|---|---|---|---|---|---|
-| hgb+smote | 0.6036 | 0.8228 | 0.9589 | 0.0181 | 0.6049 | 0.7778 | 0.7357 | 0.6743 | 49/32/14/1869 |
-| dummy_prior | 0.0198 | 0.0321 | 0.5000 | 0.0312 | 0.0321 | 1.0000 | 0.1421 | undefined | 63/1901/0/0 |
-| logreg_balanced | 0.8605 | 0.5023 | 0.9225 | 0.1182 | 0.4419 | 0.6032 | 0.5621 | 0.4977 | 38/48/25/1853 |
+| hgb+smote | 0.6036 | 0.8228 [0.7383, 0.8977] | 0.9589 [0.9180, 0.9889] | 0.0181 | 0.6049 [0.5238, 0.7000] | 0.7778 [0.6667, 0.8730] | 0.7357 [0.6476, 0.8187] | 0.6743 [0.5930, 0.7531] | 49/32/14/1869 |
+| dummy_prior | 0.0198 | 0.0321 [0.0321, 0.0321] | 0.5000 [0.5000, 0.5000] | 0.0312 | 0.0321 [0.0321, 0.0321] | 1.0000 [1.0000, 1.0000] | 0.1421 [0.1421, 0.1421] | undefined [CI undefined] | 63/1901/0/0 |
+| logreg_balanced | 0.8605 | 0.5023 [0.3926, 0.6442] | 0.9225 [0.8764, 0.9611] | 0.1182 | 0.4419 [0.3608, 0.5334] | 0.6032 [0.4762, 0.7147] | 0.5621 [0.4559, 0.6595] | 0.4977 [0.4047, 0.5920] | 38/48/25/1853 |
+
+Brackets: 95% CI from a stratified bootstrap (positives and negatives resampled separately), percentile interval, 2000 resamples, seed 42, computed from the stored test predictions. Undefined resamples are counted in the bracket; Brier has no CI.
 
 ![Test curve test_pr](figures/test_pr.png)
 
 ![Test curve test_roc](figures/test_roc.png)
 
-Final-evaluation log: 2 entries.
+Final-evaluation log: 3 entries.
 
 - 2026-10-22T09:21:15.405438Z: final_evaluation
 - 2026-10-22T09:21:15.533441Z: model_persisted
+- 2026-10-22T10:04:30.637958Z: bootstrap_cis_added
 
-## 9. Limitations
+## 10. Limitations
 
 - CV folds share training data, so fold scores are correlated; spreads understate uncertainty and no significance claims are made.
 - Profile warnings are heuristics; a flagged column is not proven leakage, and an unflagged column is not proven safe.
 - Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.
-- Test results are a single evaluation per model with no spread.
+- Test results are a single evaluation per model; bootstrap CIs reflect test-sample variation only, not model-training variation.
 - Split warnings were raised (section 4); affected scores may be optimistic.
+- 3329 rows in oversized groups were never evaluated (section 5).
 
-## 10. Reproducibility
+## 11. Reproducibility
 
 | Field | Value |
 |---|---|

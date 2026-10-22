@@ -12,8 +12,8 @@
 - **random_forest** beats **dummy_prior** on out-of-fold average precision: mean paired difference +0.6862, better in 15 of 15 folds (win fraction 1.00).
 - **random_forest** beats **logreg_balanced** on out-of-fold average precision: mean paired difference +0.1667, better in 14 of 15 folds (win fraction 0.93).
 - **logreg_balanced** beats **dummy_prior** on out-of-fold average precision: mean paired difference +0.5195, better in 15 of 15 folds (win fraction 1.00).
-- **hgb+smote** beats **dummy_prior** on the test set (average_precision: 0.6670 vs 0.0232, difference +0.6438; single evaluation, no spread).
-- **hgb+smote** beats **logreg_balanced** on the test set (average_precision: 0.6670 vs 0.4669, difference +0.2001; single evaluation, no spread).
+- **hgb+smote** beats **dummy_prior** on the test set (average_precision: 0.6670 [0.5404, 0.7908] vs 0.0232 [0.0232, 0.0232] (95% CIs), point difference +0.6438; single evaluation).
+- **hgb+smote** beats **logreg_balanced** on the test set (average_precision: 0.6670 [0.5404, 0.7908] vs 0.4669 [0.3471, 0.6332] (95% CIs), point difference +0.2001; single evaluation).
 
 Comparisons use paired differences on identical stored folds. CV folds are correlated, so no significance test is reported; win fractions and spreads are descriptive.
 
@@ -62,7 +62,21 @@ CV, model selection and threshold selection use outer-train rows only. All model
 
 - `cross_boundary_duplicates` (warning): 632 test row(s) exactly duplicate outer-train feature rows, and 15 CV fold(s) have validation rows duplicating their training rows (max 581). Scores on duplicated rows may be optimistic.
 
-## 5. Models
+## 5. Evaluation coverage
+
+| Field | Value |
+|---|---|
+| Rows / positives in dataset | 11183 / 260 |
+| Rows evaluated (test or any validation fold) | 11183 |
+| Forced to train, never evaluated: rows / positives | 0 / 0 |
+| Forced to train: % of rows / % of positives | 0.00% / 0.00% |
+| Large-group cut-off | not applicable (splitting is not group-aware) |
+| Forced-to-train groups | 0 |
+| Temporal gap rows | 0 |
+| Other never-evaluated rows | 0 (not in any test or validation fold) |
+| Warning threshold | 10% of rows |
+
+## 6. Models
 
 | Name | Role | Sampler | Estimator |
 |---|---|---|---|
@@ -73,7 +87,7 @@ CV, model selection and threshold selection use outer-train rows only. All model
 | hgb+smote | candidate | smote | HistGradientBoostingClassifier(max_iter=200, learning_rate=0.1, early_stopping=False) |
 | random_forest | candidate | none | RandomForestClassifier(n_estimators=300, min_samples_leaf=2, class_weight='balanced_subsample') |
 
-## 6. Cross-validation results (out-of-fold)
+## 7. Cross-validation results (out-of-fold)
 
 Mean ± sample std across folds. `@ref` metrics use the fixed reference threshold 0.50, not a tuned threshold.
 
@@ -113,7 +127,7 @@ Mean ± sample std across folds. `@ref` metrics use the fixed reference threshol
 
 ![OOF curve oof_roc](figures/oof_roc.png)
 
-## 7. Threshold analysis (out-of-fold predictions only)
+## 8. Threshold analysis (out-of-fold predictions only)
 
 | Model | Strategy | Chosen (median) | Per-repeat threshold mean ± std [min, max] | Precision | Recall | F-beta | Repeats |
 |---|---|---|---|---|---|---|---|
@@ -123,34 +137,37 @@ Mean ± sample std across folds. `@ref` metrics use the fixed reference threshol
 
 Precision, recall and F-beta are per-repeat means at each repeat's own selected threshold, which is optimistic because selection and measurement use the same OOF predictions.
 
-## 8. Final test evaluation
+## 9. Final test evaluation
 
 Model **hgb+smote** refit on 8946 outer-train rows and scored once on 2237 test rows (52 positive) at threshold 0.4292 (selected on out-of-fold predictions, strategy `max_fbeta`). Evaluated at 2026-10-22T09:20:02.458900Z.
 
 | Model | Threshold | AP | ROC AUC | Brier ↓ | Precision | Recall | F-beta | MCC | TP/FP/FN/TN |
 |---|---|---|---|---|---|---|---|---|---|
-| hgb+smote | 0.4292 | 0.6670 | 0.8917 | 0.0172 | 0.5672 | 0.7308 | 0.6909 | 0.6343 | 38/29/14/2156 |
-| dummy_prior | 0.0232 | 0.0232 | 0.5000 | 0.0227 | 0.0232 | 1.0000 | 0.1063 | undefined | 52/2185/0/0 |
-| logreg_balanced | 0.8173 | 0.4669 | 0.9167 | 0.0860 | 0.3830 | 0.6923 | 0.5960 | 0.5000 | 36/58/16/2127 |
+| hgb+smote | 0.4292 | 0.6670 [0.5404, 0.7908] | 0.8917 [0.8238, 0.9503] | 0.0172 | 0.5672 [0.4746, 0.6667] | 0.7308 [0.5962, 0.8462] | 0.6909 [0.5818, 0.7905] | 0.6343 [0.5389, 0.7281] | 38/29/14/2156 |
+| dummy_prior | 0.0232 | 0.0232 [0.0232, 0.0232] | 0.5000 [0.5000, 0.5000] | 0.0227 | 0.0232 [0.0232, 0.0232] | 1.0000 [1.0000, 1.0000] | 0.1063 [0.1063, 0.1063] | undefined [CI undefined] | 52/2185/0/0 |
+| logreg_balanced | 0.8173 | 0.4669 [0.3471, 0.6332] | 0.9167 [0.8547, 0.9638] | 0.0860 | 0.3830 [0.3077, 0.4579] | 0.6923 [0.5577, 0.8082] | 0.5960 [0.4882, 0.6962] | 0.5000 [0.4041, 0.5871] | 36/58/16/2127 |
+
+Brackets: 95% CI from a stratified bootstrap (positives and negatives resampled separately), percentile interval, 2000 resamples, seed 42, computed from the stored test predictions. Undefined resamples are counted in the bracket; Brier has no CI.
 
 ![Test curve test_pr](figures/test_pr.png)
 
 ![Test curve test_roc](figures/test_roc.png)
 
-Final-evaluation log: 2 entries.
+Final-evaluation log: 3 entries.
 
 - 2026-10-22T09:20:02.458900Z: final_evaluation
 - 2026-10-22T09:20:02.589570Z: model_persisted
+- 2026-10-22T10:04:26.485352Z: bootstrap_cis_added
 
-## 9. Limitations
+## 10. Limitations
 
 - CV folds share training data, so fold scores are correlated; spreads understate uncertainty and no significance claims are made.
 - Profile warnings are heuristics; a flagged column is not proven leakage, and an unflagged column is not proven safe.
 - Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.
-- Test results are a single evaluation per model with no spread.
+- Test results are a single evaluation per model; bootstrap CIs reflect test-sample variation only, not model-training variation.
 - Split warnings were raised (section 4); affected scores may be optimistic.
 
-## 10. Reproducibility
+## 11. Reproducibility
 
 | Field | Value |
 |---|---|

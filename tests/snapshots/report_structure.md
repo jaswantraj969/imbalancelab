@@ -6,8 +6,8 @@
 - **hgb** <verdict> **dummy_prior** on out-of-fold average precision: mean paired difference <n>, better in <n> of <n> folds (win fraction <n>).
 - **hgb** <verdict> **logreg_balanced** on out-of-fold average precision: mean paired difference <n>, better in <n> of <n> folds (win fraction <n>).
 - **logreg_balanced** <verdict> **dummy_prior** on out-of-fold average precision: mean paired difference <n>, better in <n> of <n> folds (win fraction <n>).
-- **hgb** <verdict> **dummy_prior** on the test set (average_precision: <n> vs <n>, difference <n>; single evaluation, no spread).
-- **hgb** <verdict> **logreg_balanced** on the test set (average_precision: <n> vs <n>, difference <n>; single evaluation, no spread).
+- **hgb** <verdict> **dummy_prior** on the test set (average_precision: <n> [<n>, <n>] vs <n> [<n>, <n>] (<n>% CIs), point difference <n>; single evaluation).
+- **hgb** <verdict> **logreg_balanced** on the test set (average_precision: <n> [<n>, <n>] vs <n> [<n>, <n>] (<n>% CIs), point difference <n>; single evaluation).
 
 Comparisons use paired differences on identical stored folds. CV folds are correlated, so no significance test is reported; win fractions and spreads are descriptive.
 
@@ -52,6 +52,20 @@ Duplicates: <n> exact duplicate rows; <n> conflicting-label groups (<n> rows).
 | Oversized groups pinned to training (test / CV) | <n> groups, <n> rows / <n> groups, <n> rows |
 
 CV, model selection and threshold selection use outer-train rows only. All models were fit on identical stored folds.
+
+## <n>. Evaluation coverage
+
+| Field | Value |
+|---|---|
+| Rows / positives in dataset | <n> / <n> |
+| Rows evaluated (test or any validation fold) | <n> |
+| Forced to train, never evaluated: rows / positives | <n> / <n> |
+| Forced to train: % of rows / % of positives | <n>% / <n>% |
+| Large-group cut-off | not applicable (splitting is not group-aware) |
+| Forced-to-train groups | <n> |
+| Temporal gap rows | <n> |
+| Other never-evaluated rows | <n> (not in any test or validation fold) |
+| Warning threshold | <n>% of rows |
 
 ## <n>. Models
 
@@ -102,9 +116,11 @@ Model **hgb** refit on <n> outer-train rows and scored once on <n> test rows (<n
 
 | Model | Threshold | AP | ROC AUC | Brier ↓ | Precision | Recall | F-beta | MCC | TP/FP/FN/TN |
 |---|---|---|---|---|---|---|---|---|---|
-| hgb | <n> | <n> | <n> | <n> | <n> | <n> | <n> | <n> | <n>/<n>/<n>/<n> |
-| dummy_prior | <n> | <n> | <n> | <n> | <n> | <n> | <n> | undefined | <n>/<n>/<n>/<n> |
-| logreg_balanced | <n> | <n> | <n> | <n> | <n> | <n> | <n> | <n> | <n>/<n>/<n>/<n> |
+| hgb | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n>/<n>/<n>/<n> |
+| dummy_prior | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | undefined [CI undefined] | <n>/<n>/<n>/<n> |
+| logreg_balanced | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n> [<n>, <n>] | <n>/<n>/<n>/<n> |
+
+Brackets: <n>% CI from a stratified bootstrap (positives and negatives resampled separately), percentile interval, <n> resamples, seed <n>, computed from the stored test predictions. Undefined resamples are counted in the bracket; Brier has no CI.
 
 ![Test curve test_pr](figures/test_pr.png)
 
@@ -119,7 +135,7 @@ Final-evaluation log: <n> entry.
 - CV folds share training data, so fold scores are correlated; spreads understate uncertainty and no significance claims are made.
 - Profile warnings are heuristics; a flagged column is not proven leakage, and an unflagged column is not proven safe.
 - Thresholds are selected on out-of-fold predictions; their OOF metrics are optimistic.
-- Test results are a single evaluation per model with no spread.
+- Test results are a single evaluation per model; bootstrap CIs reflect test-sample variation only, not model-training variation.
 - Only <n> positive test rows: test metrics have high variance.
 
 ## <n>. Reproducibility

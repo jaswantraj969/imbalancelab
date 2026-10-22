@@ -11,6 +11,7 @@ merged into one split group. A declared group is therefore never split, no dupli
 crosses a boundary, and a warning reports how many clusters spanned declared groups.
 """
 
+import logging
 from typing import Literal
 
 import numpy as np
@@ -22,6 +23,8 @@ from scipy.sparse.csgraph import connected_components
 from imbalancelab.data.loader import LoadedDataset
 from imbalancelab.profiling.profile import feature_row_hashes
 from imbalancelab.profiling.warnings import ProfileWarning
+
+logger = logging.getLogger(__name__)
 
 GroupSource = Literal["declared", "duplicates", "declared+duplicates"]
 
@@ -156,6 +159,14 @@ def resolve_groups(
         **stats,
     )
     if n_spanning:
+        logger.warning(
+            "duplicate_groups: %d declared group(s) merged into larger split groups (D27): "
+            "%d duplicate cluster(s) span declared groups; %d declared groups -> %d split groups",
+            n_declared - n_merged_groups,
+            n_spanning,
+            n_declared,
+            n_merged_groups,
+        )
         warnings.append(
             ProfileWarning(
                 code="duplicate_clusters_span_declared_groups",
@@ -168,6 +179,7 @@ def resolve_groups(
                     "n_clusters_spanning": n_spanning,
                     "n_declared_groups": n_declared,
                     "n_split_groups": n_merged_groups,
+                    "n_declared_groups_merged": n_declared - n_merged_groups,
                 },
             )
         )

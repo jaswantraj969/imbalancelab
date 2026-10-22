@@ -216,5 +216,40 @@
       }
     }
   ],
-  "error": null
+  "error": null,
+  "evaluation_coverage": {
+    "n_rows": 11183,
+    "n_positive": 260,
+    "n_rows_evaluated": 11183,
+    "forced_to_train": {
+      "n_rows": 0,
+      "n_positive": 0,
+      "pct_of_rows": 0.0,
+      "pct_of_positives": 0.0,
+      "n_groups": 0,
+      "group_sizes": [],
+      "group_positive_counts": []
+    },
+    "gap_rows": 0,
+    "other_never_evaluated": {
+      "n_rows": 0,
+      "n_positive": 0,
+      "reason": "not in any test or validation fold"
+    },
+    "cutoff": {
+      "holdout_max_eval_group_fraction": 0.25,
+      "holdout_row_limit": null,
+      "cv_max_eval_group_fraction": 0.25,
+      "cv_row_limit": null,
+      "applies": false
+    },
+    "warning_threshold_pct": 10.0,
+    "warning": false
+  },
+  "amendments": [
+    {
+      "at": "2026-10-22T10:04:23.807169Z",
+      "what": "added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored"
+    }
+  ]
 }

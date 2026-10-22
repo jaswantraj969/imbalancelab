@@ -23,6 +23,8 @@ from imbalancelab.evaluation.metrics import (
 from imbalancelab.models.registry import MODEL_DESCRIPTIONS, make_estimator
 from imbalancelab.pipelines.builder import FeatureSpec, build_pipeline, infer_feature_spec
 from imbalancelab.profiling.profile import DatasetProfile, profile_dataset
+from imbalancelab.profiling.warnings import ProfileWarning
+from imbalancelab.splitting.coverage import evaluation_coverage
 from imbalancelab.splitting.duplicates import cross_boundary_duplicates
 from imbalancelab.splitting.splits import CVPlan, Holdout, check_holdout, make_cv_folds
 from imbalancelab.tracking import records as rec
@@ -39,6 +41,64 @@ class RunResult:
     run_id: str
     run_dir: Path
     summary: dict[str, Any]
+
+
+def coverage_warnings(coverage: dict[str, Any]) -> list[ProfileWarning]:
+    """WARNING when forced-to-train rows exceed the coverage threshold (% of the dataset)."""
+    if not coverage["warning"]:
+        return []
+    f = coverage["forced_to_train"]
+    return [
+        ProfileWarning(
+            code="evaluation_coverage_gap",
+            message=(
+                f"{f['n_rows']} rows ({f['pct_of_rows']:.1f}% of the dataset, "
+                f"{f['n_positive']} positives) are never in any test or validation set "
+                "(oversized groups forced to train). Results do not describe these rows."
+            ),
+            evidence={
+                "n_rows": f["n_rows"],
+                "n_positive": f["n_positive"],
+                "pct_of_rows": f["pct_of_rows"],
+                "threshold_pct": coverage["warning_threshold_pct"],
+            },
+        )
+    ]
+
+
+def amend_evaluation_coverage(dataset: LoadedDataset, run_dir: Path) -> dict[str, Any]:
+    """Add ``evaluation_coverage`` to an existing run record.
+
+    The CV folds are rebuilt from the stored holdout and CV config, and their SHA-256 must equal
+    the recorded fold hash, so the coverage describes exactly the folds that were used. Nothing is
+    refit or scored. The amendment is logged in ``run.json["amendments"]``.
+    """
+    run_dir = Path(run_dir)
+    record = rec.RunRecord(run_dir)
+    run = record.run
+    if dataset.sha256 != run["dataset"]["sha256"]:
+        raise ValueError("dataset SHA-256 does not match the run")
+    holdout = Holdout.load(run_dir / rec.HOLDOUT_FILE)
+    config = ExperimentConfig.model_validate(record.config)
+    plan = make_cv_folds(dataset, holdout, config.cv)
+    if plan.fold_indices_sha256 != run["cv"]["fold_indices_sha256"]:
+        raise ValueError("rebuilt folds do not match the recorded fold-index SHA-256")
+    coverage = evaluation_coverage(dataset, holdout, plan)
+    run["evaluation_coverage"] = coverage
+    codes = {w["code"] for w in run.get("split_warnings", [])}
+    run["split_warnings"] = [
+        *run.get("split_warnings", []),
+        *[w.model_dump(mode="json") for w in coverage_warnings(coverage) if w.code not in codes],
+    ]
+    run.setdefault("amendments", []).append(
+        {
+            "at": rec.utc_now(),
+            "what": "added evaluation_coverage computed from stored holdout + rebuilt folds "
+            "(fold-index SHA-256 verified); nothing refit or scored",
+        }
+    )
+    rec.write_json(run_dir / rec.RUN_FILE, run)
+    return coverage
 
 
 def make_candidate_pipeline(
@@ -133,10 +193,12 @@ def run_experiment(
     plan: CVPlan = make_cv_folds(dataset, holdout, config.cv)
     features = infer_feature_spec(dataset.frame, dataset.feature_columns)
     profile = profile or profile_dataset(dataset)
+    coverage = evaluation_coverage(dataset, holdout, plan)
     split_warnings = [
         *holdout.warnings,
         *plan.warnings,
         *cross_boundary_duplicates(dataset, holdout, plan),
+        *coverage_warnings(coverage),
     ]
     specs = config.all_specs()
 
@@ -197,6 +259,7 @@ def run_experiment(
         ],
         "feature_spec": features.model_dump(mode="json"),
         "split_warnings": [w.model_dump(mode="json") for w in split_warnings],
+        "evaluation_coverage": coverage,
         "error": None,
     }
     rec.write_json(run_dir / rec.CONFIG_FILE, config.model_dump(mode="json"))
