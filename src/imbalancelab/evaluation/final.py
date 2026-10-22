@@ -212,3 +212,15 @@ def final_evaluate(
     return FinalEvaluationResult(
         record=out, pipeline=chosen_pipeline, features=features, threshold=out["threshold"]
     )
+
+
+def record_persisted_model(run_dir: Path, model_id: str) -> dict[str, Any]:
+    """Link a persisted model artifact to the run's current final evaluation."""
+    path = Path(run_dir) / rec.FINAL_FILE
+    out = dict(rec.read_json(path))
+    out["persisted_model_id"] = model_id
+    rec.write_json(path, out)
+    _append_log(
+        Path(run_dir), {"event": "model_persisted", "at": rec.utc_now(), "model_id": model_id}
+    )
+    return out

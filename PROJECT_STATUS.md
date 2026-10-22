@@ -14,7 +14,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M6 | Evidence-based audit report | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M6) |
 | M7 | FastAPI endpoints | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M7) |
 | M8 | Streamlit frontend (via API only) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M8) |
-| M9 | Model persistence + inference endpoint | not started | — |
+| M9 | Model persistence + inference endpoint | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M9) |
 | M10 | Docs + case study from real results | not started | — |
 
 ## Known issues
@@ -91,7 +91,10 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 - **D22:** frontend tests run a real uvicorn server in a background thread and drive the
   Streamlit app with `streamlit.testing.v1.AppTest`. This tests the frontend against the real
   API rather than against mocks.
+- **D23:** a model is persisted at final evaluation (default `persist_model=True`). The artifact
+  is the pipeline refit on outer-train rows that produced the reported test numbers, so served
+  predictions match the audited model exactly.
 
 ## Last updated
 
-2026-10-22 — M8 (Implementation Engineer)
+2026-10-22 — M9 (Implementation Engineer)

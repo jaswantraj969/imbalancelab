@@ -31,6 +31,7 @@ from imbalancelab.data.schema import DatasetSchema
 from imbalancelab.evaluation.final import FinalEvaluationError, FinalEvaluationExistsError
 from imbalancelab.evaluation.runner import RunError
 from imbalancelab.evaluation.thresholds import ProvenanceError, ThresholdSelectionError
+from imbalancelab.models.persistence import InputSchemaError, ModelIntegrityError
 from imbalancelab.splitting.splits import HoldoutConfig, SplitError
 from imbalancelab.tracking.records import InvalidIdError, RecordNotFoundError
 from imbalancelab.workflow import DatasetRegistration, Workspace
@@ -40,6 +41,8 @@ _CHUNK = 1 << 20
 # exception type -> (status code, short error code); first match wins
 ERROR_MAP: list[tuple[type[Exception], int, str]] = [
     (InvalidIdError, 400, "invalid_id"),
+    (ModelIntegrityError, 409, "model_integrity_error"),
+    (InputSchemaError, 422, "input_schema_error"),
     (RecordNotFoundError, 404, "not_found"),
     (FinalEvaluationExistsError, 409, "final_evaluation_exists"),
     (FinalEvaluationError, 409, "final_evaluation_precondition"),
@@ -175,7 +178,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         ws: WorkspaceDep, run_id: str, body: FinalEvaluationRequest
     ) -> dict[str, Any]:
         return workflow.finalize_run(
-            ws, run_id, model=body.model, force=body.force, reason=body.reason
+            ws,
+            run_id,
+            model=body.model,
+            force=body.force,
+            reason=body.reason,
+            persist_model=body.persist_model,
         )
 
     @app.get("/runs/{run_id}/report", response_model=None)
@@ -191,8 +199,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return PlainTextResponse(text, media_type="text/markdown")
 
     @app.post("/models/{model_id}/predict", response_model=PredictResponse)
-    def predict(ws: WorkspaceDep, model_id: str, body: PredictRequest) -> PredictResponse:
-        raise RecordNotFoundError(f"model {model_id!r} not found (persistence arrives in M9)")
+    def predict(ws: WorkspaceDep, model_id: str, body: PredictRequest) -> dict[str, Any]:
+        return workflow.predict_records(ws, model_id, body.records)
+
+    @app.get("/models")
+    def list_models(ws: WorkspaceDep) -> list[dict[str, Any]]:
+        return workflow.list_models(ws)
 
     return app
 

@@ -1137,3 +1137,137 @@ TOTAL                                        1910     32    98%
 - The gate run above took 173 s of wall time. A re-run of the identical suite took 62 s (the
   durations show no single slow test), which points to transient machine load. Recorded for
   transparency.
+
+---
+
+### Task M9 — Model persistence and inference endpoint
+
+**Date:** 2026-10-22 · **Milestone:** M9
+
+#### Summary of changes
+- `models/persistence.py`:
+  - `save_model` writes `models/<model_id>/model.joblib` plus `metadata.json`: model ID, run
+    ID, model name, threshold, threshold provenance, `trained_on: "outer-train rows only"`,
+    number of training rows, dataset and test SHA-256, `FeatureSpec`, environment versions,
+    and the artifact SHA-256.
+  - `load_model` checks the artifact SHA-256 **before** unpickling (`ModelIntegrityError` on
+    mismatch or a missing file). It emits a `VersionMismatchWarning` for each mismatch in
+    Python, numpy, pandas, scikit-learn, imbalanced-learn or joblib, and returns them.
+  - `validate_input` raises `InputSchemaError` for missing feature columns or non-numeric values
+    in numeric columns. Unused extra columns are ignored, with a note.
+  - `predict` returns the probability plus a label at the stored threshold.
+- `workflow.finalize_run(..., persist_model=True)` saves the pipeline that final evaluation
+  refit on outer-train rows and links it with `persisted_model_id` in `final_evaluation.json`
+  (plus a `model_persisted` log entry). `list_models` and `predict_records` are new.
+- API changes:
+  - `POST /runs/{id}/final-evaluation` returns `model_id` (`persist_model` flag, default true).
+  - `POST /models/{id}/predict` is implemented, and `GET /models` is added.
+  - Errors map to 409 `model_integrity_error` and 422 `input_schema_error`.
+
+#### Files changed
+- added: `src/imbalancelab/models/persistence.py`, `tests/test_persistence.py`
+- modified: `src/imbalancelab/workflow.py`, `src/imbalancelab/evaluation/final.py`
+  (`record_persisted_model`), `src/imbalancelab/api/app.py`, `PROJECT_STATUS.md`,
+  `REVIEW_PACKET.md`
+
+#### Exact commands run
+    pytest -q tests/test_persistence.py tests/test_api.py   # 14 passed
+    pytest -q tests/test_persistence.py                     # after tidying 2 tests: 6 passed
+    ruff format . ; ruff check . --fix ; mypy
+    bash scripts/gate.sh
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+50 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 35 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 54%]
+.............................................................            [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  <project-root>\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                        Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------
+src\imbalancelab\__init__.py                    2      0   100%
+src\imbalancelab\api\__init__.py                0      0   100%
+src\imbalancelab\api\app.py                   114      0   100%
+src\imbalancelab\api\schemas.py                45      0   100%
+src\imbalancelab\config.py                     15      1    93%   27
+src\imbalancelab\data\__init__.py               4      0   100%
+src\imbalancelab\data\errors.py                21      0   100%
+src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                37      0   100%
+src\imbalancelab\evaluation\__init__.py         2      0   100%
+src\imbalancelab\evaluation\config.py          35      0   100%
+src\imbalancelab\evaluation\final.py          109      4    96%   74-75, 102, 160
+src\imbalancelab\evaluation\metrics.py        115      0   100%
+src\imbalancelab\evaluation\runner.py         117      0   100%
+src\imbalancelab\evaluation\thresholds.py     138      0   100%
+src\imbalancelab\models\__init__.py             2      0   100%
+src\imbalancelab\models\persistence.py        100      0   100%
+src\imbalancelab\models\registry.py            18      0   100%
+src\imbalancelab\pipelines\__init__.py          2      0   100%
+src\imbalancelab\pipelines\builder.py          66      0   100%
+src\imbalancelab\profiling\__init__.py          3      0   100%
+src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py          9      0   100%
+src\imbalancelab\reporting\__init__.py          2      0   100%
+src\imbalancelab\reporting\figures.py          44      1    98%   28
+src\imbalancelab\reporting\render.py           82      0   100%
+src\imbalancelab\reporting\report.py          163      7    96%   59, 125, 172, 202, 245, 440, 442
+src\imbalancelab\splitting\__init__.py          3      0   100%
+src\imbalancelab\splitting\duplicates.py       24      0   100%
+src\imbalancelab\splitting\splits.py          195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py           2      0   100%
+src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                  144      6    96%   62-63, 90, 135, 228, 252
+-------------------------------------------------------------------------
+TOTAL                                        2045     33    98%
+133 passed, 1 warning in 73.49s (0:01:13)
+[exit 0]
+```
+
+#### Tests
+- `test_round_trip_predictions_identical`: probabilities after save → load → predict are
+  **bit-identical** (`assert_array_equal`) to the in-memory pipeline, and to the stored
+  final-evaluation test predictions.
+- `test_tampered_artifact_is_rejected_before_unpickling`: covers a modified artifact, a deleted
+  artifact, and an unknown ID.
+- `test_version_mismatch_warns`: 2 edited versions produce 2 warnings, also returned in
+  `loaded.warnings`.
+- `test_input_validation`: covers a missing column, a non-numeric value, no records, an extra
+  column note, and an unseen category handled.
+- `test_api_final_evaluation_persists_and_predicts`: the full HTTP flow. It checks that
+  `model_id` is linked in the run record, `GET /models`, that predict probabilities equal the
+  library's (`atol=1e-12` after the JSON round trip), 422 for missing columns,
+  `persist_model=false`, and 409 for a tampered artifact.
+
+#### Invariant re-check
+- 7: the persisted pipeline is the one `final_evaluate` refit on `holdout.train_idx` only (M5
+  test checks its scaler statistics). Metadata records `trained_on` and `n_train_rows`.
+- 5: metadata records the dataset SHA, test SHA, versions, and the artifact SHA.
+
+#### Deviations from instructions
+- None.
+
+#### Known limitations
+- joblib artifacts are pickles. The SHA check guards against replaced files, not against a
+  malicious metadata+artifact pair written together. Only load artifacts from a trusted
+  workspace (documented in the module docstring).
+- Probabilities are not calibrated (calibration is out of MVP scope).

@@ -5,18 +5,21 @@ calls one function here. No HTTP concerns live in this module, and no ML logic l
 """
 
 import shutil
+import warnings
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
 from pydantic import BaseModel
 
 from imbalancelab.config import Settings
 from imbalancelab.data.loader import LoadedDataset, load_dataset
 from imbalancelab.data.schema import DatasetSchema
 from imbalancelab.evaluation.config import ExperimentConfig
-from imbalancelab.evaluation.final import final_evaluate
+from imbalancelab.evaluation.final import final_evaluate, record_persisted_model
 from imbalancelab.evaluation.runner import run_experiment
 from imbalancelab.evaluation.thresholds import ThresholdStrategy, run_threshold_analysis
+from imbalancelab.models import persistence
 from imbalancelab.profiling.profile import DatasetProfile, ProfileThresholds, profile_dataset
 from imbalancelab.reporting.report import generate_report
 from imbalancelab.splitting.splits import Holdout, HoldoutConfig, get_or_create_holdout
@@ -212,15 +215,62 @@ def finalize_run(
     model: str | None = None,
     force: bool = False,
     reason: str | None = None,
+    persist_model: bool = True,
 ) -> dict[str, Any]:
-    """Final evaluation of a run on its dataset's stored test rows."""
+    """Final evaluation of a run on its dataset's stored test rows.
+
+    With ``persist_model`` the chosen pipeline (refit on outer-train rows only) is saved and
+    its ``model_id`` is recorded in ``final_evaluation.json``.
+    """
     run_dir = ws.run_dir(run_id)
     dataset_id = rec.RunRecord(run_dir).run.get("dataset_id")
     if not dataset_id:
         raise rec.RecordNotFoundError("run has no registered dataset_id")
-    dataset, _, _ = load_registered(ws, dataset_id)
+    dataset, holdout, _ = load_registered(ws, dataset_id)
     result = final_evaluate(dataset, run_dir, model=model, force=force, reason=reason)
-    return result.record
+    if not persist_model:
+        return result.record
+    meta = persistence.save_model(
+        result.pipeline,
+        ws.models_dir,
+        run_id=run_id,
+        model_name=result.record["model"],
+        threshold=result.threshold,
+        threshold_provenance=result.record["threshold_provenance"],
+        features=result.features,
+        dataset_sha256=dataset.sha256,
+        test_sha256=holdout.test_sha256,
+        n_train_rows=len(holdout.train_idx),
+    )
+    out = record_persisted_model(run_dir, meta.model_id)
+    out["model_id"] = meta.model_id
+    return out
+
+
+def list_models(ws: Workspace) -> list[dict[str, Any]]:
+    if not ws.models_dir.is_dir():
+        return []
+    out = []
+    for p in sorted(ws.models_dir.iterdir()):
+        if (p / persistence.METADATA_FILE).is_file():
+            out.append(persistence.read_metadata(ws.models_dir, p.name).model_dump(mode="json"))
+    return out
+
+
+def predict_records(ws: Workspace, model_id: str, records: list[dict[str, Any]]) -> dict[str, Any]:
+    """Load a persisted model (hash-checked) and predict ``records``."""
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", persistence.VersionMismatchWarning)
+        loaded = persistence.load_model(ws.models_dir, model_id)
+    frame = pd.DataFrame(records)
+    _, notes = persistence.validate_input(frame, loaded.metadata.feature_spec)
+    preds = persistence.predict(loaded, frame)
+    return {
+        "model_id": model_id,
+        "threshold": loaded.metadata.threshold,
+        "predictions": preds.to_dict(orient="records"),
+        "warnings": [*loaded.warnings, *notes],
+    }
 
 
 def report_path(ws: Workspace, run_id: str, fmt: str = "html") -> Path:
