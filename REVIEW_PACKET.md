@@ -861,3 +861,148 @@ TOTAL                                        1632     28    98%
 - The snapshot test masks numbers. Numeric correctness is covered by the traceability test, not
   by the snapshot.
 - HTML is self-contained (base64 images), so file size grows with the figures (about 4 × 30 KB).
+
+---
+
+### Task M7 — FastAPI endpoints
+
+**Date:** 2026-10-22 · **Milestone:** M7
+
+#### Summary of changes
+- `workflow.py` (library service layer): a `Workspace` (datasets, runs and models
+  directories, created lazily) and these functions:
+  - `register_dataset`: copies into a generated `ds-<time>-<hex>` directory, validates,
+    profiles, and creates the holdout once. On any failure it removes the directory.
+  - `get_registration`, `list_datasets`, `get_profile`
+  - `load_registered`: reuses the stored holdout and never re-draws it
+  - `start_run`, `list_runs`, `get_run`, `analyse_thresholds`, `finalize_run`, `report_path`
+- `api/app.py`, `create_app(settings)`, with `app = create_app()` for `uvicorn imbalancelab.api.app:app`.
+  - Endpoints:
+    - `GET /health`
+    - `POST /datasets` (multipart: `file` plus `schema` JSON plus optional `holdout` JSON) and
+      `GET /datasets`
+    - `GET /datasets/{id}/profile`
+    - `POST /runs`, `GET /runs`, `GET /runs/{id}`
+    - `POST /runs/{id}/thresholds`, `POST /runs/{id}/final-evaluation`
+    - `GET /runs/{id}/report?format=html|markdown`
+    - `POST /models/{id}/predict`: returns 404 until M9 adds persistence (D19)
+  - Each handler parses or validates input, then makes one `workflow` call.
+  - Exceptions map to status codes: 400 invalid ID; 404 not found; 409 final evaluation
+    exists or a precondition fails; 413 upload too large; 422 data, split, threshold,
+    provenance, run and validation errors.
+  - Uploads stream to a temp file (limit `max_upload_bytes`). The client filename is used only
+    for its suffix (allowlist `.csv`, `.parquet`) and as a display name, and is never part of a
+    path. IDs are regex-validated (`^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$`).
+  - Execution is synchronous (documented in the module and app description).
+- `api/schemas.py`: pydantic request and response models.
+- `config.py`: adds `datasets_dir`, `models_dir`, and `max_upload_bytes` (50 MiB default).
+
+#### Files changed
+- added: `src/imbalancelab/workflow.py`, `src/imbalancelab/api/{app,schemas}.py`,
+  `tests/test_api.py`
+- modified: `src/imbalancelab/api/__init__.py`, `src/imbalancelab/config.py`, `.gitignore`
+  (`data/registered/`, `models/`), `PROJECT_STATUS.md`, `REVIEW_PACKET.md`
+
+#### Exact commands run
+    pytest -q tests/test_api.py      # 8 passed; pydantic "schema" shadow warning
+    # renamed the form parameter (alias "schema"): schema_json also shadows; then schema_text
+    pytest -q tests/test_api.py      # 8 passed, 1 upstream warning
+    ruff format . ; ruff check . --fix ; mypy
+    bash scripts/gate.sh
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+45 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 32 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 61%]
+.............................................                            [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  <project-root>\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                        Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------
+src\imbalancelab\__init__.py                    2      0   100%
+src\imbalancelab\api\__init__.py                0      0   100%
+src\imbalancelab\api\app.py                   110      0   100%
+src\imbalancelab\api\schemas.py                45      0   100%
+src\imbalancelab\config.py                     15      1    93%   27
+src\imbalancelab\data\__init__.py               4      0   100%
+src\imbalancelab\data\errors.py                21      0   100%
+src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                37      0   100%
+src\imbalancelab\evaluation\__init__.py         2      0   100%
+src\imbalancelab\evaluation\config.py          35      0   100%
+src\imbalancelab\evaluation\final.py          102      4    96%   74-75, 102, 160
+src\imbalancelab\evaluation\metrics.py        115      0   100%
+src\imbalancelab\evaluation\runner.py         117      0   100%
+src\imbalancelab\evaluation\thresholds.py     138      0   100%
+src\imbalancelab\models\__init__.py             2      0   100%
+src\imbalancelab\models\registry.py            18      0   100%
+src\imbalancelab\pipelines\__init__.py          2      0   100%
+src\imbalancelab\pipelines\builder.py          66      0   100%
+src\imbalancelab\profiling\__init__.py          3      0   100%
+src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py          9      0   100%
+src\imbalancelab\reporting\__init__.py          2      0   100%
+src\imbalancelab\reporting\figures.py          44      1    98%   28
+src\imbalancelab\reporting\render.py           82      0   100%
+src\imbalancelab\reporting\report.py          163      7    96%   59, 125, 172, 202, 245, 440, 442
+src\imbalancelab\splitting\__init__.py          3      0   100%
+src\imbalancelab\splitting\duplicates.py       24      0   100%
+src\imbalancelab\splitting\splits.py          195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py           2      0   100%
+src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                  120      5    96%   59-60, 87, 132, 220
+-------------------------------------------------------------------------
+TOTAL                                        1910     32    98%
+117 passed, 1 warning in 50.64s
+[exit 0]
+```
+
+#### Tests
+- `test_full_run_lifecycle` exercises run → detail → final evaluation before thresholds (409)
+  → thresholds → final (200) → repeat (409) → forced without a reason (409) → forced with a
+  reason (200, `forced: true`) → HTML and Markdown report → bad format (422).
+- `test_upload_validation_errors` covers bad JSON, a bad schema, a wrong extension, a missing
+  target, an empty file, an oversize upload (413), and a single-class split error. It also
+  checks that no dataset directory or temp file is left behind.
+- `test_client_filename_cannot_escape_workspace` uploads as `../../../evil.csv` and checks
+  that nothing is written outside the workspace.
+- `test_invalid_and_unknown_ids` checks 400 for malformed IDs (including `..\..\x`) and 404
+  for unknown ones.
+- `test_routes_contain_no_ml_code` parses `api/app.py` and checks that it imports none of
+  sklearn, imblearn, numpy, pandas or joblib.
+
+#### Invariant re-check
+- 7: the holdout is created at dataset registration and stored next to the data. Every run and
+  final evaluation reloads it through `get_or_create_holdout`, which verifies the SHA-256 and
+  config. The test set is never re-drawn.
+- 3: thresholds are selected only through `POST /runs/{id}/thresholds` (OOF). Final evaluation
+  requires that step and is refused a second time without force and a reason.
+
+#### Deviations from instructions
+- **`POST /models/{id}/predict`** exists but returns 404 until M9 (D19).
+
+#### Known limitations
+- Synchronous execution: long runs hold the HTTP request open. There is no job queue (MVP).
+- Starlette warns that `httpx` with its TestClient is deprecated in favour of `httpx2`. This is
+  an upstream warning, and the dev dependency stays `httpx` as specified.
+- `ValueError` from library code maps to 422 (`invalid_request`). A genuine bug raising
+  `ValueError` would surface as a 422 instead of a 500.

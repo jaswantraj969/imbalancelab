@@ -12,7 +12,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M4 | Experiment runner, baselines, run records | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M4) |
 | M5 | Threshold analysis (OOF/validation only) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M5) |
 | M6 | Evidence-based audit report | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M6) |
-| M7 | FastAPI endpoints | not started | — |
+| M7 | FastAPI endpoints | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M7) |
 | M8 | Streamlit frontend (via API only) | not started | — |
 | M9 | Model persistence + inference endpoint | not started | — |
 | M10 | Docs + case study from real results | not started | — |
@@ -81,7 +81,14 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   conservative and descriptive, not a significance claim.
 - **D18:** no Markdown library was added. A small internal document model renders to both
   Markdown and HTML, which keeps the dependency list as specified.
+- **D19:** `POST /models/{id}/predict` was added in M7 with its request and response models,
+  but persistence is M9, so until then it returns 404. M9 wires `final-evaluation` to persist
+  the refit pipeline and implements prediction.
+- **D20:** a library `workflow` module is the API's only dependency on ML code, so the "no ML
+  logic in routes" requirement is checked by an AST test on `api/app.py` imports.
+- **D21:** the holdout is created at dataset registration (`POST /datasets`, optional
+  `holdout` JSON) and stored with the dataset. All runs on that dataset share it.
 
 ## Last updated
 
-2026-10-22 — M6 (Implementation Engineer)
+2026-10-22 — M7 (Implementation Engineer)
