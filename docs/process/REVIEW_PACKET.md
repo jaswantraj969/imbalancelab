@@ -4981,3 +4981,278 @@ TOTAL                                         2524     43    98%
 - **Report snapshot:** regenerated once. The reviewed diff contains only the Brier CI, the
   paired table, the calibration subsection, the reliability figure line and the limitation
   line. The traceability test's figure set was extended to 5, which is stricter.
+
+---
+
+### Task T-R5 — Release fixes: test-scoring history, documentation accuracy
+
+**Date:** 2026-10-23 · **Code/docs commit:** `e840915` (from the supervisor-verified `0e9574e`).
+This entry follows in the next commit. **No test set was re-scored, and no reported metric
+changed.**
+
+#### Summary
+- **Setup:** deleted the uncommitted `docs/process/REVIEW_BUNDLE.md` first.
+- **M1 (test-scoring history):**
+  - `evaluation/final.py::scoring_history(record)` counts `final_evaluation` events as test
+    scorings. It lists forced re-evaluations (time, model, reason), and lists model persistence
+    and the bootstrap/coverage amendments as "no test scoring" without counting them.
+  - The report (section 9) has a "Test-scoring history" subsection, which shows a WARNING and
+    adds a limitations line when the count is > 1.
+  - `GET /runs/{id}` has a `test_scoring_history` field, and the Streamlit final-evaluation
+    page shows the count (plus a warning when > 1).
+  - Tests (`tests/test_scoring_history.py`, plus an assertion in `test_api.py`): one final
+    evaluation gives count 1 and no warning; an amendment is not counted; a forced
+    re-evaluation gives a WARNING with count 2 and the reason shown.
+- **Case-study reports:** regenerated with the new `--reports-only` mode, which neither amends
+  nor scores (D37). Each case-study run log has exactly **1** `final_evaluation` event; the
+  other events are 1 `model_persisted` and 2 `bootstrap_cis_added`.
+- **L1:** the persistence docstring and a README "Model persistence" section now say the
+  SHA-256 detects accidental corruption only, is not tamper protection (the metadata sits next
+  to the artifact), and that joblib is pickle, so only trusted workspaces should be loaded.
+- **L2:** a README "Running the API" section: no authentication, local use only, bind
+  `127.0.0.1`, do not expose to a network. The documented commands use `--host 127.0.0.1`
+  (README, frontend README, and the `api/app.py` docstring).
+- **L3:** a threshold-transfer limitation in the report and the case study: the threshold is
+  selected on fold-model OOF scores and applied to the outer-train refit (notably with SMOTE),
+  and the CIs hold the threshold fixed.
+- **L4:** D9 rewritten to describe the current behaviour (eligible-row fold count, per D28),
+  with a history note.
+
+#### GitHub Actions (commit `e840915`)
+https://github.com/jaswantraj969/imbalancelab/actions/runs/39844968662: `checks (3.11)` **success**, `checks (3.13)` **success**. Pytest: 169 passed,
+TOTAL 98%, on both jobs.
+
+#### Case-study run (b) report, "Test-scoring history" (verbatim)
+````markdown
+### Test-scoring history
+
+Test set scored **1 time** for this run (count of `final_evaluation` events in `final_evaluation_log.jsonl`).
+
+| # | Time | Model | Forced |
+|---|---|---|---|
+| 1 | 2026-10-22T09:21:15.405438Z | hgb+smote | no |
+
+Forced re-evaluations: none.
+
+Amendments (**no test scoring**):
+
+| Time | What |
+|---|---|
+| 2026-10-22T09:21:15.533441Z | model persisted (model-20261022T092115Z-819a6e87) |
+| 2026-10-22T10:04:28.879800Z | added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored [run.json] |
+| 2026-10-22T10:04:30.637958Z | added bootstrap CIs computed from stored final_predictions.parquet (no refit, no re-scoring) [final_evaluation.json] |
+| 2026-10-22T14:41:12.545544Z | added evaluation_coverage computed from stored holdout + rebuilt folds (fold-index SHA-256 verified); nothing refit or scored [run.json] |
+| 2026-10-22T14:41:27.728707Z | added bootstrap CIs (incl. Brier), reliability curves and paired bootstrap differences computed from stored final_predictions.parquet (no refit, no re-scoring) [final_evaluation.json] |
+````
+
+#### Forced re-evaluation WARNING in a fixture report (verbatim)
+````markdown
+### Test-scoring history
+
+**WARNING:** the test set of this run was scored **2 times**. The reported test metrics may be optimistically biased by repeated test-set use.
+
+Test set scored **2 times** for this run (count of `final_evaluation` events in `final_evaluation_log.jsonl`).
+
+| # | Time | Model | Forced |
+|---|---|---|---|
+| 1 | 2026-10-22T19:58:10.782584Z | hgb | no |
+| 2 | 2026-10-22T19:58:11.118252Z | hgb | yes |
+
+Forced re-evaluations:
+
+| Time | Model | Reason |
+|---|---|---|
+| 2026-10-22T19:58:11.118252Z | hgb | supervisor-requested rerun |
+````
+
+#### No re-scoring, records unchanged (verbatim)
+````text
+$ python scripts/run_case_study.py --reports-only
+downloaded <project-root>\data\raw\imblearn\zenodo\x25data.npz sha256=73480c315d42bc5b33c2c73b9078d0034113d26f0511facd9fc5bb07f2d6438a
+[a_stratified] loaded run-20261022T091904Z-596af186 (no amendment, no scoring)
+[b_duplicate_groups] loaded run-20261022T092013Z-2056207e (no amendment, no scoring)
+Largest duplicate cluster (run run-20261022T092013Z-2056207e, duplicate_groups=True)
+rows: 3329 of 11183 (29.77% of the dataset)   positives: 7   negatives: 3322
+rows in the cluster that are in the test set: 0
+identical feature vector of all 3329 rows (all rows equal: True):
+features equal to their column minimum: 6 of 6 (consistent with a floor or zero-measurement value)
+features equal to 0: 0 of 6
+distinct values within the vector: 6
+selected model: hgb+smote (persisted model model-20261022T092115Z-819a6e87, refit on outer-train rows only, artifact SHA-256 verified on load)
+predicted probability for the cluster's feature vector: 0.08894896   distinct predicted values over the 3329 rows: 1
+stored threshold: 0.60359672   predicted label: 0   (training prevalence of the cluster: 0.002103)
+wrote docs/case_study.md, docs/case_study/a_stratified, docs/case_study/b_duplicate_groups
+$ sha256sum -c preds_before_r5.txt
+runs/case_study/runs/run-20261022T091904Z-596af186/final_predictions.parquet: OK
+runs/case_study/runs/run-20261022T092013Z-2056207e/final_predictions.parquet: OK
+docs/case_study/a_stratified/final_predictions.parquet: OK
+docs/case_study/b_duplicate_groups/final_predictions.parquet: OK
+````
+
+`summary.json`, `final_evaluation.json` and `run.json` of both runs were also checked with
+`sha256sum -c`, and all are OK.
+
+#### git diff --stat 0e9574e..e840915
+````text
+ README.md                                          | 33 +++++++--
+ docs/case_study.md                                 |  1 +
+ docs/case_study/a_stratified/report/report.html    | 10 ++-
+ docs/case_study/a_stratified/report/report.md      | 24 +++++--
+ .../b_duplicate_groups/report/report.html          | 10 ++-
+ .../case_study/b_duplicate_groups/report/report.md | 24 +++++--
+ docs/process/PROJECT_STATUS.md                     | 25 +++++--
+ frontend/README.md                                 |  4 +-
+ frontend/app.py                                    |  8 +++
+ scripts/run_case_study.py                          | 21 +++++-
+ src/imbalancelab/api/app.py                        |  3 +
+ src/imbalancelab/evaluation/final.py               | 42 +++++++++++
+ src/imbalancelab/models/persistence.py             | 10 +--
+ src/imbalancelab/reporting/report.py               | 83 ++++++++++++++++++----
+ src/imbalancelab/workflow.py                       |  7 +-
+ tests/snapshots/report_structure.md                | 13 +++-
+ tests/test_api.py                                  |  3 +
+ tests/test_scoring_history.py                      | 77 ++++++++++++++++++++
+ 18 files changed, 347 insertions(+), 51 deletions(-)
+````
+
+#### Gate, Python 3.13.5 (verbatim)
+````text
+$ python --version
+Python 3.13.5
+
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+71 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 45 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 42%]
+........................................................................ [ 85%]
+.........................                                                [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 49      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\calibration.py      33      1    97%   48
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           162      6    96%   85-86, 113, 171, 274, 312
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py     111      1    99%   61
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           65      2    97%   28, 84
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           247     10    96%   61, 96, 179, 236, 239, 319, 349, 570, 648, 694
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   149      6    96%   67-68, 95, 140, 241, 267
+--------------------------------------------------------------------------
+TOTAL                                         2561     43    98%
+169 passed in 127.06s (0:02:07)
+[exit 0]
+````
+
+#### Gate, Python 3.11.15 (verbatim)
+````text
+$ python --version
+Python 3.11.15
+
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+71 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 45 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 42%]
+........................................................................ [ 85%]
+.........................                                                [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.11.15-final-0 _______________
+
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 49      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\calibration.py      33      1    97%   48
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           162      6    96%   85-86, 113, 171, 274, 312
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py     111      1    99%   61
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           65      2    97%   28, 84
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           247     10    96%   61, 96, 179, 236, 239, 319, 349, 570, 648, 694
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   149      6    96%   67-68, 95, 140, 241, 267
+--------------------------------------------------------------------------
+TOTAL                                         2561     43    98%
+169 passed in 141.43s (0:02:21)
+[exit 0]
+````
+
+#### Deviations
+- **Report snapshot:** regenerated. The diff is the history subsection, which replaces the old
+  one-line log summary, plus the threshold-transfer limitation.
