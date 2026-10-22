@@ -21,6 +21,16 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 
 - Plan step "tree -L 3" substituted with `find` (no `tree` binary in Git Bash on this machine); see REVIEW_PACKET.md T0 deviations.
 
+## Decisions
+
+- **D1 (plan amendment):** added invariant 7 (outer holdout once per dataset; test scored once)
+  and the M2/M4/M5/tooling amendments to IMPLEMENTATION_PLAN.md.
+- **D2:** `python-multipart` added as a runtime dependency. FastAPI requires it for the
+  multipart upload in `POST /datasets` (M7).
+- **D3:** `requirements-lock.txt` is a *universal* lock (`uv pip compile --universal
+  --python-version 3.11`), so one file serves both CI versions. numpy is resolved to 2.4.x on
+  3.11 and 2.5.x on 3.12+ via environment markers.
+
 ## Last updated
 
 2026-10-22 — T0 (Implementation Engineer)

@@ -19,12 +19,17 @@ These hold for every milestone. Any change that would break one is a defect.
    once**, for final reporting after every modelling and threshold decision has been fixed.
 4. **The primary metric is average precision (area under the precision-recall curve).** Every
    result is reported against a `DummyClassifier` baseline and a class-weighted logistic
-   regression baseline run on the same splits.
-5. **Every run records its seed, full config, dataset SHA-256, and library versions** (Python,
-   numpy, pandas, scikit-learn, imbalanced-learn, and others in use).
+   regression baseline run on **identical stored fold indices**.
+5. **Every run records its seed, full config, dataset SHA-256, fold-index hash, and library
+   versions** (Python, numpy, pandas, scikit-learn, imbalanced-learn, and others in use).
 6. **No fabricated metrics.** Every number in reports, docs, the README, or the case study comes
    from an executed run with a stored run record. Illustrative examples are labelled as such and
    contain no numbers that look like results.
+7. **An outer train/test holdout is created once per dataset**, respecting the dataset's
+   stratified, group, or temporal strategy. The test indices and their SHA-256 are stored. CV,
+   model selection, and threshold selection use outer-train rows only. Test rows are scored
+   exactly once, in a final-evaluation step, after the model and threshold are fixed. Persisted
+   models are refit on outer-train rows only.
 
 ## Milestones
 
@@ -64,10 +69,15 @@ produce a dataset profile that brings risks to the surface without overstating t
 - Unit tests use small synthetic DataFrames built in the tests. No downloaded datasets.
 
 ### M2 — Splitting and leakage-safe pipeline builder
-**Objective:** Provide stratified, group, and temporal split strategies, and a builder that
-produces leakage-safe imblearn pipelines.
+**Objective:** Provide an outer holdout and inner CV for stratified, group, and temporal split
+strategies, and a builder that produces leakage-safe imblearn pipelines.
 
 **Acceptance criteria**
+- An outer train/test holdout is created for each strategy and is reproducible by seed. The
+  test indices and their SHA-256 are stored, and inner CV folds are built from outer-train rows
+  only.
+- Exact-duplicate feature rows that cross any train/validation/test boundary are detected and
+  reported as a WARNING with a count.
 - Stratified: the class proportions of every fold stay within tolerance of the overall
   proportions, and the folds are reproducible for a given seed.
 - Group: no group appears on both sides of any split (tested).
@@ -101,8 +111,13 @@ file-based run records.
 - The model registry contains a `DummyClassifier` (prior/stratified), a class-weighted
   `LogisticRegression`, and one tree ensemble (for example `HistGradientBoostingClassifier` or
   `RandomForestClassifier`).
-- The runner performs repeated stratified K-fold CV. It produces metrics for each fold, a
-  summary (mean, std, and fold count), and stored out-of-fold predictions.
+- The runner performs repeated CV on outer-train rows, using the split strategy declared in the
+  dataset schema (stratified, group, or temporal) rather than a hardcoded one. It produces
+  metrics for each fold, a summary (mean, std, and fold count), and stored out-of-fold
+  predictions for each repeat.
+- All models in a run share identical stored fold indices. Comparisons with the baselines report
+  paired per-fold differences and the win fraction. No naive significance tests are run on
+  correlated CV folds.
 - Each run writes a directory under `runs/` containing the config, seed, dataset SHA-256,
   library versions, per-fold metrics, the summary, OOF predictions, and timestamps.
 - Re-running with the same seed and config gives identical metrics (tested).
@@ -114,11 +129,15 @@ file-based run records.
 **Acceptance criteria**
 - Threshold curves (precision, recall, F-beta, and cost when a cost matrix is given) are computed
   from OOF or validation predictions only.
+- A threshold is selected separately for each CV repeat and reported as mean plus spread.
 - Selection strategies: maximise F-beta, reach a target recall or precision, and minimise
   expected cost.
 - The API rejects test-set predictions passed as threshold-selection input. Provenance is
   checked, and a test covers this.
 - The chosen threshold and its provenance are saved in the run record.
+- A final-evaluation step refits the chosen pipeline on outer-train rows and scores the test set
+  once with the fixed model and threshold. A second final evaluation of the same run is refused
+  unless explicitly forced, and every forced re-evaluation is logged.
 
 ### M6 — Evidence-based audit report
 **Objective:** Generate a Markdown/HTML audit report from run records alone.
@@ -173,6 +192,13 @@ file-based run records.
   numbers come only from run records stored or linked in the repo, and the commands to
   reproduce them are included.
 - The documentation states the limitations and the invariants.
+
+## Tooling (amendment)
+
+- `pyarrow` is a runtime dependency (Parquet input and stored OOF predictions).
+- `requirements-lock.txt` is generated with `uv pip compile` for reproducible installs.
+- `.github/workflows/ci.yml` runs ruff, `ruff format --check`, mypy, and pytest on Python 3.11
+  and 3.13.
 
 ## Not in MVP
 
