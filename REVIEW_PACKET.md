@@ -272,3 +272,135 @@ TOTAL                                       400     11    97%
   the pure-category check, and datetime features are skipped.
 - Duplicate detection hashes rows with `pandas.util.hash_pandas_object`. Collisions are
   theoretically possible but negligible.
+
+---
+
+### Task M2 — Splitting and leakage-safe pipeline builder
+
+**Date:** 2026-10-22 · **Milestone:** M2
+
+#### Summary of changes
+- `splitting/splits.py`:
+  - `make_holdout` builds the outer train/test holdout for each strategy:
+    - stratified: per-class sampling with a seeded RNG
+    - group: the first fold of `StratifiedGroupKFold`
+    - temporal: the last ~`test_size` fraction of distinct time values, with an optional `gap`
+      of excluded distinct time values
+  - `Holdout` stores the train, test and gap indices, the dataset SHA-256, and the test-index
+    SHA-256.
+  - `get_or_create_holdout` creates the holdout once per dataset. It reuses the stored one only
+    when the dataset SHA, strategy and config all match and the stored test hash verifies;
+    otherwise it raises `HoldoutMismatchError`.
+  - `make_cv_folds` builds inner CV on outer-train rows only:
+    - stratified: `RepeatedStratifiedKFold`
+    - group: `StratifiedGroupKFold`, reseeded for each repeat
+    - temporal: expanding window over distinct time values with an optional gap; `n_repeats` is
+      forced to 1 and an info warning is recorded
+  - The fold-index SHA-256 is stored. `SplitError` is raised for impossible folds (fewer
+    minority samples or groups than folds, too few time values, single-class training or test
+    sides, missing group or time values). Single-class validation folds produce a warning.
+- `splitting/duplicates.py`: `cross_boundary_duplicates` counts evaluation rows whose feature
+  values exactly duplicate a training row, across the test boundary and every CV fold. It
+  returns one WARNING with the counts as evidence.
+- `pipelines/builder.py`:
+  - `infer_feature_spec` assigns columns to numeric or categorical by dtype. Datetime and
+    all-missing columns are dropped, and the reason is recorded.
+  - `build_preprocessor` is a `ColumnTransformer`: median impute + `StandardScaler` for
+    numerics; `"__missing__"` fill + `OneHotEncoder(handle_unknown="ignore", max_categories=50)`
+    for categoricals.
+  - `build_pipeline` assembles an imblearn `Pipeline` of preprocess → optional sampler (none,
+    random_under, random_over, or smote) → model.
+
+#### Files changed
+- added: `src/imbalancelab/splitting/{splits,duplicates}.py`,
+  `src/imbalancelab/pipelines/builder.py`, `tests/test_splitting.py`, `tests/test_pipelines.py`
+- modified: `src/imbalancelab/splitting/__init__.py`, `src/imbalancelab/pipelines/__init__.py`,
+  `PROJECT_STATUS.md` (and LF line-ending fix of M1's records), `REVIEW_PACKET.md`
+
+#### Exact commands run
+    pytest -q tests/test_splitting.py tests/test_pipelines.py   # 1 failure: test-helper bug
+    pytest -q tests/test_splitting.py tests/test_pipelines.py   # 24 passed
+    ruff format . ; ruff check . --fix ; mypy                     # 1 file reformatted, 2 import-order fixes
+    bash scripts/gate.sh
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+26 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 19 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+............................................................             [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src\imbalancelab\__init__.py                   2      0   100%
+src\imbalancelab\api\__init__.py               0      0   100%
+src\imbalancelab\config.py                    12      1    92%   24
+src\imbalancelab\data\__init__.py              4      0   100%
+src\imbalancelab\data\errors.py               21      0   100%
+src\imbalancelab\data\loader.py              143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py               37      0   100%
+src\imbalancelab\evaluation\__init__.py        0      0   100%
+src\imbalancelab\models\__init__.py            0      0   100%
+src\imbalancelab\pipelines\__init__.py         2      0   100%
+src\imbalancelab\pipelines\builder.py         66      0   100%
+src\imbalancelab\profiling\__init__.py         3      0   100%
+src\imbalancelab\profiling\profile.py        169      5    97%   83, 85, 301, 341, 363
+src\imbalancelab\profiling\warnings.py         9      0   100%
+src\imbalancelab\reporting\__init__.py         0      0   100%
+src\imbalancelab\splitting\__init__.py         3      0   100%
+src\imbalancelab\splitting\duplicates.py      24      0   100%
+src\imbalancelab\splitting\splits.py         195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py          0      0   100%
+------------------------------------------------------------------------
+TOTAL                                        690     14    98%
+60 passed in 4.30s
+[exit 0]
+```
+
+#### Tests that prove the required properties
+- **No group crosses splits:** `test_group_splits_never_share_groups` checks the holdout and
+  every CV fold.
+- **Temporal ordering holds:** `test_temporal_ordering_holds[0|3]` checks train max < eval min,
+  exactly `gap` distinct time values in between, and an expanding window.
+  `test_temporal_ties_never_straddle_boundary` checks that tied timestamps never straddle a
+  boundary.
+- **Scaler parameters come from training rows only:**
+  `test_scaler_parameters_come_from_training_rows_only` checks that `mean_` and `scale_` equal
+  the median-imputed training-row statistics and differ from the full-data ones.
+  `test_categories_learned_from_training_rows_only` checks that categories seen only outside
+  training are not learned.
+- **Sampler does not alter predict-time data:**
+  `test_sampler_changes_fit_data_but_not_predict_data[random_over|random_under|smote]`. A
+  recording estimator shows that the classes are balanced at fit, while at predict the
+  estimator receives exactly `preprocess.transform(X_val)` with the original row count.
+
+#### Invariant re-check
+- 1 and 2: every learned transform and sampler sits inside one imblearn Pipeline, and samplers
+  act only during fit (tested).
+- 4: fold indices are stored in `CVPlan`, ready for every model to share (M4).
+- 5: `fold_indices_sha256` and `test_sha256` are computed.
+- 7: the holdout is created once, stored, and verified on reuse. Inner folds are drawn only from
+  `holdout.train_idx` (tested: validation ∩ test = ∅, folds ⊆ outer-train).
+
+#### Deviations from instructions
+- **First test run:** the independent duplicate count in `test_cross_boundary_duplicates_detected`
+  used `astype(str)`, which keeps NaN as a float under pandas 3, so `str.join` failed. I replaced
+  the key with `repr(tuple(row))`. Assertions unchanged.
+
+#### Known limitations
+- Temporal CV uses an expanding window with equal-sized chunks of *distinct time values*, not
+  equal row counts.
+- SMOTE interpolates one-hot columns, producing fractional values. SMOTENC is not used in the
+  MVP.
