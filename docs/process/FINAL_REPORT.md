@@ -1,12 +1,11 @@
-# ImbalanceLab: final report (revised after supervisor reviews T-R1 and T-R2)
+# ImbalanceLab: final report (revised after supervisor reviews T-R1, T-R2 and T-R3)
 
-**Prepared by:** Implementation Engineer · **Date:** 2026-10-22 · **For:** supervisor review
+**Prepared by:** Implementation Engineer · **Date:** 2026-10-23 · **For:** supervisor review
 
-Milestones M0–M10 and the T-R1 and T-R2 review fixes are implemented and committed (T-R2 M4,
-GitHub CI, is blocked; see section 2). **Nothing is marked
-`verified`**: M10 in particular is awaiting the supervisor. Per-task evidence is in
-[REVIEW_PACKET.md](REVIEW_PACKET.md) (the T-R1 and T-R2 entries hold the verbatim review
-evidence), and decisions D1–D31 and known issues are in [PROJECT_STATUS.md](PROJECT_STATUS.md).
+Milestones M0–M10 and review tasks T-R1–T-R3 are implemented and committed. **Nothing is marked
+`verified`**: that is for the supervisor. Per-task evidence is in
+[REVIEW_PACKET.md](REVIEW_PACKET.md), and decisions D1–D35 and known issues are in
+[PROJECT_STATUS.md](PROJECT_STATUS.md). The process records now live in `docs/process/` (D35).
 
 ## 1. Milestones and commits
 
@@ -23,12 +22,15 @@ evidence), and decisions D1–D31 and known issues are in [PROJECT_STATUS.md](PR
 | M7 | FastAPI | done | `a9ff54e` |
 | M8 | Streamlit frontend | done | `45706fc` |
 | M9 | Persistence + inference | done | `b250b9a` |
-| M10 | Docs + case study | done (not verified; revised in T-R1) | `91c6f54` |
+| M10 | Docs + case study | done (not verified; revised in T-R1–T-R3) | `91c6f54` |
 | T-R1 | Supervisor review fixes | done | `e727ca4` |
-| T-R2 | CIs, coverage, cluster analysis, disclosures | done except GitHub CI (blocked) | `01a9d51` |
+| T-R2 | CIs, coverage, cluster analysis, disclosures | done | `01a9d51` |
+| T-R3 | GitHub CI, calibration disclosure, paired bootstrap, tidy | done | `f96c85a` |
 
 ```text
 $ git log --oneline
+f96c85a T-R3: calibration disclosure, paired bootstrap, recall scope, httpx2, process docs moved
+573b2ba T-R2: review packet entry and regenerated final report
 01a9d51 T-R2: bootstrap CIs, evaluation coverage, cluster analysis, protocol history, ODbL notices
 924b401 T-R1: review packet entry and revised final report
 e727ca4 T-R1: duplicate-aware splitting, honest two-run case study, RF determinism, UI evidence
@@ -47,11 +49,20 @@ fdc15f3 M1: data loading, schema validation, profiling
 03ead06 T0: project skeleton, tooling, plan
 ```
 
-This report and the T-R2 REVIEW_PACKET entry are committed in the commit after the log above.
+This report and the T-R3 REVIEW_PACKET entry are committed after the log above.
 
-## 2. Gate output on commit `01a9d51` (verbatim)
+## 2. CI and gates on commit `f96c85a`
 
-### Python 3.13.5 (`.venv`)
+### GitHub Actions (private repository `jaswantraj969/imbalancelab`)
+
+Run: https://github.com/jaswantraj969/imbalancelab/actions/runs/39841242556 on commit `f96c85a`. Overall conclusion: **success**.
+
+| Job | Result |
+|---|---|
+| checks (3.13) | **success** |
+| checks (3.11) | **success** |
+
+### Local gate, Python 3.13.5 (`.venv`, verbatim)
 
 ```text
 $ python --version
@@ -62,23 +73,17 @@ All checks passed!
 [exit 0]
 
 $ ruff format --check .
-67 files already formatted
+70 files already formatted
 [exit 0]
 
 $ mypy
-Success: no issues found in 43 source files
+Success: no issues found in 45 source files
 [exit 0]
 
 $ pytest -q --cov=imbalancelab --cov-report=term-missing
-........................................................................ [ 45%]
-........................................................................ [ 91%]
-..............                                                           [100%]
-============================== warnings summary ===============================
-.venv\Lib\site-packages\fastapi\testclient.py:1
-  <project-root>\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
-    from starlette.testclient import TestClient as TestClient  # noqa
-
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+........................................................................ [ 43%]
+........................................................................ [ 86%]
+......................                                                   [100%]
 =============================== tests coverage ================================
 _______________ coverage: platform win32, python 3.13.5-final-0 _______________
 
@@ -87,19 +92,20 @@ Name                                         Stmts   Miss  Cover   Missing
 src\imbalancelab\__init__.py                     2      0   100%
 src\imbalancelab\api\__init__.py                 0      0   100%
 src\imbalancelab\api\app.py                    115      0   100%
-src\imbalancelab\api\schemas.py                 47      0   100%
+src\imbalancelab\api\schemas.py                 49      0   100%
 src\imbalancelab\config.py                      15      1    93%   27
 src\imbalancelab\data\__init__.py                4      0   100%
 src\imbalancelab\data\errors.py                 21      0   100%
 src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
 src\imbalancelab\data\schema.py                 40      0   100%
 src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\calibration.py      33      1    97%   48
 src\imbalancelab\evaluation\config.py           35      0   100%
-src\imbalancelab\evaluation\final.py           132      5    96%   79-80, 107, 165, 277
+src\imbalancelab\evaluation\final.py           146      6    96%   85-86, 113, 171, 274, 312
 src\imbalancelab\evaluation\metrics.py         115      0   100%
 src\imbalancelab\evaluation\runner.py          143      0   100%
 src\imbalancelab\evaluation\thresholds.py      138      0   100%
-src\imbalancelab\evaluation\uncertainty.py      79      1    99%   60
+src\imbalancelab\evaluation\uncertainty.py     111      1    99%   61
 src\imbalancelab\models\__init__.py              2      0   100%
 src\imbalancelab\models\persistence.py         100      0   100%
 src\imbalancelab\models\registry.py             18      0   100%
@@ -109,9 +115,9 @@ src\imbalancelab\profiling\__init__.py           3      0   100%
 src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
 src\imbalancelab\profiling\warnings.py           9      0   100%
 src\imbalancelab\reporting\__init__.py           2      0   100%
-src\imbalancelab\reporting\figures.py           44      1    98%   28
+src\imbalancelab\reporting\figures.py           65      2    97%   28, 84
 src\imbalancelab\reporting\render.py            82      0   100%
-src\imbalancelab\reporting\report.py           206      8    96%   59, 123, 180, 183, 263, 293, 514, 556
+src\imbalancelab\reporting\report.py           226     10    96%   60, 95, 124, 181, 184, 264, 294, 515, 593, 639
 src\imbalancelab\splitting\__init__.py           3      0   100%
 src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
 src\imbalancelab\splitting\duplicates.py        24      0   100%
@@ -119,14 +125,14 @@ src\imbalancelab\splitting\groups.py            79      1    99%   64
 src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
 src\imbalancelab\tracking\__init__.py            2      0   100%
 src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
-src\imbalancelab\workflow.py                   145      6    96%   63-64, 91, 136, 236, 262
+src\imbalancelab\workflow.py                   149      6    96%   63-64, 91, 136, 236, 262
 --------------------------------------------------------------------------
-TOTAL                                         2398     38    98%
-158 passed, 1 warning in 110.36s (0:01:50)
+TOTAL                                         2524     43    98%
+166 passed in 201.78s (0:03:21)
 [exit 0]
 ```
 
-### Python 3.11.15 (`.venv311`, from `requirements-lock.txt`; a local run, **not CI**)
+### Local gate, Python 3.11.15 (`.venv311`, verbatim)
 
 ```text
 $ python --version
@@ -137,23 +143,17 @@ All checks passed!
 [exit 0]
 
 $ ruff format --check .
-67 files already formatted
+70 files already formatted
 [exit 0]
 
 $ mypy
-Success: no issues found in 43 source files
+Success: no issues found in 45 source files
 [exit 0]
 
 $ pytest -q --cov=imbalancelab --cov-report=term-missing
-........................................................................ [ 45%]
-........................................................................ [ 91%]
-..............                                                           [100%]
-============================== warnings summary ===============================
-.venv311\Lib\site-packages\fastapi\testclient.py:1
-  <project-root>\.venv311\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
-    from starlette.testclient import TestClient as TestClient  # noqa
-
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+........................................................................ [ 43%]
+........................................................................ [ 86%]
+......................                                                   [100%]
 =============================== tests coverage ================================
 ______________ coverage: platform win32, python 3.11.15-final-0 _______________
 
@@ -162,19 +162,20 @@ Name                                         Stmts   Miss  Cover   Missing
 src\imbalancelab\__init__.py                     2      0   100%
 src\imbalancelab\api\__init__.py                 0      0   100%
 src\imbalancelab\api\app.py                    115      0   100%
-src\imbalancelab\api\schemas.py                 47      0   100%
+src\imbalancelab\api\schemas.py                 49      0   100%
 src\imbalancelab\config.py                      15      1    93%   27
 src\imbalancelab\data\__init__.py                4      0   100%
 src\imbalancelab\data\errors.py                 21      0   100%
 src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
 src\imbalancelab\data\schema.py                 40      0   100%
 src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\calibration.py      33      1    97%   48
 src\imbalancelab\evaluation\config.py           35      0   100%
-src\imbalancelab\evaluation\final.py           132      5    96%   79-80, 107, 165, 277
+src\imbalancelab\evaluation\final.py           146      6    96%   85-86, 113, 171, 274, 312
 src\imbalancelab\evaluation\metrics.py         115      0   100%
 src\imbalancelab\evaluation\runner.py          143      0   100%
 src\imbalancelab\evaluation\thresholds.py      138      0   100%
-src\imbalancelab\evaluation\uncertainty.py      79      1    99%   60
+src\imbalancelab\evaluation\uncertainty.py     111      1    99%   61
 src\imbalancelab\models\__init__.py              2      0   100%
 src\imbalancelab\models\persistence.py         100      0   100%
 src\imbalancelab\models\registry.py             18      0   100%
@@ -184,9 +185,9 @@ src\imbalancelab\profiling\__init__.py           3      0   100%
 src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
 src\imbalancelab\profiling\warnings.py           9      0   100%
 src\imbalancelab\reporting\__init__.py           2      0   100%
-src\imbalancelab\reporting\figures.py           44      1    98%   28
+src\imbalancelab\reporting\figures.py           65      2    97%   28, 84
 src\imbalancelab\reporting\render.py            82      0   100%
-src\imbalancelab\reporting\report.py           206      8    96%   59, 123, 180, 183, 263, 293, 514, 556
+src\imbalancelab\reporting\report.py           226     10    96%   60, 95, 124, 181, 184, 264, 294, 515, 593, 639
 src\imbalancelab\splitting\__init__.py           3      0   100%
 src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
 src\imbalancelab\splitting\duplicates.py        24      0   100%
@@ -194,73 +195,89 @@ src\imbalancelab\splitting\groups.py            79      1    99%   64
 src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
 src\imbalancelab\tracking\__init__.py            2      0   100%
 src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
-src\imbalancelab\workflow.py                   145      6    96%   63-64, 91, 136, 236, 262
+src\imbalancelab\workflow.py                   149      6    96%   63-64, 91, 136, 236, 262
 --------------------------------------------------------------------------
-TOTAL                                         2398     38    98%
-158 passed, 1 warning in 102.85s (0:01:42)
+TOTAL                                         2524     43    98%
+166 passed in 208.23s (0:03:28)
 [exit 0]
 ```
-
-**CI status: environment-blocked.** `.github/workflows/ci.yml` (Python 3.11 + 3.13) has
-**never run on GitHub Actions**. T-R2 M4 gave the placeholder `<REPO_URL>` but no actual URL, and
-creating and publishing a repository on the user's account was not authorised, so no remote
-exists and nothing was pushed. The two local gate runs above are not a CI result.
 
 ## 3. Case-study headline (run b: duplicate-aware split)
 
 - **Run (b):** `run-20261022T092013Z-2056207e` in `docs/case_study/b_duplicate_groups/`.
-- **Dataset:** `mammography` (Zenodo DOI 10.5281/zenodo.61452, ODC-ODbL). Dataset SHA-256
+- **Dataset:** `mammography` (Zenodo DOI 10.5281/zenodo.61452, ODbL). Dataset SHA-256
   `eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed`.
-- **Split:** `duplicate_groups=True`: rows with identical features form one group, and no
-  duplicate cluster crosses any boundary (cross-boundary duplicate check: 0 test rows, 0 folds).
-- **Evaluation coverage (WARNING):** 3329
-  rows (29.8% of the dataset,
-  7 positives) form one oversized
-  cluster, which is forced to train and never evaluated; the results do not describe them. That
-  cluster is the all-minimum feature vector (see docs/case_study.md, data-quality finding).
-- **Selection rule:** highest mean OOF AP among the candidates `hgb`, `hgb+random_under`,
-  `hgb+smote`, `random_forest`. Baselines: `dummy_prior`, `logreg_balanced`.
+- **Split:** no duplicate cluster crosses any boundary (cross-boundary duplicates: 0 test rows,
+  0 folds).
+- **Evaluation coverage WARNING:** 3329 rows (29.8%,
+  7 positives) are forced to train and never evaluated.
 
-**Selected `hgb+smote`: test AP 0.8228 [0.7383, 0.8977]** (scored once; 95% CI
-from a stratified bootstrap, 2000 resamples, seed 42) on 1964 test rows, 63 positives,
-prevalence 0.0321.
+**Selected `hgb+smote`: test AP 0.8228 [0.7383, 0.8977]** (scored once) on 1964 test rows,
+63 positives. The 95% CIs come from a stratified bootstrap (2000
+resamples, seed 42).
 
-| Model | Role | OOF AP: selection estimate (optimistic) | Test AP [95% CI] (scored once) |
+| Model | Role | OOF AP: selection estimate (optimistic) | Test AP [95% CI] | Test Brier [95% CI] |
+|---|---|---|---|---|
+| `dummy_prior` | baseline | 0.0323 ± 0.0000 (n=15) | 0.0321 [0.0321, 0.0321] | 0.0312 [0.0312, 0.0312] |
+| `logreg_balanced` | baseline | 0.5681 ± 0.0932 (n=15) | 0.5023 [0.3926, 0.6442] | 0.1182 [0.1101, 0.1267] |
+| `hgb` | candidate | 0.7295 ± 0.0589 (n=15) | not scored | not scored |
+| `hgb+random_under` | candidate | 0.5465 ± 0.0694 (n=15) | not scored | not scored |
+| `hgb+smote` | candidate, **selected** | 0.7515 ± 0.0611 (n=15) | 0.8228 [0.7383, 0.8977] | 0.0181 [0.0135, 0.0231] |
+| `random_forest` | candidate | 0.7292 ± 0.0635 (n=15) | not scored | not scored |
+
+Paired bootstrap, `hgb+smote` − baseline (same resampled test rows):
+
+| Baseline | Metric | Difference [95% CI] | Win fraction |
 |---|---|---|---|
-| `dummy_prior` | baseline | 0.0323 ± 0.0000 (n=15) | 0.0321 [0.0321, 0.0321] |
-| `logreg_balanced` | baseline | 0.5681 ± 0.0932 (n=15) | 0.5023 [0.3926, 0.6442] |
-| `hgb` | candidate | 0.7295 ± 0.0589 (n=15) | not scored |
-| `hgb+random_under` | candidate | 0.5465 ± 0.0694 (n=15) | not scored |
-| `hgb+smote` | candidate, **selected** | 0.7515 ± 0.0611 (n=15) | 0.8228 [0.7383, 0.8977] |
-| `random_forest` | candidate | 0.7292 ± 0.0635 (n=15) | not scored |
+| `dummy_prior` | average_precision | +0.7907 [+0.7062, +0.8657] | 1.000 |
+| `dummy_prior` | roc_auc | +0.4589 [+0.4180, +0.4889] | 1.000 |
+| `logreg_balanced` | average_precision | +0.3205 [+0.2078, +0.4115] | 1.000 |
+| `logreg_balanced` | roc_auc | +0.0364 [-0.0025, +0.0791] | 0.962 |
+
+The OOF selection estimate (0.7515) lies **inside** the
+test AP 95% CI [0.7383, 0.8977]; the two are consistent. This is not a claim that test performance exceeds CV performance.
 
 ### Threshold (run b, selected model)
 
-- **Strategy:** `max_fbeta` with beta=2.0, selected on OOF
-  predictions for each of 3 CV repeats; the chosen threshold is the median.
-- **Chosen threshold:** **0.6036**. Per-repeat: 0.6036, 0.5170, 0.6796
-  (mean 0.6001 ± 0.0814, range
-  [0.5170, 0.6796]).
-- **Test metrics at that threshold:**
+- **Strategy:** `max_fbeta` with beta=2.0, median of the
+  per-repeat thresholds (D15, commit `7ce0891`).
+- **Chosen threshold:** **0.6036**. Per-repeat:
+  0.6036, 0.5170, 0.6796.
 
 | Precision | Recall | F-beta (beta=2) | MCC | TP | FP | FN | TN |
 |---|---|---|---|---|---|---|---|
 | 0.6049 [0.5238, 0.7000] | 0.7778 [0.6667, 0.8730] | 0.7357 [0.6476, 0.8187] | 0.6743 [0.5930, 0.7531] | 49 | 32 | 14 | 1869 |
 
-### Duplicate-leakage comparison
+**Recall scope:** the forced-to-train cluster scores below the threshold, so all 3329
+of its rows are classified negative and its 7 positives would be missed. Test
+recall describes evaluated rows only.
 
-The two runs have **different test sets**.
+### Calibration disclosure (as rendered in the run (b) report)
 
-| | (a) stratified `run-20261022T091904Z-596af186` | (b) duplicate groups `run-20261022T092013Z-2056207e` |
+- **Scores from models trained with a resampler (`hgb+random_under`, `hgb+smote`) are ranking scores, NOT calibrated probabilities. Resampling changes the class balance seen during training, so these scores do not estimate the probability of the positive class. Do not interpret them as risk.**
+- **Class-weighted models (`logreg_balanced`, `random_forest`) also shift scores away from the training prevalence.**
+
+### Duplicate-leakage comparison (different test sets)
+
+| | (a) stratified | (b) duplicate groups |
 |---|---|---|
 | Test rows duplicating outer-train rows | 632 | 0 |
-| Selected model | `hgb+smote` | `hgb+smote` |
-| Test AP [95% CI], selected (rows / positives / prevalence) | 0.6670 [0.5404, 0.7908] (2237 / 52 / 0.0232) | 0.8228 [0.7383, 0.8977] (1964 / 63 / 0.0321) |
-| OOF-minus-test AP gap, selected | +0.0779 | -0.0713 |
+| Selected-model test AP [95% CI] | 0.6670 [0.5404, 0.7908] (2237 rows, 52 pos) | 0.8228 [0.7383, 0.8977] (1964 rows, 63 pos) |
 
-Full tables, the run (a) re-slice and the caveats are in [docs/case_study.md](docs/case_study.md).
+Full tables, caveats, the data-quality finding and the protocol history are in
+[docs/case_study.md](../case_study.md).
 
-### Hash-regeneration check (L2)
+### No test set re-scored in T-R3 (stored-prediction hashes)
+
+```text
+$ sha256sum -c preds_before_r3.txt
+runs/case_study/runs/run-20261022T091904Z-596af186/final_predictions.parquet: OK
+runs/case_study/runs/run-20261022T092013Z-2056207e/final_predictions.parquet: OK
+docs/case_study/a_stratified/final_predictions.parquet: OK
+docs/case_study/b_duplicate_groups/final_predictions.parquet: OK
+```
+
+### Hash-regeneration check
 
 ```text
 $ python scripts/verify_case_study_hashes.py
@@ -280,242 +297,13 @@ b_duplicate_groups: run run-20261022T092013Z-2056207e
 ALL CHECKS PASSED
 ```
 
-## 4. End-to-end smoke test on `01a9d51` (real responses)
-
-`python scripts/smoke_api.py`: a real uvicorn subprocess with a **synthetic** dataset. Long
-bodies are truncated by the script, and those cuts are marked `... [truncated]`.
-
-```text
-INFO:     Started server process [12636]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8765 (Press CTRL+C to quit)
-INFO:     127.0.0.1:58143 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58144 - "GET /health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58145 - "POST /datasets HTTP/1.1" 201 Created
-INFO:     127.0.0.1:58146 - "POST /runs HTTP/1.1" 201 Created
-INFO:     127.0.0.1:58147 - "POST /runs/run-20261022T094721Z-29ba07f0/thresholds HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58148 - "POST /runs/run-20261022T094721Z-29ba07f0/final-evaluation HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58149 - "POST /runs/run-20261022T094721Z-29ba07f0/final-evaluation HTTP/1.1" 409 Conflict
-INFO:     127.0.0.1:58150 - "GET /runs/run-20261022T094721Z-29ba07f0/report?format=markdown HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55109 - "GET /runs/run-20261022T094721Z-29ba07f0/report HTTP/1.1" 200 OK
-$ <project-root>\.venv\Scripts\python.exe -m uvicorn imbalancelab.api.app:app --host 127.0.0.1 --port 8765
-
-### health
-GET http://127.0.0.1:8765/health -> HTTP 200
-content-type: application/json
-{
-  "status": "ok",
-  "version": "0.1.0"
-}
-
-### upload synthetic CSV (SYNTHETIC DATA, smoke test only)
-POST http://127.0.0.1:8765/datasets -> HTTP 201
-content-type: application/json
-{
-  "dataset_id": "ds-20261022T094721Z-a6ea002f",
-  "created_at": "2026-10-22T09:47:21.730786Z",
-  "source_name": "synthetic_smoke.csv",
-  "sha256": "482b5496836933f69aaa9deae4a16db973741aea962334ba2ce32d4d04a6ed8c",
-  "n_rows": 400,
-  "n_features": 3,
-  "positive_rate": 0.105,
-  "dataset_schema": {
-    "target": "label",
-    "positive_label": 1,
-    "id_column": null,
-    "group_column": null,
-    "time_column": null,
-    "expected_dtypes": {},
-    "split_strategy": "stratified",
-    "duplicate_groups": false
-  },
-  "holdout_config": {
-    "test_size": 0.2,
-    "gap": 0,
-    "seed": 42,
-    "max_eval_group_fraction": 0.25
-  },
-  "n_outer_train": 320,
-  "n_test": 80,
-  "test_sha256": "08c01ddd4bfae01cd7b9d6d18f52e993fb4275785bd6bc53d69434aad35c81fa",
-  "n_warnings": 0,
-  "notes": []
-}
-
-### launch run
-POST http://127.0.0.1:8765/runs -> HTTP 201
-content-type: application/json
-{
-  "run_id": "run-20261022T094721Z-29ba07f0",
-  "status": "completed",
-  "dataset_id": "ds-20261022T094721Z-a6ea002f",
-  "created_at": "2026-10-22T09:47:21.801730Z",
-  "finished_at": "2026-10-22T09:47:23.820071Z",
-  "models": [
-    "dummy_prior",
-    "logreg_balanced",
-    "hgb"
-  ],
-  "best_candidate_by_mean_oof_ap": "hgb",
-  "has_final_evaluation": false,
-  "error": null
-}
-
-### threshold analysis (OOF)
-POST http://127.0.0.1:8765/runs/run-20261022T094721Z-29ba07f0/thresholds -> HTTP 200
-content-type: application/json
-{
-  "model": "hgb",
-  "strategy": {
-    "kind": "max_fbeta",
-    "beta": 2.0,
-    "target": null,
-    "cost_fp": 1.0,
-    "cost_fn": 1.0
-  },
-  "provenance": "oof",
-  "selection_rule": "median of per-repeat thresholds selected on out-of-fold predictions",
-  "chosen_threshold": 0.006795252458039416,
-  "per_repeat": [
-    {
-      "repeat": 0,
-      "n": 320,
-      "threshold": 0.0024881613737451607,
-      "precision": 0.17763157894736842,
-      "recall": 0.7941176470588235,
-      "fbeta": 0.46875,
-      "expected_cost": 0.4125,
-      "tp": 27,
-      "fp": 125,
-      "fn": 7,
-      "tn": 161
-    },
-    {
-      "repeat": 1,
-      "n": 320,
-      "threshold": 0.011102343542333672,
-      "precision": 0.21138211382113822,
-      "recall": 0.7647058823529411,
-      "fbeta": 0.5019305019305019,
-    
-... [truncated]
-
-### final evaluation
-POST http://127.0.0.1:8765/runs/run-20261022T094721Z-29ba07f0/final-evaluation -> HTTP 200
-content-type: application/json
-{
-  "run_id": "run-20261022T094721Z-29ba07f0",
-  "model": "hgb",
-  "evaluated_at": "2026-10-22T09:47:24.547503Z",
-  "forced": false,
-  "dataset_sha256": "482b5496836933f69aaa9deae4a16db973741aea962334ba2ce32d4d04a6ed8c",
-  "test_sha256": "08c01ddd4bfae01cd7b9d6d18f52e993fb4275785bd6bc53d69434aad35c81fa",
-  "n_outer_train": 320,
-  "n_test": 80,
-  "n_test_positive": 8,
-  "refit_on": "outer-train rows only",
-  "threshold": 0.006795252458039416,
-  "threshold_provenance": {
-    "source": "out-of-fold predictions",
-    "strategy": {
-      "kind": "max_fbeta",
-      "beta": 2.0,
-      "target": null,
-      "cost_fp": 1.0,
-      "cost_fn": 1.0
-    },
-    "selection_rule": "median of per-repeat thresholds selected on out-of-fold predictions",
-    "analysis_created_at": "2026-10-22T09:47:23.971819Z"
-... [truncated]
-
-### second final evaluation (must be refused)
-POST http://127.0.0.1:8765/runs/run-20261022T094721Z-29ba07f0/final-evaluation -> HTTP 409
-content-type: application/json
-{
-  "error": "final_evaluation_exists",
-  "detail": "this run already has a final evaluation; the test set is scored once. Pass force=True with a reason to re-evaluate (this is logged)."
-}
-
-### report (markdown)
-GET http://127.0.0.1:8765/runs/run-20261022T094721Z-29ba07f0/report?format=markdown -> HTTP 200
-content-type: text/markdown; charset=utf-8
-# ImbalanceLab audit report: run run-20261022T094721Z-29ba07f0
-
-## 1. Verdict
-
-- Best candidate by mean out-of-fold AP: **hgb** (selected on OOF predictions only; the test set was not used for selection).
-- **hgb** beats **dummy_prior** on out-of-fold average precision: mean paired difference +0.1659, better in 6 of 6 folds (win fraction 1.00).
-- **hgb** does NOT beat **logreg_balanced** on out-of-fold average precision: mean paired difference -0.1729, better in 0 of 6 folds (win fraction 0.00).
-- **logreg_balanced** beats **dummy_prior** on out-of-fold average precision: mean paired difference +0.3388, better in 6 of 6 folds (win fraction 1.00).
-- **hgb** beats **dummy_prior** on the test set (average_precision: 0.2124 vs 0.1000, difference +0.1124; single evaluation, no spread).
-- **hgb** does NOT beat **logreg_balanced** on the test set (average_precision: 0.2124 vs 0.4605, difference -0.2482; single evaluation, no spread).
-
-Comparisons use paired differences on identical stored folds. CV folds are correlated, so no significance test is reported; win fractions and spreads are descriptive.
-
-## 2. Dataset
-
-| Field | Value |
-|---|---|
-| Source file | synthetic_smoke.csv |
-| SHA-256 | `482b5496836933f69aaa9deae4a16db973741aea962334ba2ce32d4d04a6ed8c` |
-| Rows | 400 |
-| Target / positive label | `label` / `1` |
-| Positives / negatives | 42 / 358 |
-| Positive rate | 0.1050 |
-| Imbalance ratio (neg:pos) | 8.52 |
-| Feature columns | 3 |
-| Split strategy (schema) | stratified |
-
-Features used: 2 numeric, 1 categorical.
-
-## 3. Data profile warnings
-
-No profiling heuristics fired.
-
-Duplicates: 0 exact duplicate rows; 0 conflicting-label groups (0 rows).
-
-## 4. Split strategy
-
-| Field | Value |
-|---|---|
-| Outer holdout strategy | stratified |
-| Test size (config) | 0.20 |
-| Outer-train rows / test rows / gap rows | 320 / 80 / 0 |
-| Test indices SHA-256 | `08c01ddd4bfae01cd7b9d6d18f52e993fb4275785bd6bc53d69434aad35c81fa` |
-| Inner CV strategy | stratified |
-| Folds × repeats | 3 × 2 (6 folds) |
-| Fold indices SHA-256 | `36ff0a126c599f7735258dd2d38d8d48d72d672f3bbe245b4a14db1fc808ab7a` |
-| Duplicate-aware groups | off |
-| Oversized groups pinned to training (test / CV) | 0 groups, 0 rows / 0 groups, 0 rows |
-
-CV, model selection and threshold selection use outer-train rows only. All models were fit on identical stored folds.
-
-## 5. Models
-
-| Name | Role | Sampler | Estimator |
-|---|---|---|---|
-| dummy_prior | baseline | none | DummyClassifier(strategy='prior'): pre
-... [truncated]
-
-GET report html -> HTTP 200, 167830 chars, content-type text/html; charset=utf-8
-```
-
-UI evidence: 6 Playwright screenshots in `docs/screenshots/`, with per-page error checks in
-`docs/screenshots/ui_check.json`. All pages passed; the only error element is the expected
-409 refusal.
-
-## 5. `git ls-files` (at `01a9d51`)
+## 4. `git ls-files` (at `f96c85a`)
 
 ```text
 .gitattributes
 .github/workflows/ci.yml
 .gitignore
-FINAL_REPORT.md
-IMPLEMENTATION_PLAN.md
-PROJECT_STATUS.md
 README.md
-REVIEW_PACKET.md
 data/raw/.gitkeep
 docs/case_study.md
 docs/case_study/a_stratified/NOTICE.md
@@ -534,6 +322,7 @@ docs/case_study/a_stratified/profile.json
 docs/case_study/a_stratified/report/figures/oof_pr.png
 docs/case_study/a_stratified/report/figures/oof_roc.png
 docs/case_study/a_stratified/report/figures/test_pr.png
+docs/case_study/a_stratified/report/figures/test_reliability.png
 docs/case_study/a_stratified/report/figures/test_roc.png
 docs/case_study/a_stratified/report/report.html
 docs/case_study/a_stratified/report/report.md
@@ -557,12 +346,17 @@ docs/case_study/b_duplicate_groups/profile.json
 docs/case_study/b_duplicate_groups/report/figures/oof_pr.png
 docs/case_study/b_duplicate_groups/report/figures/oof_roc.png
 docs/case_study/b_duplicate_groups/report/figures/test_pr.png
+docs/case_study/b_duplicate_groups/report/figures/test_reliability.png
 docs/case_study/b_duplicate_groups/report/figures/test_roc.png
 docs/case_study/b_duplicate_groups/report/report.html
 docs/case_study/b_duplicate_groups/report/report.md
 docs/case_study/b_duplicate_groups/run.json
 docs/case_study/b_duplicate_groups/summary.json
 docs/case_study/b_duplicate_groups/thresholds.json
+docs/process/FINAL_REPORT.md
+docs/process/IMPLEMENTATION_PLAN.md
+docs/process/PROJECT_STATUS.md
+docs/process/REVIEW_PACKET.md
 docs/screenshots/01_upload_and_profile.png
 docs/screenshots/02_run_experiment.png
 docs/screenshots/03_results_and_thresholds.png
@@ -577,6 +371,7 @@ pyproject.toml
 requirements-lock.txt
 runs/.gitkeep
 scripts/check_committed_files.py
+scripts/check_links.py
 scripts/gate.sh
 scripts/run_case_study.py
 scripts/smoke_api.py
@@ -592,6 +387,7 @@ src/imbalancelab/data/errors.py
 src/imbalancelab/data/loader.py
 src/imbalancelab/data/schema.py
 src/imbalancelab/evaluation/__init__.py
+src/imbalancelab/evaluation/calibration.py
 src/imbalancelab/evaluation/config.py
 src/imbalancelab/evaluation/final.py
 src/imbalancelab/evaluation/metrics.py
@@ -621,6 +417,7 @@ src/imbalancelab/workflow.py
 tests/conftest.py
 tests/snapshots/report_structure.md
 tests/test_api.py
+tests/test_calibration_paired.py
 tests/test_data_loader.py
 tests/test_duplicate_groups.py
 tests/test_frontend.py
@@ -637,36 +434,12 @@ tests/test_thresholds_final.py
 tests/test_uncertainty.py
 ```
 
-## 6. Deviations, limitations, environment-blocked steps
+## 5. Deviations, limitations, open items
 
-### Deviations (see PROJECT_STATUS decisions)
-- **D27:** declared groups and duplicate clusters are merged by connected components
-  (my reading of "combine").
-- **D28:** oversized groups (> 25% of the target evaluation size) are pinned to training, and
-  evaluation metrics do not cover them. This came from a degenerate run-(b) holdout found on
-  real data. That run was discarded and is documented in REVIEW_PACKET T-R1.
-- **D29:** `random_forest` uses `n_jobs=1`, because multi-threaded averaging was not
-  bit-reproducible.
-- **Earlier decisions still in force:** D4 (mypy without a version pin), D11 (constant scores
-  → AP = prevalence and ROC AUC = 0.5, defined), D8 (temporal CV with a single repeat), and D26
-  (files over 1 MB not committed; they can be regenerated and are hash-checked).
-- **Playwright** is used only by `scripts/ui_screenshots.py` and is not a project dependency.
-
-### Limitations
-- Binary targets only, small fixed model configs, and uncalibrated probabilities.
-- A synchronous API with no auth, database or job queue.
-- Group-aware splits exclude pinned oversized groups from evaluation.
-- Case study: one dataset, single test draws, and runs (a) and (b) on different test sets.
-- joblib artifacts are pickles; the SHA-256 is checked before loading.
-
-### Environment-blocked or unverified
-- **GitHub Actions CI:** not run (no remote). A local Python 3.11.15 gate was run instead
-  (section 2).
-- **Network:** available. Dataset download, the Playwright install and the uv Python 3.11 venv
-  all succeeded.
-
-## 7. Ready for review
-
-The T-R1 and T-R2 findings have been addressed (except T-R2 M4, GitHub CI, which is blocked),
-and the gates passed on 3.13.5
-and 3.11.15 on the commit above. The work is ready for supervisor review.
+- **Deviations:** D27 (connected-components merge), D28 (oversized groups pinned), D29 (RF
+  `n_jobs=1`), D30 (amend, not re-score), D32 (calibration disclosed, not fixed), D34 (`httpx2`
+  added to dev extras), D35 (process docs moved).
+- **Limitations:** binary targets only; small fixed configs; scores not calibrated; synchronous
+  API with no auth; one case-study dataset with single test draws; pinned groups are not
+  evaluated; joblib artifacts are pickles (SHA-256 checked).
+- **Open items:** none. Supervisor verification is pending.

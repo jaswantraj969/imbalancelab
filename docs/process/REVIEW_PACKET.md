@@ -4580,3 +4580,404 @@ Brackets are 95% CIs from a stratified bootstrap of the test rows (2000 resample
 #### Known limitations
 - Bootstrap CIs cover test-sample variation only, not re-splitting or re-training.
 - Run (b) results do not describe the 3329 forced-to-train rows (29.8% of the dataset).
+
+---
+
+### Task T-R3 — GitHub CI, calibration disclosure, paired bootstrap, repo tidy
+
+**Date:** 2026-10-23 · **Code/records commit:** `f96c85a`. This entry and the regenerated
+FINAL_REPORT.md follow in the next commit. **No test set was re-scored.**
+
+#### M4: GitHub + CI
+- **Repository setup:**
+  - `git branch -m master main`, then `gh repo create jaswantraj969/imbalancelab --private
+    --source . --push`.
+  - `gh repo view` reports `"visibility":"PRIVATE"`, default branch `main`.
+- **First Actions run (commit `573b2ba`, T-R2 code):** https://github.com/jaswantraj969/imbalancelab/actions/runs/39795270360, conclusion `success`. Its logs
+  show 158 passed on each job, plus the `httpx` warning.
+- **T-R3 run (commit `f96c85a`):** https://github.com/jaswantraj969/imbalancelab/actions/runs/39841242556, conclusion **success**.
+
+| Job | Result | Started | Completed |
+|---|---|---|---|
+| checks (3.13) | **success** | 2026-10-22T19:34:14Z | 2026-10-22T19:37:42Z |
+| checks (3.11) | **success** | 2026-10-22T19:34:14Z | 2026-10-22T19:36:10Z |
+
+CI log lines (from `gh run view --log`):
+````text
+checks (3.13)	Ruff lint All checks passed!
+checks (3.13)	Ruff format 70 files already formatted
+checks (3.13)	Mypy Success: no issues found in 45 source files
+checks (3.13)	Pytest TOTAL                                         2524     43    98%
+checks (3.13)	Pytest 166 passed in 127.64s (0:02:07)
+checks (3.11)	Ruff lint All checks passed!
+checks (3.11)	Ruff format 70 files already formatted
+checks (3.11)	Mypy Success: no issues found in 45 source files
+checks (3.11)	Pytest TOTAL                                         2524     43    98%
+checks (3.11)	Pytest 166 passed in 64.29s (0:01:04)
+````
+
+The commit with this packet entry triggers another run, which is reported in the hand-off.
+
+#### H1: calibration disclosure (no calibration stage)
+- `evaluation/calibration.py`:
+  - `reliability_curve`: 10 quantile bins; tied edges merge; n, positives, mean score and
+    observed rate per bin.
+  - `calibration_disclosure`: the resampler note, or the no-resampler note, plus a
+    class-weighting note.
+- The final evaluation stores per-model `calibration` (Brier plus its bootstrap CI, and the
+  reliability curve). Brier was added to `CI_METRICS`.
+- **Report:** a "Calibration (disclosure only…)" subsection with the rendered notes, a Brier
+  [CI], a reliability table with n per bin, and the `test_reliability.png` figure. A limitations
+  line was added.
+- **README:** the limitation is reworded. **API:** `Prediction.probability` has an OpenAPI
+  description, and `PredictResponse.score_note` is set per model.
+- **Case study:** a "Calibration" section, including the cluster fact as evidence.
+- **Tests (`tests/test_calibration_paired.py`):**
+  - bins are exact on a synthetic case
+  - ties and constant scores
+  - disclosure texts
+  - the report contains the resampler note when `hgb+smote` is configured, and the no-resampler
+    note otherwise
+  - the API schema text
+
+#### M1, M2, M3, L3 (case study)
+- **M1:** a "Recall scope" statement next to the test recall, using values from
+  `cluster_analysis()`.
+- **M2:** `paired_bootstrap_difference`, a paired stratified bootstrap that uses the same
+  resample indices for both models.
+  - It reports the point, 95% CI, win fraction and tie fraction, and is stored in
+    `final_evaluation.json["paired_bootstrap"]` for the selected model against each baseline
+    (AP, ROC AUC).
+  - Shown in the report and in the case-study headline.
+  - Tests: identical models give 0 with CI [0, 0] (win 0, tie 1); deterministic by seed; a
+    better model gives a positive difference.
+- **M3:** the headline sentence is generated from the record. It states whether the OOF
+  selection estimate lies inside the test AP CI, with no claim that test exceeds CV.
+- **L3:** "(consistent with a floor or zero-measurement value)" is appended to the
+  column-minimum line only.
+
+#### L1: the pytest warning
+Verbatim, before the fix:
+````text
+.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+````
+
+- **Cause:** Starlette 1.9.0's `starlette/testclient.py` does `try: import httpx2 as httpx except
+  ModuleNotFoundError: import httpx; warnings.warn(...)`.
+- **Fix:** add `httpx2>=2.16,<3` to the `[dev]` extras and regenerate `requirements-lock.txt`
+  (httpx2==2.16.0). `httpx` is kept, as T0 specified (D34).
+- **Result:** the local gates and both CI jobs report `166 passed` with no warnings summary.
+
+#### L2: process documents moved
+- `git mv` IMPLEMENTATION_PLAN.md, PROJECT_STATUS.md, REVIEW_PACKET.md and FINAL_REPORT.md to
+  `docs/process/`.
+- README has a "Development process" section linking all four. The case-study script links
+  `process/REVIEW_PACKET.md`. FINAL_REPORT now links `../case_study.md`.
+- `scripts/check_links.py` resolves every relative link in tracked Markdown, excluding fenced
+  code and the test snapshot fixture. Its result is included in the hand-off.
+- Historical REVIEW_PACKET entries keep their original root-level paths, because they are
+  verbatim logs.
+
+#### No test set re-scored (verbatim)
+````text
+$ sha256sum runs/case_study/runs/*/final_predictions.parquet docs/case_study/*/final_predictions.parquet > preds_before_r3.txt
+2649dd787260c792827d7297f3377bb19dc6a4eef39349874b22680a32cc4d3f *runs/case_study/runs/run-20261022T091904Z-596af186/final_predictions.parquet
+54816c099b469da1d38b955011cec5c3d7772884b4eda99508030857614c6089 *runs/case_study/runs/run-20261022T092013Z-2056207e/final_predictions.parquet
+2649dd787260c792827d7297f3377bb19dc6a4eef39349874b22680a32cc4d3f *docs/case_study/a_stratified/final_predictions.parquet
+54816c099b469da1d38b955011cec5c3d7772884b4eda99508030857614c6089 *docs/case_study/b_duplicate_groups/final_predictions.parquet
+$ python scripts/run_case_study.py --amend-existing
+downloaded <project-root>\data\raw\imblearn\zenodo\x25data.npz sha256=73480c315d42bc5b33c2c73b9078d0034113d26f0511facd9fc5bb07f2d6438a
+[a_stratified] amended run-20261022T091904Z-596af186: coverage forced_to_train=0 rows (0 positive); bootstrap CIs added from stored predictions
+[b_duplicate_groups] amended run-20261022T092013Z-2056207e: coverage forced_to_train=3329 rows (7 positive); bootstrap CIs added from stored predictions
+Largest duplicate cluster (run run-20261022T092013Z-2056207e, duplicate_groups=True)
+rows: 3329 of 11183 (29.77% of the dataset)   positives: 7   negatives: 3322
+rows in the cluster that are in the test set: 0
+identical feature vector of all 3329 rows (all rows equal: True):
+  feature_0 = -0.78441482   column min -0.78441482, median -0.10857689, max 31.50844300   is column min: yes   is column max: no   rows with exactly this value: 3360 (30.05%)   rows below it: 0
+  feature_1 = -0.47019533   column min -0.47019533, median -0.39499410, max 5.08584910   is column min: yes   is column max: no   rows with exactly this value: 3329 (29.77%)   rows below it: 0
+  feature_2 = -0.59163147   column min -0.59163147, median -0.23097900, max 29.47776900   is column min: yes   is column max: no   rows with exactly this value: 3410 (30.49%)   rows below it: 0
+  feature_3 = -0.85955255   column min -0.85955255, median -0.85955255, max 9.59116400   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
+  feature_4 = -0.37786573   column min -0.37786573, median -0.37786573, max 23.61712200   is column min: yes   is column max: no   rows with exactly this value: 8521 (76.20%)   rows below it: 0
+  feature_5 = -0.94572324   column min -0.94572324, median -0.94572324, max 1.94902730   is column min: yes   is column max: no   rows with exactly this value: 5766 (51.56%)   rows below it: 0
+features equal to their column minimum: 6 of 6 (consistent with a floor or zero-measurement value)
+features equal to 0: 0 of 6
+distinct values within the vector: 6
+selected model: hgb+smote (persisted model model-20261022T092115Z-819a6e87, refit on outer-train rows only, artifact SHA-256 verified on load)
+predicted probability for the cluster's feature vector: 0.08894896   distinct predicted values over the 3329 rows: 1
+stored threshold: 0.60359672   predicted label: 0   (training prevalence of the cluster: 0.002103)
+wrote docs/case_study.md, docs/case_study/a_stratified, docs/case_study/b_duplicate_groups
+$ sha256sum -c preds_before_r3.txt
+runs/case_study/runs/run-20261022T091904Z-596af186/final_predictions.parquet: OK
+runs/case_study/runs/run-20261022T092013Z-2056207e/final_predictions.parquet: OK
+docs/case_study/a_stratified/final_predictions.parquet: OK
+docs/case_study/b_duplicate_groups/final_predictions.parquet: OK
+````
+
+#### Hash-regeneration check after amendment
+````text
+$ python scripts/verify_case_study_hashes.py
+a_stratified: run run-20261022T091904Z-596af186
+  [OK] dataset sha256: eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed
+  [OK] test-index sha256: ee4a3c8a3d3efbbfac7e1c20ba4c7fae2c3d9cec55bdd2101aed8a75a2a271c7
+  [OK] fold-index canonical sha256: 273eb075663b91f47cad5b3600106b2b8617408cc133e221ca2f251fcb6da372
+  [OK] fold_indices.json file sha256: 08f33088e508526127d5e886bfc98cb7aed2cf777a17ec3aeee67b734583733b
+  [OK] oof_predictions.parquet file sha256: b30cbcdfec258860e48b80e66a0a46d42191aba937e7206763d458fa75e6b361
+  [OK] summary.json content: f29ba9ba182453ffdd29e2963b050c60d361d829658ad4844acab68969a33ed7
+b_duplicate_groups: run run-20261022T092013Z-2056207e
+  [OK] dataset sha256: eaed6c1612644fd5db935ca74257792ec473e64cd3925161e6030bdaf144e0ed
+  [OK] test-index sha256: 7ee8afda21eac8e55d32cec3c391e8d48d7034924747d626e357f536c5ebdd89
+  [OK] fold-index canonical sha256: f59d5586847fafdfbb5f7ea5f808783f63a2ac15f918acdf1c14aa3716e8ffd0
+  [OK] fold_indices.json file sha256: 106649ffae70a01601dbb1c4c8f47d284b700e7d3cf9726f321d03c21b66dd17
+  [OK] summary.json content: 8c952d75f52a384b561116037725b85bde83029327d534a1eb6cff2ca7e5be9a
+ALL CHECKS PASSED
+````
+
+#### Headline, calibration and recall scope (docs/case_study.md, verbatim)
+````markdown
+## Headline (run b: duplicate-aware split)
+
+The selected model **`hgb+smote`** scored **test AP 0.8228 [0.7383, 0.8977]** on a single evaluation of 1964 test rows with 63 positives (prevalence 0.0321). On the same test rows:
+
+| Model | Test AP [95% CI] | Test ROC AUC [95% CI] | Test Brier [95% CI] (lower is better) | Test rows | Positives | Prevalence |
+|---|---|---|---|---|---|---|
+| `hgb+smote` | 0.8228 [0.7383, 0.8977] | 0.9589 [0.9180, 0.9889] | 0.0181 [0.0135, 0.0231] | 1964 | 63 | 0.0321 |
+| `dummy_prior` | 0.0321 [0.0321, 0.0321] | 0.5000 [0.5000, 0.5000] | 0.0312 [0.0312, 0.0312] | 1964 | 63 | 0.0321 |
+| `logreg_balanced` | 0.5023 [0.3926, 0.6442] | 0.9225 [0.8764, 0.9611] | 0.1182 [0.1101, 0.1267] | 1964 | 63 | 0.0321 |
+
+Paired bootstrap of the test difference (`hgb+smote` − baseline; same resampled rows for both models):
+
+| Baseline | Metric | Difference [95% CI] | Win fraction |
+|---|---|---|---|
+| `dummy_prior` | average_precision | +0.7907 [+0.7062, +0.8657] | 1.000 |
+| `dummy_prior` | roc_auc | +0.4589 [+0.4180, +0.4889] | 1.000 |
+| `logreg_balanced` | average_precision | +0.3205 [+0.2078, +0.4115] | 1.000 |
+| `logreg_balanced` | roc_auc | +0.0364 [-0.0025, +0.0791] | 0.962 |
+
+The OOF selection estimate for `hgb+smote` (mean AP 0.7515, optimistic because it was used for selection) **lies inside** the test AP 95% CI [0.7383, 0.8977]. The two are consistent. This does **not** show that test performance exceeds CV performance.
+
+Brackets are 95% CIs from a stratified bootstrap of the test rows (2000 resamples, seed 42; positives and negatives resampled separately). They reflect test-sample variation only.
+
+**Evaluation coverage (run b): 3329 rows (29.8% of the dataset, 7 positives) are never in any test or validation set.** They form one oversized duplicate cluster that is forced to training, so the results above do not describe those rows. See [Evaluation coverage](#evaluation-coverage-run-b) and the [data-quality finding](#data-quality-finding-the-3329-row-cluster).
+
+Run (b) is the headline because in run (a) exact-duplicate rows cross the train/test and CV boundaries. In run (b) the cross-boundary duplicate check reports 0 test rows and 0 affected folds.
+````
+
+````markdown
+## Calibration (disclosure only; no calibration stage)
+
+- **Scores from models trained with a resampler (`hgb+random_under`, `hgb+smote`) are ranking scores, NOT calibrated probabilities. Resampling changes the class balance seen during training, so these scores do not estimate the probability of the positive class. Do not interpret them as risk.**
+- **Class-weighted models (`logreg_balanced`, `random_forest`) also shift scores away from the training prevalence.**
+- Test Brier score of `hgb+smote`: 0.0181 [0.0135, 0.0231]. The reliability curve (quantile bins, n per bin) is in the run (b) audit report, section 9.
+- **Evidence from the cluster:** for the 3329-row cluster, `hgb+smote` outputs 0.0889, while the cluster's observed positive rate is 0.0021 (7/3329, in training rows). That is 42× higher, so this score does not estimate the probability of the positive class.
+````
+
+````markdown
+**Recall scope:** the 3329 forced-to-train rows all have the same score, 0.0889, which is below the stored threshold 0.6036, so all of them are classified **negative** (label 0). Their 7 positives would therefore be missed. The test recall above describes only the evaluated rows.
+````
+
+#### Calibration disclosure as rendered in the run (b) report (verbatim)
+````markdown
+### Calibration (disclosure only; no calibration stage)
+
+- **Scores from models trained with a resampler (`hgb+random_under`, `hgb+smote`) are ranking scores, NOT calibrated probabilities. Resampling changes the class balance seen during training, so these scores do not estimate the probability of the positive class. Do not interpret them as risk.**
+- **Class-weighted models (`logreg_balanced`, `random_forest`) also shift scores away from the training prevalence.**
+
+Test Brier score (hgb+smote): 0.0181 [0.0135, 0.0231] (lower is better). Reliability bins for the selected model (quantile bins of its test scores; n per bin shown):
+
+| Bin | Score range | n | Positives | Mean score | Observed rate |
+|---|---|---|---|---|---|
+| 1 | [0.0000, 0.0000] | 197 | 1 | 0.0000 | 0.0051 |
+| 2 | [0.0000, 0.0001] | 196 | 0 | 0.0000 | 0.0000 |
+| 3 | [0.0001, 0.0001] | 196 | 0 | 0.0001 | 0.0000 |
+| 4 | [0.0001, 0.0002] | 197 | 1 | 0.0002 | 0.0051 |
+| 5 | [0.0002, 0.0003] | 196 | 0 | 0.0003 | 0.0000 |
+| 6 | [0.0003, 0.0006] | 196 | 0 | 0.0004 | 0.0000 |
+| 7 | [0.0006, 0.0011] | 197 | 1 | 0.0008 | 0.0051 |
+| 8 | [0.0011, 0.0034] | 196 | 1 | 0.0020 | 0.0051 |
+| 9 | [0.0034, 0.0229] | 196 | 1 | 0.0082 | 0.0051 |
+| 10 | [0.0229, 1.0000] | 197 | 58 | 0.4565 | 0.2944 |
+````
+
+#### git diff --stat 573b2ba..f96c85a
+````text
+ README.md                                          |  24 +-
+ docs/case_study.md                                 |  34 ++-
+ docs/case_study/a_stratified/final_evaluation.json | 291 ++++++++++++++++++-
+ .../a_stratified/final_evaluation_log.jsonl        |   1 +
+ .../report/figures/test_reliability.png            | Bin 0 -> 37475 bytes
+ docs/case_study/a_stratified/report/report.html    |  16 +-
+ docs/case_study/a_stratified/report/report.md      |  41 ++-
+ docs/case_study/a_stratified/run.json              |   4 +
+ .../b_duplicate_groups/final_evaluation.json       | 323 ++++++++++++++++++++-
+ .../b_duplicate_groups/final_evaluation_log.jsonl  |   1 +
+ .../report/figures/test_reliability.png            | Bin 0 -> 40753 bytes
+ .../b_duplicate_groups/report/report.html          |  16 +-
+ .../case_study/b_duplicate_groups/report/report.md |  43 ++-
+ docs/case_study/b_duplicate_groups/run.json        |   4 +
+ FINAL_REPORT.md => docs/process/FINAL_REPORT.md    |   0
+ .../process/IMPLEMENTATION_PLAN.md                 |   0
+ .../process/PROJECT_STATUS.md                      |  35 ++-
+ REVIEW_PACKET.md => docs/process/REVIEW_PACKET.md  |   0
+ pyproject.toml                                     |   1 +
+ requirements-lock.txt                              |  14 +
+ scripts/check_links.py                             |  41 +++
+ scripts/run_case_study.py                          |  98 ++++++-
+ src/imbalancelab/api/schemas.py                    |  16 +-
+ src/imbalancelab/evaluation/calibration.py         |  73 +++++
+ src/imbalancelab/evaluation/final.py               |  41 ++-
+ src/imbalancelab/evaluation/uncertainty.py         |  72 ++++-
+ src/imbalancelab/reporting/figures.py              |  34 +++
+ src/imbalancelab/reporting/report.py               |  85 +++++-
+ src/imbalancelab/workflow.py                       |  14 +
+ tests/snapshots/report_structure.md                |  40 ++-
+ tests/test_calibration_paired.py                   | 151 ++++++++++
+ tests/test_reporting.py                            |   3 +-
+ 32 files changed, 1456 insertions(+), 60 deletions(-)
+````
+
+#### Gate, Python 3.13.5 (verbatim)
+````text
+$ python --version
+Python 3.13.5
+
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+70 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 45 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 43%]
+........................................................................ [ 86%]
+......................                                                   [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 49      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\calibration.py      33      1    97%   48
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           146      6    96%   85-86, 113, 171, 274, 312
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py     111      1    99%   61
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           65      2    97%   28, 84
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           226     10    96%   60, 95, 124, 181, 184, 264, 294, 515, 593, 639
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   149      6    96%   63-64, 91, 136, 236, 262
+--------------------------------------------------------------------------
+TOTAL                                         2524     43    98%
+166 passed in 201.78s (0:03:21)
+[exit 0]
+````
+
+#### Gate, Python 3.11.15 (verbatim)
+````text
+$ python --version
+Python 3.11.15
+
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+70 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 45 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 43%]
+........................................................................ [ 86%]
+......................                                                   [100%]
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.11.15-final-0 _______________
+
+Name                                         Stmts   Miss  Cover   Missing
+--------------------------------------------------------------------------
+src\imbalancelab\__init__.py                     2      0   100%
+src\imbalancelab\api\__init__.py                 0      0   100%
+src\imbalancelab\api\app.py                    115      0   100%
+src\imbalancelab\api\schemas.py                 49      0   100%
+src\imbalancelab\config.py                      15      1    93%   27
+src\imbalancelab\data\__init__.py                4      0   100%
+src\imbalancelab\data\errors.py                 21      0   100%
+src\imbalancelab\data\loader.py                143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                 40      0   100%
+src\imbalancelab\evaluation\__init__.py          2      0   100%
+src\imbalancelab\evaluation\calibration.py      33      1    97%   48
+src\imbalancelab\evaluation\config.py           35      0   100%
+src\imbalancelab\evaluation\final.py           146      6    96%   85-86, 113, 171, 274, 312
+src\imbalancelab\evaluation\metrics.py         115      0   100%
+src\imbalancelab\evaluation\runner.py          143      0   100%
+src\imbalancelab\evaluation\thresholds.py      138      0   100%
+src\imbalancelab\evaluation\uncertainty.py     111      1    99%   61
+src\imbalancelab\models\__init__.py              2      0   100%
+src\imbalancelab\models\persistence.py         100      0   100%
+src\imbalancelab\models\registry.py             18      0   100%
+src\imbalancelab\pipelines\__init__.py           2      0   100%
+src\imbalancelab\pipelines\builder.py           66      0   100%
+src\imbalancelab\profiling\__init__.py           3      0   100%
+src\imbalancelab\profiling\profile.py          169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py           9      0   100%
+src\imbalancelab\reporting\__init__.py           2      0   100%
+src\imbalancelab\reporting\figures.py           65      2    97%   28, 84
+src\imbalancelab\reporting\render.py            82      0   100%
+src\imbalancelab\reporting\report.py           226     10    96%   60, 95, 124, 181, 184, 264, 294, 515, 593, 639
+src\imbalancelab\splitting\__init__.py           3      0   100%
+src\imbalancelab\splitting\coverage.py          40      2    95%   34-35
+src\imbalancelab\splitting\duplicates.py        24      0   100%
+src\imbalancelab\splitting\groups.py            79      1    99%   64
+src\imbalancelab\splitting\splits.py           251      2    99%   117, 123
+src\imbalancelab\tracking\__init__.py            2      0   100%
+src\imbalancelab\tracking\records.py           120      3    98%   89-90, 170
+src\imbalancelab\workflow.py                   149      6    96%   63-64, 91, 136, 236, 262
+--------------------------------------------------------------------------
+TOTAL                                         2524     43    98%
+166 passed in 208.23s (0:03:28)
+[exit 0]
+````
+
+#### Deviations
+- **D34:** `httpx2` was added to the dev extras, which is a dependency change relative to T0's
+  list, justified above.
+- **Process docs:** the review-packet and status files are now under `docs/process/`.
+- **Report snapshot:** regenerated once. The reviewed diff contains only the Brier CI, the
+  paired table, the calibration subsection, the reliability figure line and the limitation
+  line. The traceability test's figure set was extended to 5, which is stricter.
