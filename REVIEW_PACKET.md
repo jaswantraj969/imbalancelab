@@ -500,3 +500,118 @@ TOTAL                                        807     14    98%
 
 #### Known limitations
 - No confidence intervals per metric. Spread across folds is reported by the runner (M4).
+
+---
+
+### Task M4 — Experiment runner, baselines, run records
+
+**Date:** 2026-10-22 · **Milestone:** M4
+
+#### Summary of changes
+- `models/registry.py`: fixed small configs for `dummy_prior` (baseline), `logreg_balanced`
+  (baseline, `class_weight="balanced"`), `hgb` (`HistGradientBoostingClassifier`, 200 iterations,
+  no early stopping), and `random_forest` (optional, 300 trees, `balanced_subsample`).
+- `evaluation/config.py`: `ExperimentConfig` (candidates as model + sampler, `CVConfig`, seed,
+  reference threshold, beta, SMOTE k). Baselines are always added and run without a sampler.
+- `evaluation/runner.py`, `run_experiment(dataset, holdout, config, runs_dir)`:
+  - Verifies the holdout, builds inner folds once with the **schema's split strategy**, and fits
+    every model on the **same stored fold indices** (outer-train rows only).
+  - Records per-fold metrics, a summary (mean, std, min, max, n, n_undefined), out-of-fold
+    predictions for each repeat, and paired per-fold differences against each baseline (and
+    logreg against dummy) on AP and ROC AUC, with wins, losses, ties and win fraction. No
+    significance test is run.
+  - Picks the best candidate by mean OOF AP. Test data is not used.
+  - A model failure marks `run.json` as `status: failed` with the error and raises `RunError`.
+- `tracking/records.py`:
+  - `RunStore` creates and resolves run directories, rejecting path-traversal IDs.
+  - `RunRecord` is a read-only view of a run.
+  - `environment_info` records Python, platform and package versions.
+- Run directory `runs/<run_id>/` contains: `run.json` (status, timestamps, dataset SHA-256 and
+  schema, holdout summary with test SHA-256, CV config, fold-index SHA-256, seed, models,
+  feature spec, split warnings), `config.json`, `environment.json`, `dataset_sha256.txt`,
+  `holdout.json`, `fold_indices.json`, `profile.json`, `fold_metrics.json`, `summary.json`, and
+  `oof_predictions.parquet`.
+
+#### Files changed
+- added: `src/imbalancelab/models/registry.py`, `src/imbalancelab/evaluation/{config,runner}.py`,
+  `src/imbalancelab/tracking/records.py`, `tests/test_runner.py`
+- modified: `src/imbalancelab/models/__init__.py`, `src/imbalancelab/tracking/__init__.py`,
+  `PROJECT_STATUS.md`, `REVIEW_PACKET.md`
+
+#### Exact commands run
+    pytest -q tests/test_runner.py --durations=5      # 12 passed on first run
+    ruff format . ; ruff check . --fix ; mypy           # 3 files reformatted, 1 import-order fix
+    bash scripts/gate.sh
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+33 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 24 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 80%]
+.................                                                        [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                       Stmts   Miss  Cover   Missing
+------------------------------------------------------------------------
+src\imbalancelab\__init__.py                   2      0   100%
+src\imbalancelab\api\__init__.py               0      0   100%
+src\imbalancelab\config.py                    12      1    92%   24
+src\imbalancelab\data\__init__.py              4      0   100%
+src\imbalancelab\data\errors.py               21      0   100%
+src\imbalancelab\data\loader.py              143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py               37      0   100%
+src\imbalancelab\evaluation\__init__.py        2      0   100%
+src\imbalancelab\evaluation\config.py         35      0   100%
+src\imbalancelab\evaluation\metrics.py       115      0   100%
+src\imbalancelab\evaluation\runner.py        117      0   100%
+src\imbalancelab\models\__init__.py            2      0   100%
+src\imbalancelab\models\registry.py           18      0   100%
+src\imbalancelab\pipelines\__init__.py         2      0   100%
+src\imbalancelab\pipelines\builder.py         66      0   100%
+src\imbalancelab\profiling\__init__.py         3      0   100%
+src\imbalancelab\profiling\profile.py        169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py         9      0   100%
+src\imbalancelab\reporting\__init__.py         0      0   100%
+src\imbalancelab\splitting\__init__.py         3      0   100%
+src\imbalancelab\splitting\duplicates.py      24      0   100%
+src\imbalancelab\splitting\splits.py         195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py          2      0   100%
+src\imbalancelab\tracking\records.py         120      6    95%   89-90, 135, 170, 195-196
+------------------------------------------------------------------------
+TOTAL                                       1101     18    98%
+89 passed in 31.30s
+[exit 0]
+```
+
+#### Invariant re-check
+- 1 and 2: each fold fits a fresh imblearn pipeline on `train_idx` only (M2 builder).
+- 4: `test_all_models_share_identical_folds_and_never_see_test` checks that the
+  (repeat, fold, row_index) sets are identical for every model. Baselines are always run.
+- 5: run records hold the seed, config, dataset SHA-256, fold-index SHA-256 (re-verified in a
+  test), and environment versions.
+- 6: every summary value is computed from `fold_metrics.json` (tested against numpy).
+- 7: OOF rows equal outer-train rows exactly and never intersect the test indices (tested).
+  `check_holdout` runs before CV.
+- Reproducibility: `test_same_seed_and_config_give_identical_metrics` checks that fold metrics
+  (minus timing), OOF predictions and the summary are identical, and that a different CV seed
+  changes the fold hash.
+
+#### Deviations from instructions
+- None.
+
+#### Known limitations
+- Execution is sequential (folds × models). Random forest uses `n_jobs=-1`.
+- The reference-threshold metrics in CV use a fixed `threshold` (default 0.5). Tuned thresholds
+  come in M5.

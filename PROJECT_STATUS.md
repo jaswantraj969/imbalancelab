@@ -9,7 +9,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M1 | Data loading, schema validation, profiling | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M1) |
 | M2 | Splitting + leakage-safe pipeline builder | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M2) |
 | M3 | Metrics module incl. edge cases | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M3) |
-| M4 | Experiment runner, baselines, run records | not started | — |
+| M4 | Experiment runner, baselines, run records | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M4) |
 | M5 | Threshold analysis (OOF/validation only) | not started | — |
 | M6 | Evidence-based audit report | not started | — |
 | M7 | FastAPI endpoints | not started | — |
@@ -64,7 +64,13 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   the denominator is 0. Hence "no positive predictions but positives exist" gives F = 0
   (defined), even though precision is undefined. This matches the counts-based definition and
   scikit-learn's value.
+- **D13:** "best candidate" = the highest mean OOF average precision among non-baseline
+  candidates (`summary.best_candidate_by_mean_oof_ap`). It is a selection made on OOF data
+  only; final evaluation may use it or an explicitly named model.
+- **D14:** paired comparisons are reported for AP (primary) and ROC AUC, for each candidate
+  against each baseline, plus logreg against dummy (is there any signal at all?). Folds where
+  either side is undefined are skipped and counted.
 
 ## Last updated
 
-2026-10-22 — M3 (Implementation Engineer)
+2026-10-22 — M4 (Implementation Engineer)
