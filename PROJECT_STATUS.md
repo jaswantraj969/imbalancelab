@@ -11,7 +11,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M3 | Metrics module incl. edge cases | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M3) |
 | M4 | Experiment runner, baselines, run records | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M4) |
 | M5 | Threshold analysis (OOF/validation only) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M5) |
-| M6 | Evidence-based audit report | not started | — |
+| M6 | Evidence-based audit report | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M6) |
 | M7 | FastAPI endpoints | not started | — |
 | M8 | Streamlit frontend (via API only) | not started | — |
 | M9 | Model persistence + inference endpoint | not started | — |
@@ -76,7 +76,12 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   own OOF-selected threshold (same strategy), so test results are reported against the
   baselines (invariant 4). This is still one scoring per model, and the baselines involve no
   selection.
+- **D17:** a candidate "beats" a baseline in the report only if the mean paired difference is
+  > 0 **and** the win fraction is > 0.5. Anything else is reported as "does NOT beat". This is
+  conservative and descriptive, not a significance claim.
+- **D18:** no Markdown library was added. A small internal document model renders to both
+  Markdown and HTML, which keeps the dependency list as specified.
 
 ## Last updated
 
-2026-10-22 — M5 (Implementation Engineer)
+2026-10-22 — M6 (Implementation Engineer)

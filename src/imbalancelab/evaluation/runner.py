@@ -20,7 +20,7 @@ from imbalancelab.evaluation.metrics import (
     PRIMARY_METRIC,
     compute_metrics,
 )
-from imbalancelab.models.registry import make_estimator
+from imbalancelab.models.registry import MODEL_DESCRIPTIONS, make_estimator
 from imbalancelab.pipelines.builder import FeatureSpec, build_pipeline, infer_feature_spec
 from imbalancelab.profiling.profile import DatasetProfile, profile_dataset
 from imbalancelab.splitting.duplicates import cross_boundary_duplicates
@@ -171,6 +171,15 @@ def run_experiment(
         "baselines": config.baseline_names(),
         "candidates": config.candidate_names(),
         "models": [s.name for s in specs],
+        "model_specs": [
+            {
+                "name": s.name,
+                "model": s.model,
+                "sampler": s.sampler,
+                "description": MODEL_DESCRIPTIONS[s.model],
+            }
+            for s in specs
+        ],
         "feature_spec": features.model_dump(mode="json"),
         "split_warnings": [w.model_dump(mode="json") for w in split_warnings],
         "error": None,

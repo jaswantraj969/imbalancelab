@@ -731,3 +731,133 @@ TOTAL                                        1341     19    99%
 - The chosen threshold is the median of the per-repeat selections. The OOF metrics at that
   threshold are optimistic (the same data informed the selection), and this is labelled.
 - Final test results are single numbers per model, with no spread. The report says so.
+
+---
+
+### Task M6 — Evidence-based audit report
+
+**Date:** 2026-10-22 · **Milestone:** M6
+
+#### Summary of changes
+- `reporting/report.py`: `generate_report(run_dir)` reads **only** `RunRecord` files (run,
+  config, environment, profile, summary, fold metrics via the summary, OOF predictions,
+  thresholds, final evaluation, final predictions, final log). It writes
+  `report/report.md`, `report/report.html` and `report/figures/*.png` inside the run directory.
+  Sections:
+  1. Verdict, a plain-language "beats" or "does NOT beat" for every AP comparison. A candidate
+     beats a baseline only if its mean paired diff > 0 *and* its win fraction > 0.5. Test
+     verdicts are added when a final evaluation exists.
+  2. Dataset
+  3. Profile warnings, labelled as heuristic suspicions
+  4. Split strategy, with hashes and split warnings
+  5. Models
+  6. CV results (mean ± std, n, undefined counts) and paired comparisons, with OOF PR and ROC
+     curves
+  7. Threshold analysis, with per-repeat spread
+  8. Final test results, with test PR and ROC curves and the evaluation log, or "Not yet
+     performed"
+  9. Limitations (data-dependent items included, e.g. few test positives)
+  10. Reproducibility (seed, SHA-256s, versions, config)
+- `reporting/render.py`: a minimal document model rendered to Markdown and self-contained
+  HTML. Images are embedded as base64, all text is HTML-escaped, and there are no scripts.
+- `reporting/figures.py`: matplotlib (Agg) PR and ROC curves from stored predictions, with
+  single-class models skipped.
+- `evaluation/runner.py`: `run.json` now also stores `model_specs` (name, model, sampler,
+  description), so the report's model table comes from the run record rather than from code.
+
+#### Files changed
+- added: `src/imbalancelab/reporting/{report,render,figures}.py`, `tests/test_reporting.py`,
+  `tests/snapshots/report_structure.md`
+- modified: `src/imbalancelab/reporting/__init__.py`, `src/imbalancelab/evaluation/runner.py`,
+  `PROJECT_STATUS.md`, `REVIEW_PACKET.md`
+
+#### Exact commands run
+    UPDATE_SNAPSHOTS=1 pytest -q tests/test_reporting.py -k snapshot   # create snapshot (reviewed)
+    pytest -q tests/test_reporting.py                                     # 6 passed
+    ruff format . ; ruff check . --fix ; mypy      # E501 x2 in report.py -> fixed by hand
+    bash scripts/gate.sh                           # first run: exit 1 (the E501s), rerun below
+
+#### Gate output (verbatim, final run)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+41 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 29 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 66%]
+.....................................                                    [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                        Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------
+src\imbalancelab\__init__.py                    2      0   100%
+src\imbalancelab\api\__init__.py                0      0   100%
+src\imbalancelab\config.py                     12      1    92%   24
+src\imbalancelab\data\__init__.py               4      0   100%
+src\imbalancelab\data\errors.py                21      0   100%
+src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                37      0   100%
+src\imbalancelab\evaluation\__init__.py         2      0   100%
+src\imbalancelab\evaluation\config.py          35      0   100%
+src\imbalancelab\evaluation\final.py          102      4    96%   74-75, 102, 160
+src\imbalancelab\evaluation\metrics.py        115      0   100%
+src\imbalancelab\evaluation\runner.py         117      0   100%
+src\imbalancelab\evaluation\thresholds.py     138      0   100%
+src\imbalancelab\models\__init__.py             2      0   100%
+src\imbalancelab\models\registry.py            18      0   100%
+src\imbalancelab\pipelines\__init__.py          2      0   100%
+src\imbalancelab\pipelines\builder.py          66      0   100%
+src\imbalancelab\profiling\__init__.py          3      0   100%
+src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py          9      0   100%
+src\imbalancelab\reporting\__init__.py          2      0   100%
+src\imbalancelab\reporting\figures.py          44      1    98%   28
+src\imbalancelab\reporting\render.py           82      0   100%
+src\imbalancelab\reporting\report.py          163      8    95%   59, 125, 172, 202, 245, 382, 440, 442
+src\imbalancelab\splitting\__init__.py          3      0   100%
+src\imbalancelab\splitting\duplicates.py       24      0   100%
+src\imbalancelab\splitting\splits.py          195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py           2      0   100%
+src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
+-------------------------------------------------------------------------
+TOTAL                                        1632     28    98%
+109 passed in 49.73s
+[exit 0]
+```
+
+#### Tests
+- `test_report_structure_snapshot`: a structural snapshot of the Markdown report for a small
+  synthetic run. IDs, hashes, timestamps, numbers, the platform and the verdict words are
+  masked, so it checks structure and wording without being brittle across platforms.
+- `test_report_numbers_trace_to_run_records`: the CV AP cells equal `fmt_summary(summary.json)`,
+  the test rows equal `final_evaluation.json`, the chosen threshold equals `thresholds.json`,
+  the hashes are present, the 4 figures exist and are referenced, and the HTML embeds 4 images
+  with no `<script>`.
+- `test_verdict_states_plainly_when_not_beating_baseline`: covers the mean-up-but-mostly-losses
+  case, ties, no pairs, and test verdicts.
+- Also tested: the report before final evaluation states that no test results exist, an
+  incomplete run is refused, and Markdown/HTML escaping works.
+
+#### Invariant re-check
+- 4 and 6: the report reads only run records. Every number in it comes from those files
+  (traceability test), and baseline comparisons are always shown.
+- The synthetic run's own report states "**hgb** does NOT beat **logreg_balanced**" (the data
+  has a linear signal). This is the plain-statement requirement working on real output.
+
+#### Deviations from instructions
+- None. (The first gate run failed on 2 E501 lines, which I fixed by restructuring the
+  f-string.)
+
+#### Known limitations
+- The snapshot test masks numbers. Numeric correctness is covered by the traceability test, not
+  by the snapshot.
+- HTML is self-contained (base64 images), so file size grows with the figures (about 4 × 30 KB).
