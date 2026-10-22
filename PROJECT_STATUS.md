@@ -10,7 +10,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 | M2 | Splitting + leakage-safe pipeline builder | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M2) |
 | M3 | Metrics module incl. edge cases | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M3) |
 | M4 | Experiment runner, baselines, run records | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M4) |
-| M5 | Threshold analysis (OOF/validation only) | not started | — |
+| M5 | Threshold analysis (OOF/validation only) | done | [REVIEW_PACKET.md](REVIEW_PACKET.md) (M5) |
 | M6 | Evidence-based audit report | not started | — |
 | M7 | FastAPI endpoints | not started | — |
 | M8 | Streamlit frontend (via API only) | not started | — |
@@ -70,7 +70,13 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
 - **D14:** paired comparisons are reported for AP (primary) and ROC AUC, for each candidate
   against each baseline, plus logreg against dummy (is there any signal at all?). Folds where
   either side is undefined are skipped and counted.
+- **D15:** the chosen threshold is the **median** of the per-repeat thresholds (robust to one
+  odd repeat). Mean, std, min and max are reported alongside it.
+- **D16:** final evaluation also refits and scores both baselines on the test set, each at its
+  own OOF-selected threshold (same strategy), so test results are reported against the
+  baselines (invariant 4). This is still one scoring per model, and the baselines involve no
+  selection.
 
 ## Last updated
 
-2026-10-22 — M4 (Implementation Engineer)
+2026-10-22 — M5 (Implementation Engineer)

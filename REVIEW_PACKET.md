@@ -615,3 +615,119 @@ TOTAL                                       1101     18    98%
 - Execution is sequential (folds × models). Random forest uses `n_jobs=-1`.
 - The reference-threshold metrics in CV use a fixed `threshold` (default 0.5). Tuned thresholds
   come in M5.
+
+---
+
+### Task M5 — Threshold analysis and final evaluation
+
+**Date:** 2026-10-22 · **Milestone:** M5
+
+#### Summary of changes
+- `evaluation/thresholds.py`:
+  - `PredictionSet(y_true, y_score, provenance)` with provenance oof, validation or test.
+    `threshold_curve` and `select_threshold` raise `ProvenanceError` for test predictions, and
+    `from_frame` rejects mixed provenance.
+  - Curve (a vectorised cumulative-count sweep over distinct scores, plus a "predict nothing"
+    point): tp, fp, fn, tn, precision, recall, F-beta, expected cost.
+  - Strategies: `max_fbeta`, `target_recall` (maximise precision subject to recall ≥ target),
+    `target_precision` (maximise recall subject to precision ≥ target), and `min_cost`
+    (cost_fp·FP + cost_fn·FN, per sample). Ties go to the higher threshold.
+  - `analyse_thresholds` selects separately on each CV repeat's OOF predictions. It reports the
+    per-repeat spread (mean, std, min, max, n) of the threshold, precision, recall, F-beta and
+    cost, and chooses the median threshold. It also reports the chosen threshold re-applied to
+    each repeat, labelled optimistic.
+  - `run_threshold_analysis` stores the latest analysis per model, plus a history, in
+    `thresholds.json`.
+- `evaluation/final.py`, `final_evaluate(dataset, run_dir, model=None, force=False, reason=None)`:
+  - Checks: the run is completed; the dataset SHA matches; the holdout verifies against both
+    the dataset and `run.json`; a threshold analysis exists for the model. Baseline thresholds
+    are selected on OOF with the same strategy when missing.
+  - Refits the chosen model and both baselines on **outer-train rows only**, scores the test
+    rows once each, and writes `final_evaluation.json` (metrics at the threshold, threshold
+    provenance, test SHA, single-test comparisons) and `final_predictions.parquet`
+    (`provenance="test"`).
+  - A second call raises `FinalEvaluationExistsError` unless `force=True` and a non-empty
+    `reason` are given. A forced call appends a `forced_reevaluation` log entry with the reason
+    and the previous file's SHA-256. Every evaluation is appended to
+    `final_evaluation_log.jsonl`.
+
+#### Files changed
+- added: `src/imbalancelab/evaluation/{thresholds,final}.py`, `tests/test_thresholds_final.py`
+- modified: `PROJECT_STATUS.md`, `REVIEW_PACKET.md`
+
+#### Exact commands run
+    pytest -q tests/test_thresholds_final.py      # 14 passed on first run
+    ruff format . ; ruff check . --fix ; mypy       # 3 files reformatted, 1 import-order fix
+    bash scripts/gate.sh
+
+#### Gate output (verbatim)
+```text
+$ ruff check .
+All checks passed!
+[exit 0]
+
+$ ruff format --check .
+36 files already formatted
+[exit 0]
+
+$ mypy
+Success: no issues found in 26 source files
+[exit 0]
+
+$ pytest -q --cov=imbalancelab --cov-report=term-missing
+........................................................................ [ 69%]
+...............................                                          [100%]
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.5-final-0 _______________
+
+Name                                        Stmts   Miss  Cover   Missing
+-------------------------------------------------------------------------
+src\imbalancelab\__init__.py                    2      0   100%
+src\imbalancelab\api\__init__.py                0      0   100%
+src\imbalancelab\config.py                     12      1    92%   24
+src\imbalancelab\data\__init__.py               4      0   100%
+src\imbalancelab\data\errors.py                21      0   100%
+src\imbalancelab\data\loader.py               143      5    97%   127-128, 144, 148, 195
+src\imbalancelab\data\schema.py                37      0   100%
+src\imbalancelab\evaluation\__init__.py         2      0   100%
+src\imbalancelab\evaluation\config.py          35      0   100%
+src\imbalancelab\evaluation\final.py          102      4    96%   74-75, 102, 160
+src\imbalancelab\evaluation\metrics.py        115      0   100%
+src\imbalancelab\evaluation\runner.py         117      0   100%
+src\imbalancelab\evaluation\thresholds.py     138      0   100%
+src\imbalancelab\models\__init__.py             2      0   100%
+src\imbalancelab\models\registry.py            18      0   100%
+src\imbalancelab\pipelines\__init__.py          2      0   100%
+src\imbalancelab\pipelines\builder.py          66      0   100%
+src\imbalancelab\profiling\__init__.py          3      0   100%
+src\imbalancelab\profiling\profile.py         169      3    98%   301, 341, 363
+src\imbalancelab\profiling\warnings.py          9      0   100%
+src\imbalancelab\reporting\__init__.py          0      0   100%
+src\imbalancelab\splitting\__init__.py          3      0   100%
+src\imbalancelab\splitting\duplicates.py       24      0   100%
+src\imbalancelab\splitting\splits.py          195      3    98%   96, 102, 114
+src\imbalancelab\tracking\__init__.py           2      0   100%
+src\imbalancelab\tracking\records.py          120      3    98%   89-90, 170
+-------------------------------------------------------------------------
+TOTAL                                        1341     19    99%
+103 passed in 44.12s
+[exit 0]
+```
+
+#### Invariant re-check
+- 3: `test_test_provenance_is_rejected` covers curve, select and analyse rejecting test
+  provenance. `test_final_evaluation_once_and_forced_logging` checks that the stored test
+  predictions cannot be passed to `analyse_thresholds`.
+- 7: final evaluation refits on `holdout.train_idx` only (`test_final_pipeline_refit_on_outer_train_only`
+  checks the scaler statistics). Every model's test rows equal `holdout.test_idx` exactly. A
+  second scoring is refused, and a forced one is logged.
+- Selection correctness: every strategy is checked against an exhaustive brute-force reference,
+  and the curve is checked against `sklearn.metrics.precision_recall_curve`.
+
+#### Deviations from instructions
+- None.
+
+#### Known limitations
+- The chosen threshold is the median of the per-repeat selections. The OOF metrics at that
+  threshold are optimistic (the same data informed the selection), and this is labelled.
+- Final test results are single numbers per model, with no spread. The report says so.
