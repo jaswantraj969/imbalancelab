@@ -1,9 +1,22 @@
 # ImbalanceLab
 
-ImbalanceLab is a library-first toolkit for **leakage-safe, reproducible experiments on
-imbalanced binary classification**. A FastAPI backend and a Streamlit frontend sit on top of
-the library. Every number it reports comes from an executed run with a stored, hash-stamped run
-record.
+[![CI](https://github.com/jaswantraj969/imbalancelab/actions/workflows/ci.yml/badge.svg)](https://github.com/jaswantraj969/imbalancelab/actions/workflows/ci.yml)
+
+ImbalanceLab is a library-first Python toolkit for **leakage-safe, reproducible experiments on
+imbalanced binary classification**, with a local FastAPI backend and a Streamlit frontend on top.
+It validates and profiles a dataset, creates a hash-stamped outer holdout **once**, compares
+candidates against Dummy and class-weighted logistic-regression baselines on identical stored CV
+folds, selects thresholds on out-of-fold predictions only, scores the test set once with
+bootstrap confidence intervals, and writes an audit report generated purely from stored run
+records. That report includes calibration, evaluation-coverage and test-scoring-history
+disclosures.
+
+**Case study** ([docs/case_study.md](docs/case_study.md); run
+`run-20261022T092013Z-2056207e`, `mammography`, duplicate-aware split): the selected model
+`hgb+smote` scored **test AP 0.8228 [95% CI 0.7383, 0.8977]** on 1964 test rows with
+**63 positives**, scored once. **Caveat:** 3329 rows (**29.8%** of the dataset, 7 positives), a
+single cluster of identical feature rows, were forced to training and are never evaluated. The
+result does not describe those rows.
 
 - **Data:** schema validation, plus a profile that flags suspected leakage, ID-like columns,
   duplicates and constant columns. These are flagged as *warnings with evidence*, never as
@@ -221,3 +234,13 @@ CI (`.github/workflows/ci.yml`) runs the same checks on Python 3.11 and 3.13.
 - joblib artifacts are pickles. Only load models from a workspace you trust. The stored
   SHA-256 detects accidental corruption, not tampering (see Model persistence).
 - The API has no authentication and is for local use only (see Running the API).
+
+## License
+
+- **Code:** MIT. See [LICENSE](LICENSE) (copyright 2026 Jaswant Raj).
+- **Data and derived run records:** the `mammography` dataset and the case-study run records
+  under `docs/case_study/` (predictions, indices, reports) are derived from the
+  "Imbalanced dataset for benchmarking" collection (DOI 10.5281/zenodo.61452) and are under the
+  **Open Database License (ODbL)**. See the notices in
+  [a_stratified/NOTICE.md](docs/case_study/a_stratified/NOTICE.md) and
+  [b_duplicate_groups/NOTICE.md](docs/case_study/b_duplicate_groups/NOTICE.md).
