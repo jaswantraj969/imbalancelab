@@ -11,52 +11,52 @@ Milestones M0–M10 and review tasks T-R1–T-R3 are implemented and committed. 
 
 | Milestone | Scope | Status | Commit |
 |---|---|---|---|
-| M0 | Skeleton, tooling, plan | done | `d314ffd` |
-| — | Part A: invariant 7, lock, CI, pyarrow | applied | `30ba02a` |
-| M1 | Data loading, schema validation, profiling | done | `61796ba` |
-| M2 | Outer holdout, inner CV, duplicates, pipeline builder | done | `7d090fb` |
-| M3 | Metrics with explicit undefined cases | done | `0f2a707` |
-| M4 | Runner, baselines, run records | done | `680141c` |
-| M5 | OOF thresholds + one-shot final evaluation | done | `c1c0863` |
-| M6 | Audit report | done | `40013a7` |
-| M7 | FastAPI | done | `25e87da` |
-| M8 | Streamlit frontend | done | `cf84f51` |
-| M9 | Persistence + inference | done | `1f0f4bd` |
-| M10 | Docs + case study | done (not verified; revised in T-R1–T-R3) | `43c8cac` |
-| T-R1 | Supervisor review fixes | done | `9a28c93` |
-| T-R2 | CIs, coverage, cluster analysis, disclosures | done | `4544ca3` |
-| T-R3 | GitHub CI, calibration disclosure, paired bootstrap, tidy | done | `bd51d15` |
+| M0 | Skeleton, tooling, plan | done | `b66dfe2` |
+| — | Part A: invariant 7, lock, CI, pyarrow | applied | `0f85dac` |
+| M1 | Data loading, schema validation, profiling | done | `4ba075c` |
+| M2 | Outer holdout, inner CV, duplicates, pipeline builder | done | `2e00973` |
+| M3 | Metrics with explicit undefined cases | done | `4caed82` |
+| M4 | Runner, baselines, run records | done | `f7da970` |
+| M5 | OOF thresholds + one-shot final evaluation | done | `189a2b2` |
+| M6 | Audit report | done | `ce31187` |
+| M7 | FastAPI | done | `6bf1a32` |
+| M8 | Streamlit frontend | done | `58769d0` |
+| M9 | Persistence + inference | done | `6fbaf2d` |
+| M10 | Docs + case study | done (not verified; revised in T-R1–T-R3) | `ea39d3e` |
+| T-R1 | Supervisor review fixes | done | `6711d8c` |
+| T-R2 | CIs, coverage, cluster analysis, disclosures | done | `94f17ca` |
+| T-R3 | GitHub CI, calibration disclosure, paired bootstrap, tidy | done | `30a0d77` |
 
 ```text
 $ git log --oneline
-bd51d15 T-R3: calibration disclosure, paired bootstrap, recall scope, httpx2, process docs moved
-fcad5d9 T-R2: review packet entry and regenerated final report
-4544ca3 T-R2: bootstrap CIs, evaluation coverage, cluster analysis, protocol history, ODbL notices
-28bc061 T-R1: review packet entry and revised final report
-9a28c93 T-R1: duplicate-aware splitting, honest two-run case study, RF determinism, UI evidence
-188d109 Final report for supervisor review
-43c8cac M10: README, case study on mammography from real run records, smoke script
-1f0f4bd M9: model persistence with integrity check; inference endpoint
-cf84f51 M8: Streamlit frontend as a pure API client
-25e87da M7: FastAPI endpoints over a library workflow layer
-40013a7 M6: evidence-based audit report (Markdown + HTML) from run records
-c1c0863 M5: OOF threshold analysis with provenance guard; one-shot final evaluation
-680141c M4: experiment runner, baselines, file-based run records
-0f2a707 M3: metrics with explicit undefined cases
-7d090fb M2: outer holdout, inner CV, cross-boundary duplicates, pipeline builder
-61796ba M1: data loading, schema validation, profiling
-30ba02a Plan amendments: invariant 7, lock file, CI, pyarrow
-d314ffd T0: project skeleton, tooling, plan
+30a0d77 T-R3: calibration disclosure, paired bootstrap, recall scope, httpx2, process docs moved
+f71f568 T-R2: review packet entry and regenerated final report
+94f17ca T-R2: bootstrap CIs, evaluation coverage, cluster analysis, protocol history, ODbL notices
+4b5c299 T-R1: review packet entry and revised final report
+6711d8c T-R1: duplicate-aware splitting, honest two-run case study, RF determinism, UI evidence
+fc1dd90 Final report for supervisor review
+ea39d3e M10: README, case study on mammography from real run records, smoke script
+6fbaf2d M9: model persistence with integrity check; inference endpoint
+58769d0 M8: Streamlit frontend as a pure API client
+6bf1a32 M7: FastAPI endpoints over a library workflow layer
+ce31187 M6: evidence-based audit report (Markdown + HTML) from run records
+189a2b2 M5: OOF threshold analysis with provenance guard; one-shot final evaluation
+f7da970 M4: experiment runner, baselines, file-based run records
+4caed82 M3: metrics with explicit undefined cases
+2e00973 M2: outer holdout, inner CV, cross-boundary duplicates, pipeline builder
+4ba075c M1: data loading, schema validation, profiling
+0f85dac Plan amendments: invariant 7, lock file, CI, pyarrow
+b66dfe2 T0: project skeleton, tooling, plan
 ```
 
 This report and the T-R3 REVIEW_PACKET entry are committed after the log above.
 
-## 2. CI and gates on commit `bd51d15`
+## 2. CI and gates on commit `30a0d77`
 
 ### GitHub Actions (published repository `jaswantraj969/imbalancelab`)
 
 CI evidence for the published, rewritten history (D38): run
-https://github.com/jaswantraj969/imbalancelab/actions/runs/40002446378 on commit `9679bbc`.
+https://github.com/jaswantraj969/imbalancelab/actions/runs/40002446378 on commit `eee1a66`.
 Overall conclusion: **success**.
 
 | Job | Result |
@@ -64,7 +64,7 @@ Overall conclusion: **success**.
 | checks (3.13) | **success** |
 | checks (3.11) | **success** |
 
-This report was originally written for commit `bd51d15` (pre-rewrite `f96c85a`). The CI run
+This report was originally written for commit `30a0d77` (pre-rewrite `f96c85a`). The CI run
 cited at that time belongs to the archived private repository and does not resolve publicly.
 The local gate output below is from that original commit.
 
@@ -246,7 +246,7 @@ test AP 95% CI [0.7383, 0.8977]; the two are consistent. This is not a claim tha
 ### Threshold (run b, selected model)
 
 - **Strategy:** `max_fbeta` with beta=2.0, median of the
-  per-repeat thresholds (D15, commit `c1c0863`).
+  per-repeat thresholds (D15, commit `189a2b2`).
 - **Chosen threshold:** **0.6036**. Per-repeat:
   0.6036, 0.5170, 0.6796.
 
@@ -303,7 +303,7 @@ b_duplicate_groups: run run-20261022T092013Z-2056207e
 ALL CHECKS PASSED
 ```
 
-## 4. `git ls-files` (at `bd51d15`)
+## 4. `git ls-files` (at `30a0d77`)
 
 ```text
 .gitattributes

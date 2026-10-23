@@ -664,9 +664,9 @@ def build_case_study(
             "- **Fixed before any case-study test scoring:** the candidate list, seeds, CV "
             "settings and selection rule were written into this script before execution 1. "
             "Git cannot prove that ordering, because the script was first committed in M10 "
-            "(`43c8cac`) after those executions.",
+            "(`ea39d3e`) after those executions.",
             "- **Threshold aggregation rule (median across repeats):** decided in M5 as "
-            "PROJECT_STATUS decision **D15** and implemented in commit **`c1c0863`** "
+            "PROJECT_STATUS decision **D15** and implemented in commit **`189a2b2`** "
             "(2026-10-22 13:05:52 +05:00). This **precedes** the first case-study execution "
             "(execution 3, run `run-20261022T083455Z-ef809093` = 08:34:55Z = 13:34:55 +05:00) "
             "and so all test scoring.",
@@ -724,7 +724,7 @@ def build_case_study(
             f"- **Model:** `{best_b}`. **Strategy:** `{th_b['strategy']['kind']}` with beta="
             f"{th_b['strategy']['beta']}, selected on OOF predictions for each of "
             f"{sp['threshold']['n']} CV repeats. **Rule:** {th_b['selection_rule']} (decided in "
-            "M5, D15 / `c1c0863`).",
+            "M5, D15 / `189a2b2`).",
             f"- **Chosen threshold:** {fmt(th_b['chosen_threshold'])}. Per-repeat thresholds: "
             f"mean {fmt(sp['threshold']['mean'])} ± {fmt(sp['threshold']['std'])} (sample std), "
             f"range [{fmt(sp['threshold']['min'])}, {fmt(sp['threshold']['max'])}]. Individual "

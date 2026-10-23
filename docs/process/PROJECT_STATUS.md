@@ -194,7 +194,7 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   [COMMIT_MAP.md](COMMIT_MAP.md), and the hash references in the current tree's docs and scripts were
   remapped. GitHub Actions run URLs and release notes created before the rewrite point to
   pre-rewrite commits. Author and commit **dates are preserved**, so the D15 timing evidence still
-  holds: the median-threshold rule commit is old `7ce0891` → new `c1c0863` (2026-10-22 13:05:52
+  holds: the median-threshold rule commit is old `7ce0891` → new `189a2b2` (2026-10-22 13:05:52
   +05:00), before the first case-study test scoring (13:34:55 +05:00). A mirror backup of the
   pre-rewrite repository was kept locally, outside the repository.
   **Published from a fresh repository (T-FINAL2):** because GitHub kept serving the
@@ -203,11 +203,18 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   `jaswantraj969/imbalancelab-archive-private`. The rewritten history (only `main` and
   `v1.0.0`) was pushed to a new `jaswantraj969/imbalancelab`, where the old SHAs return "No
   commit found". CI evidence for the published history is the runs of the new repository, e.g.
-  https://github.com/jaswantraj969/imbalancelab/actions/runs/40002446378 (commit `9679bbc`, both
+  https://github.com/jaswantraj969/imbalancelab/actions/runs/40002446378 (commit `eee1a66`, both
   jobs success).
   - Historical REVIEW_PACKET entries cite Actions run IDs from the archive repository; those
     links do not resolve publicly.
+- **D39 (2026-10-24):** at the owner's request, the `Co-Authored-By` trailers were removed from
+  all commit messages with `git filter-repo --message-callback`. The owner is the sole author.
+  Only messages changed: the file tree of every commit is identical (HEAD tree `3a0636a`),
+  and author identity and dates are unchanged. Every commit hash changed again; the hash
+  references in the docs and `COMMIT_MAP.md` were remapped to the current hashes. CI runs cited
+  before this point ran on the pre-D39 commits, which have the same trees. `main` was
+  force-pushed and `v1.0.0` and its release were recreated.
 
 ## Last updated
 
-2026-10-23 — T-R5 (Implementation Engineer). Core code verified by supervisor at ffdccce; T-R5 release fixes awaiting review.
+2026-10-23 — T-R5 (Implementation Engineer). Core code verified by supervisor at 7c4e8f3; T-R5 release fixes awaiting review.
