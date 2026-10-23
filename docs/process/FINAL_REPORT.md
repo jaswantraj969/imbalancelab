@@ -11,51 +11,51 @@ Milestones M0–M10 and review tasks T-R1–T-R3 are implemented and committed. 
 
 | Milestone | Scope | Status | Commit |
 |---|---|---|---|
-| M0 | Skeleton, tooling, plan | done | `03ead06` |
-| — | Part A: invariant 7, lock, CI, pyarrow | applied | `5fbb139` |
-| M1 | Data loading, schema validation, profiling | done | `fdc15f3` |
-| M2 | Outer holdout, inner CV, duplicates, pipeline builder | done | `d906960` |
-| M3 | Metrics with explicit undefined cases | done | `58c6241` |
-| M4 | Runner, baselines, run records | done | `9e207a5` |
-| M5 | OOF thresholds + one-shot final evaluation | done | `7ce0891` |
-| M6 | Audit report | done | `68a5647` |
-| M7 | FastAPI | done | `a9ff54e` |
-| M8 | Streamlit frontend | done | `45706fc` |
-| M9 | Persistence + inference | done | `b250b9a` |
-| M10 | Docs + case study | done (not verified; revised in T-R1–T-R3) | `91c6f54` |
-| T-R1 | Supervisor review fixes | done | `e727ca4` |
-| T-R2 | CIs, coverage, cluster analysis, disclosures | done | `01a9d51` |
-| T-R3 | GitHub CI, calibration disclosure, paired bootstrap, tidy | done | `f96c85a` |
+| M0 | Skeleton, tooling, plan | done | `d314ffd` |
+| — | Part A: invariant 7, lock, CI, pyarrow | applied | `30ba02a` |
+| M1 | Data loading, schema validation, profiling | done | `61796ba` |
+| M2 | Outer holdout, inner CV, duplicates, pipeline builder | done | `7d090fb` |
+| M3 | Metrics with explicit undefined cases | done | `0f2a707` |
+| M4 | Runner, baselines, run records | done | `680141c` |
+| M5 | OOF thresholds + one-shot final evaluation | done | `c1c0863` |
+| M6 | Audit report | done | `40013a7` |
+| M7 | FastAPI | done | `25e87da` |
+| M8 | Streamlit frontend | done | `cf84f51` |
+| M9 | Persistence + inference | done | `1f0f4bd` |
+| M10 | Docs + case study | done (not verified; revised in T-R1–T-R3) | `43c8cac` |
+| T-R1 | Supervisor review fixes | done | `9a28c93` |
+| T-R2 | CIs, coverage, cluster analysis, disclosures | done | `4544ca3` |
+| T-R3 | GitHub CI, calibration disclosure, paired bootstrap, tidy | done | `bd51d15` |
 
 ```text
 $ git log --oneline
-f96c85a T-R3: calibration disclosure, paired bootstrap, recall scope, httpx2, process docs moved
-573b2ba T-R2: review packet entry and regenerated final report
-01a9d51 T-R2: bootstrap CIs, evaluation coverage, cluster analysis, protocol history, ODbL notices
-924b401 T-R1: review packet entry and revised final report
-e727ca4 T-R1: duplicate-aware splitting, honest two-run case study, RF determinism, UI evidence
-855c023 Final report for supervisor review
-91c6f54 M10: README, case study on mammography from real run records, smoke script
-b250b9a M9: model persistence with integrity check; inference endpoint
-45706fc M8: Streamlit frontend as a pure API client
-a9ff54e M7: FastAPI endpoints over a library workflow layer
-68a5647 M6: evidence-based audit report (Markdown + HTML) from run records
-7ce0891 M5: OOF threshold analysis with provenance guard; one-shot final evaluation
-9e207a5 M4: experiment runner, baselines, file-based run records
-58c6241 M3: metrics with explicit undefined cases
-d906960 M2: outer holdout, inner CV, cross-boundary duplicates, pipeline builder
-fdc15f3 M1: data loading, schema validation, profiling
-5fbb139 Plan amendments: invariant 7, lock file, CI, pyarrow
-03ead06 T0: project skeleton, tooling, plan
+bd51d15 T-R3: calibration disclosure, paired bootstrap, recall scope, httpx2, process docs moved
+fcad5d9 T-R2: review packet entry and regenerated final report
+4544ca3 T-R2: bootstrap CIs, evaluation coverage, cluster analysis, protocol history, ODbL notices
+28bc061 T-R1: review packet entry and revised final report
+9a28c93 T-R1: duplicate-aware splitting, honest two-run case study, RF determinism, UI evidence
+188d109 Final report for supervisor review
+43c8cac M10: README, case study on mammography from real run records, smoke script
+1f0f4bd M9: model persistence with integrity check; inference endpoint
+cf84f51 M8: Streamlit frontend as a pure API client
+25e87da M7: FastAPI endpoints over a library workflow layer
+40013a7 M6: evidence-based audit report (Markdown + HTML) from run records
+c1c0863 M5: OOF threshold analysis with provenance guard; one-shot final evaluation
+680141c M4: experiment runner, baselines, file-based run records
+0f2a707 M3: metrics with explicit undefined cases
+7d090fb M2: outer holdout, inner CV, cross-boundary duplicates, pipeline builder
+61796ba M1: data loading, schema validation, profiling
+30ba02a Plan amendments: invariant 7, lock file, CI, pyarrow
+d314ffd T0: project skeleton, tooling, plan
 ```
 
 This report and the T-R3 REVIEW_PACKET entry are committed after the log above.
 
-## 2. CI and gates on commit `f96c85a`
+## 2. CI and gates on commit `bd51d15`
 
 ### GitHub Actions (private repository `jaswantraj969/imbalancelab`)
 
-Run: https://github.com/jaswantraj969/imbalancelab/actions/runs/39841242556 on commit `f96c85a`. Overall conclusion: **success**.
+Run: https://github.com/jaswantraj969/imbalancelab/actions/runs/39841242556 on commit `bd51d15`. Overall conclusion: **success**.
 
 | Job | Result |
 |---|---|
@@ -240,7 +240,7 @@ test AP 95% CI [0.7383, 0.8977]; the two are consistent. This is not a claim tha
 ### Threshold (run b, selected model)
 
 - **Strategy:** `max_fbeta` with beta=2.0, median of the
-  per-repeat thresholds (D15, commit `7ce0891`).
+  per-repeat thresholds (D15, commit `c1c0863`).
 - **Chosen threshold:** **0.6036**. Per-repeat:
   0.6036, 0.5170, 0.6796.
 
@@ -297,7 +297,7 @@ b_duplicate_groups: run run-20261022T092013Z-2056207e
 ALL CHECKS PASSED
 ```
 
-## 4. `git ls-files` (at `f96c85a`)
+## 4. `git ls-files` (at `bd51d15`)
 
 ```text
 .gitattributes

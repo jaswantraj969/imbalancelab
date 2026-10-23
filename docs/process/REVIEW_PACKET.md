@@ -163,7 +163,7 @@ skipped.
 
 ### Task M1 — Data loading, schema validation, profiling
 
-**Date:** 2026-10-22 · **Milestone:** M1 · **Preceded by:** commit `5fbb139` (Part A plan
+**Date:** 2026-10-22 · **Milestone:** M1 · **Preceded by:** commit `30ba02a` (Part A plan
 amendments: invariant 7, M2/M4/M5 amendments, pyarrow, `requirements-lock.txt`, CI workflow)
 
 #### Summary of changes
@@ -1429,7 +1429,7 @@ TOTAL                                        2045     33    98%
 
 ### Task T-R1 — Supervisor review fixes
 
-**Date:** 2026-10-22 · **Commit:** `e727ca4` (code, records, docs). This packet entry and the
+**Date:** 2026-10-22 · **Commit:** `9a28c93` (code, records, docs). This packet entry and the
 regenerated FINAL_REPORT.md follow in a separate commit.
 
 #### Summary
@@ -1503,7 +1503,7 @@ test covers each: `test_giant_cluster_is_pinned_to_train_and_test_stays_represen
 - **Report snapshot:** regenerated twice. Each diff was reviewed: two new split-table rows and
   the new `max_eval_group_fraction` config field. Nothing else changed.
 
-#### git diff --stat 91c6f54..e727ca4
+#### git diff --stat 43c8cac..9a28c93
 ````text
  .gitignore                                         |     1 +
  FINAL_REPORT.md                                    |   528 +
@@ -3975,7 +3975,7 @@ Both runs use the same protocol. The only difference is the split.
 ### Was the protocol fixed before results were seen?
 
 - The candidate list, seeds, CV settings, selection rule and threshold strategy were written into `scripts/run_case_study.py` before its first execution in M10. They have not been changed since; this rewrite keeps the same constants.
-- **Git history cannot prove this ordering.** The script's first commit (`91c6f54`, M10) came after those executions. The evidence is the M10 command log in `REVIEW_PACKET.md`: the first execution failed before producing results (a file-path bug), the second was stopped before its output was read, and later executions changed only report wording.
+- **Git history cannot prove this ordering.** The script's first commit (`43c8cac`, M10) came after those executions. The evidence is the M10 command log in `REVIEW_PACKET.md`: the first execution failed before producing results (a file-path bug), the second was stopped before its output was read, and later executions changed only report wording.
 - **Run (b) was not pre-specified.** It was requested by the supervisor after the run (a) results were seen. Its candidate set, seeds and selection rule are those of run (a), unchanged.
 
 ## Results, run (b)
@@ -4164,7 +4164,7 @@ ui_check.json
 
 ### Task T-R2 — Uncertainty, evaluation coverage, cluster analysis, CI
 
-**Date:** 2026-10-22 · **Code/records commit:** `01a9d51`. This entry and the regenerated
+**Date:** 2026-10-22 · **Code/records commit:** `4544ca3`. This entry and the regenerated
 FINAL_REPORT.md follow in the next commit.
 
 #### Summary
@@ -4195,7 +4195,7 @@ FINAL_REPORT.md follow in the next commit.
 - **M3 + L1 (disclosures):** a "Protocol history" subsection covers all 9 case-study executions,
   the discarded split v1, the large-group rule added afterwards, the reported split v2, that run
   (b) was added after run (a) results were seen, and test-set reuse counts. The median rule is
-  D15 / commit `7ce0891` (13:05:52 +05:00), which precedes the first case-study scoring (13:34:55
+  D15 / commit `c1c0863` (13:05:52 +05:00), which precedes the first case-study scoring (13:34:55
   +05:00).
 - **L2:** `resolve_groups` logs `logger.warning(...)` with the number of declared groups merged
   (D27), and the count is in the warning evidence. Tested with `caplog`.
@@ -4210,7 +4210,7 @@ FINAL_REPORT.md follow in the next commit.
   test set was scored again. The stored `final_predictions.parquet` files were verified
   byte-identical before and after (`sha256sum -c`: OK).
 
-#### git diff --stat 924b401..01a9d51
+#### git diff --stat 28bc061..4544ca3
 ````text
  PROJECT_STATUS.md                                  |  24 +-
  README.md                                          |   8 +-
@@ -4526,8 +4526,8 @@ Every execution of this case study, from the command logs in `REVIEW_PACKET.md`:
 - **The first run (b) split (split v1, execution 6) was produced, scored, found degenerate, and discarded.** Its test set was one 3329-row duplicate cluster plus 45 other rows that were all positive. `StratifiedGroupKFold` had rebalanced the class ratio around the unsplittable cluster, and two different models scored the same test AP. The degeneracy was found by inspecting that run's test predictions.
 - **The large-group rule was then added.** Groups above 25% of the target test or validation size are forced to train, and holdout size, prevalence and dominant-group warnings were added (PROJECT_STATUS D28). Only this one cut-off value was tried. The reported run (b) uses **the second split (split v2)**.
 - **Test-set reuse:** the run (a) test set (test-index SHA-256 `ee4a3c8a3d3efbbf…`) was scored in executions 3–8, six times with the same protocol, plus possibly execution 2. The split v2 test set (SHA-256 `7ee8afda21eac8e5…`) was scored in executions 7 and 8. The change between 7 and 8 (random-forest threads, D29) came from the out-of-fold hash check, not from test results, and did not change any reported metric. Execution 9 scored nothing.
-- **Fixed before any case-study test scoring:** the candidate list, seeds, CV settings and selection rule were written into this script before execution 1. Git cannot prove that ordering, because the script was first committed in M10 (`91c6f54`) after those executions.
-- **Threshold aggregation rule (median across repeats):** decided in M5 as PROJECT_STATUS decision **D15** and implemented in commit **`7ce0891`** (2026-10-22 13:05:52 +05:00). This **precedes** the first case-study execution (execution 3, run `run-20261022T083455Z-ef809093` = 08:34:55Z = 13:34:55 +05:00) and so all test scoring.
+- **Fixed before any case-study test scoring:** the candidate list, seeds, CV settings and selection rule were written into this script before execution 1. Git cannot prove that ordering, because the script was first committed in M10 (`43c8cac`) after those executions.
+- **Threshold aggregation rule (median across repeats):** decided in M5 as PROJECT_STATUS decision **D15** and implemented in commit **`c1c0863`** (2026-10-22 13:05:52 +05:00). This **precedes** the first case-study execution (execution 3, run `run-20261022T083455Z-ef809093` = 08:34:55Z = 13:34:55 +05:00) and so all test scoring.
 ````
 
 #### Data-quality finding (docs/case_study.md, verbatim)
@@ -4560,7 +4560,7 @@ stored threshold: 0.60359672   predicted label: 0   (training prevalence of the 
 ````markdown
 ## Threshold, run (b)
 
-- **Model:** `hgb+smote`. **Strategy:** `max_fbeta` with beta=2.0, selected on OOF predictions for each of 3 CV repeats. **Rule:** median of per-repeat thresholds selected on out-of-fold predictions (decided in M5, D15 / `7ce0891`).
+- **Model:** `hgb+smote`. **Strategy:** `max_fbeta` with beta=2.0, selected on OOF predictions for each of 3 CV repeats. **Rule:** median of per-repeat thresholds selected on out-of-fold predictions (decided in M5, D15 / `c1c0863`).
 - **Chosen threshold:** 0.6036. Per-repeat thresholds: mean 0.6001 ± 0.0814 (sample std), range [0.5170, 0.6796]. Individual values: repeat 0: 0.6036, repeat 1: 0.5170, repeat 2: 0.6796.
 - **Test metrics at the chosen threshold** (scored once; [95% CI]):
 
@@ -4585,7 +4585,7 @@ Brackets are 95% CIs from a stratified bootstrap of the test rows (2000 resample
 
 ### Task T-R3 — GitHub CI, calibration disclosure, paired bootstrap, repo tidy
 
-**Date:** 2026-10-23 · **Code/records commit:** `f96c85a`. This entry and the regenerated
+**Date:** 2026-10-23 · **Code/records commit:** `bd51d15`. This entry and the regenerated
 FINAL_REPORT.md follow in the next commit. **No test set was re-scored.**
 
 #### M4: GitHub + CI
@@ -4593,9 +4593,9 @@ FINAL_REPORT.md follow in the next commit. **No test set was re-scored.**
   - `git branch -m master main`, then `gh repo create jaswantraj969/imbalancelab --private
     --source . --push`.
   - `gh repo view` reports `"visibility":"PRIVATE"`, default branch `main`.
-- **First Actions run (commit `573b2ba`, T-R2 code):** https://github.com/jaswantraj969/imbalancelab/actions/runs/39795270360, conclusion `success`. Its logs
+- **First Actions run (commit `fcad5d9`, T-R2 code):** https://github.com/jaswantraj969/imbalancelab/actions/runs/39795270360, conclusion `success`. Its logs
   show 158 passed on each job, plus the `httpx` warning.
-- **T-R3 run (commit `f96c85a`):** https://github.com/jaswantraj969/imbalancelab/actions/runs/39841242556, conclusion **success**.
+- **T-R3 run (commit `bd51d15`):** https://github.com/jaswantraj969/imbalancelab/actions/runs/39841242556, conclusion **success**.
 
 | Job | Result | Started | Completed |
 |---|---|---|---|
@@ -4799,7 +4799,7 @@ Test Brier score (hgb+smote): 0.0181 [0.0135, 0.0231] (lower is better). Reliabi
 | 10 | [0.0229, 1.0000] | 197 | 58 | 0.4565 | 0.2944 |
 ````
 
-#### git diff --stat 573b2ba..f96c85a
+#### git diff --stat fcad5d9..bd51d15
 ````text
  README.md                                          |  24 +-
  docs/case_study.md                                 |  34 ++-
@@ -4986,7 +4986,7 @@ TOTAL                                         2524     43    98%
 
 ### Task T-R5 — Release fixes: test-scoring history, documentation accuracy
 
-**Date:** 2026-10-23 · **Code/docs commit:** `e840915` (from the supervisor-verified `0e9574e`).
+**Date:** 2026-10-23 · **Code/docs commit:** `c11399f` (from the supervisor-verified `ffdccce`).
 This entry follows in the next commit. **No test set was re-scored, and no reported metric
 changed.**
 
@@ -5018,7 +5018,7 @@ changed.**
 - **L4:** D9 rewritten to describe the current behaviour (eligible-row fold count, per D28),
   with a history note.
 
-#### GitHub Actions (commit `e840915`)
+#### GitHub Actions (commit `c11399f`)
 https://github.com/jaswantraj969/imbalancelab/actions/runs/39844968662: `checks (3.11)` **success**, `checks (3.13)` **success**. Pytest: 169 passed,
 TOTAL 98%, on both jobs.
 
@@ -5092,7 +5092,7 @@ docs/case_study/b_duplicate_groups/final_predictions.parquet: OK
 `summary.json`, `final_evaluation.json` and `run.json` of both runs were also checked with
 `sha256sum -c`, and all are OK.
 
-#### git diff --stat 0e9574e..e840915
+#### git diff --stat ffdccce..c11399f
 ````text
  README.md                                          | 33 +++++++--
  docs/case_study.md                                 |  1 +

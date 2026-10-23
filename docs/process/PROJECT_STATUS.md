@@ -185,7 +185,19 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   committed runs' stored records without amending or scoring anything. It was used in T-R5, and
   the hashes of the predictions, `summary.json`, `final_evaluation.json` and `run.json` were
   verified unchanged.
+- **D38 (T-FINAL; requested as "D36", but D36 and D37 were already used in T-R5):** the git
+  history was **rewritten before publication** to remove a personal email address (from commit
+  author/committer metadata) and a local username/path (from verbatim logs in the process docs).
+  `git filter-repo --mailmap` mapped the author and committer to the GitHub noreply address, and
+  `--replace-text` replaced the local project path with `<project-root>` and the username with
+  `<user>`. Every commit hash changed. Old → new hashes are listed in
+  [COMMIT_MAP.md](COMMIT_MAP.md), and the hash references in the current tree's docs and scripts were
+  remapped. GitHub Actions run URLs and release notes created before the rewrite point to
+  pre-rewrite commits. Author and commit **dates are preserved**, so the D15 timing evidence still
+  holds: the median-threshold rule commit is old `7ce0891` → new `c1c0863` (2026-10-22 13:05:52
+  +05:00), before the first case-study test scoring (13:34:55 +05:00). A mirror backup of the
+  pre-rewrite repository was kept locally, outside the repository.
 
 ## Last updated
 
-2026-10-23 — T-R5 (Implementation Engineer). Core code verified by supervisor at 0e9574e; T-R5 release fixes awaiting review.
+2026-10-23 — T-R5 (Implementation Engineer). Core code verified by supervisor at ffdccce; T-R5 release fixes awaiting review.

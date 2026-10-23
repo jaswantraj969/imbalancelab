@@ -81,8 +81,8 @@ Every execution of this case study, from the command logs in [`docs/process/REVI
 - **The first run (b) split (split v1, execution 6) was produced, scored, found degenerate, and discarded.** Its test set was one 3329-row duplicate cluster plus 45 other rows that were all positive. `StratifiedGroupKFold` had rebalanced the class ratio around the unsplittable cluster, and two different models scored the same test AP. The degeneracy was found by inspecting that run's test predictions.
 - **The large-group rule was then added.** Groups above 25% of the target test or validation size are forced to train, and holdout size, prevalence and dominant-group warnings were added (PROJECT_STATUS D28). Only this one cut-off value was tried. The reported run (b) uses **the second split (split v2)**.
 - **Test-set reuse:** the run (a) test set (test-index SHA-256 `ee4a3c8a3d3efbbf…`) was scored in executions 3–8, six times with the same protocol, plus possibly execution 2. The split v2 test set (SHA-256 `7ee8afda21eac8e5…`) was scored in executions 7 and 8. The change between 7 and 8 (random-forest threads, D29) came from the out-of-fold hash check, not from test results, and did not change any reported metric. Execution 9 scored nothing.
-- **Fixed before any case-study test scoring:** the candidate list, seeds, CV settings and selection rule were written into this script before execution 1. Git cannot prove that ordering, because the script was first committed in M10 (`91c6f54`) after those executions.
-- **Threshold aggregation rule (median across repeats):** decided in M5 as PROJECT_STATUS decision **D15** and implemented in commit **`7ce0891`** (2026-10-22 13:05:52 +05:00). This **precedes** the first case-study execution (execution 3, run `run-20261022T083455Z-ef809093` = 08:34:55Z = 13:34:55 +05:00) and so all test scoring.
+- **Fixed before any case-study test scoring:** the candidate list, seeds, CV settings and selection rule were written into this script before execution 1. Git cannot prove that ordering, because the script was first committed in M10 (`43c8cac`) after those executions.
+- **Threshold aggregation rule (median across repeats):** decided in M5 as PROJECT_STATUS decision **D15** and implemented in commit **`c1c0863`** (2026-10-22 13:05:52 +05:00). This **precedes** the first case-study execution (execution 3, run `run-20261022T083455Z-ef809093` = 08:34:55Z = 13:34:55 +05:00) and so all test scoring.
 
 ## Results, run (b)
 
@@ -113,7 +113,7 @@ Paired comparisons on identical folds (run b, OOF AP, descriptive):
 
 ## Threshold, run (b)
 
-- **Model:** `hgb+smote`. **Strategy:** `max_fbeta` with beta=2.0, selected on OOF predictions for each of 3 CV repeats. **Rule:** median of per-repeat thresholds selected on out-of-fold predictions (decided in M5, D15 / `7ce0891`).
+- **Model:** `hgb+smote`. **Strategy:** `max_fbeta` with beta=2.0, selected on OOF predictions for each of 3 CV repeats. **Rule:** median of per-repeat thresholds selected on out-of-fold predictions (decided in M5, D15 / `c1c0863`).
 - **Chosen threshold:** 0.6036. Per-repeat thresholds: mean 0.6001 ± 0.0814 (sample std), range [0.5170, 0.6796]. Individual values: repeat 0: 0.6036, repeat 1: 0.5170, repeat 2: 0.6796.
 - **Test metrics at the chosen threshold** (scored once; [95% CI]):
 
