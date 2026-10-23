@@ -53,14 +53,20 @@ This report and the T-R3 REVIEW_PACKET entry are committed after the log above.
 
 ## 2. CI and gates on commit `bd51d15`
 
-### GitHub Actions (private repository `jaswantraj969/imbalancelab`)
+### GitHub Actions (published repository `jaswantraj969/imbalancelab`)
 
-Run: https://github.com/jaswantraj969/imbalancelab/actions/runs/39841242556 on commit `bd51d15`. Overall conclusion: **success**.
+CI evidence for the published, rewritten history (D38): run
+https://github.com/jaswantraj969/imbalancelab/actions/runs/40002446378 on commit `9679bbc`.
+Overall conclusion: **success**.
 
 | Job | Result |
 |---|---|
 | checks (3.13) | **success** |
 | checks (3.11) | **success** |
+
+This report was originally written for commit `bd51d15` (pre-rewrite `f96c85a`). The CI run
+cited at that time belongs to the archived private repository and does not resolve publicly.
+The local gate output below is from that original commit.
 
 ### Local gate, Python 3.13.5 (`.venv`, verbatim)
 

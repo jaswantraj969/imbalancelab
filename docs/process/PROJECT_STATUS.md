@@ -197,6 +197,16 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   holds: the median-threshold rule commit is old `7ce0891` → new `c1c0863` (2026-10-22 13:05:52
   +05:00), before the first case-study test scoring (13:34:55 +05:00). A mirror backup of the
   pre-rewrite repository was kept locally, outside the repository.
+  **Published from a fresh repository (T-FINAL2):** because GitHub kept serving the
+  pre-rewrite commits by SHA after the force-push, the original repository (with the
+  pre-rewrite commits and CI runs) was renamed and kept **private** as
+  `jaswantraj969/imbalancelab-archive-private`. The rewritten history (only `main` and
+  `v1.0.0`) was pushed to a new `jaswantraj969/imbalancelab`, where the old SHAs return "No
+  commit found". CI evidence for the published history is the runs of the new repository, e.g.
+  https://github.com/jaswantraj969/imbalancelab/actions/runs/40002446378 (commit `9679bbc`, both
+  jobs success).
+  - Historical REVIEW_PACKET entries cite Actions run IDs from the archive repository; those
+    links do not resolve publicly.
 
 ## Last updated
 
