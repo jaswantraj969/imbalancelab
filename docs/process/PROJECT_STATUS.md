@@ -207,6 +207,12 @@ Status values: `not started` · `in progress` · `done` (engineer's acceptance c
   jobs success).
   - Historical REVIEW_PACKET entries cite Actions run IDs from the archive repository; those
     links do not resolve publicly.
+  - **Second rewrite (2026-10-24, see D39):** history was rewritten a second time to remove the
+    co-author trailers from commit messages. The hash references in the docs were remapped, and
+    the first-rewrite → current mapping is in [COMMIT_MAP.md](COMMIT_MAP.md). Dates are preserved,
+    and the D15 rule commit is now `189a2b2` (author date unchanged, 2026-10-22 13:05:52 +05:00).
+    A 2026-10-25 audit of every 7–40-character hex token in tracked .md/.json/.py files found
+    no reference to a commit missing from the current history.
 - **D39 (2026-10-24):** at the owner's request, the `Co-Authored-By` trailers were removed from
   all commit messages with `git filter-repo --message-callback`. The owner is the sole author.
   Only messages changed: the file tree of every commit is identical (HEAD tree `3a0636a`),
