@@ -41,6 +41,8 @@ result does not describe those rows.
 Worked example on real data: [docs/case_study.md](docs/case_study.md). Plan, status and review
 evidence: see [Development process](#development-process).
 
+Screenshots, mammography case study (run b): [headline and paired differences](docs/screenshots/case_study_01_headline.png), [threshold and test metrics](docs/screenshots/case_study_02_threshold_test.png), [coverage warning and calibration](docs/screenshots/case_study_03_coverage_calibration.png).
+
 ## Install
 
 Requires Python 3.11+.
